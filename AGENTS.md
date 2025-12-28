@@ -428,7 +428,7 @@ INDEX :
 - **Vue Components**: Use `<script setup lang="ts">` with Composition API
 - **Imports**: Relative imports only - Vue/Nuxt → third-party → local
 - **Database**: Drizzle ORM with SQLite, schemas in `/server/database/schema/`
-- **Validation**: Zod schemas with `readValidatedBody()` in API routes
+- **Validation**: Gunakan Zod validation yang tepat untuk setiap tipe API route http request
 - **Error Handling**: `createError()` with proper status codes in try/catch blocks
 - **File Naming**: PascalCase for components, camelCase for utils/composables
 - **Testing**: Vitest with `.test.ts` or `.spec.ts` suffixes in test files
@@ -444,3 +444,11 @@ INDEX :
   1. menjadi aplikasi yang siap untuk di demokan.
   2. sudah lolos testing dan audit.
   3. aplikasi yang siap digunakan oleh tim dan user.
+
+## K. Membangun Backend API Endpoints
+  1. Master Data API
+  2. Transaksi API
+  3. Photo API
+  4. Notification API
+  5. Auth API
+
