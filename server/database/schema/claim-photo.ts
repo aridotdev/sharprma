@@ -2,6 +2,7 @@ import { sqliteTable, integer, text, index } from 'drizzle-orm/sqlite-core'
 import { claim } from './claim'
 import { createInsertSchema, createSelectSchema } from 'drizzle-zod'
 import { z } from 'zod'
+import { CLAIM_PHOTO_STATUSES, PHOTO_TYPES } from '../../../shared/utils/constant'
 
 
 
@@ -50,4 +51,4 @@ export const photoReviewSchema = z.object({
 export type SelectClaimPhoto = typeof claimPhoto.$inferSelect
 export type InsertClaimPhoto = z.infer<typeof insertClaimPhotoSchema>
 export type UpdateClaimPhoto = z.infer<typeof updateClaimPhotoSchema>
-export type PhotoReview = z.infer<typeof photoReviewSchema>
+export type PhotoReviewRequest = z.infer<typeof photoReviewSchema>

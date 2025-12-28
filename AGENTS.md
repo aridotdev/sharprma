@@ -108,7 +108,7 @@ analytics
 
 Sistem menentukan foto wajib berdasarkan `VendorPhotoRule`:
 
-| STEP   | Photo Type  | Vendor 1 |  Vendor 2   |  Vendor 3  |
+| STEP   | Photo Type  | MOKA     |  MTC        |  SDP       |
 | ------ | ----------  | -------- |  --------   |  --------  |
 | 1      | Claim       | ✅       |  ✅         |  ✅        |
 | 2      | CLAIM_ZOOM  | ✅       |  ✅         |  ✅        |
@@ -423,3 +423,15 @@ INDEX :
 - **Error Handling**: `createError()` with proper status codes in try/catch blocks
 - **File Naming**: PascalCase for components, camelCase for utils/composables
 - **Testing**: Vitest with `.test.ts` or `.spec.ts` suffixes in test files
+
+## I. Cara Kerja
+  1. Kerjakan bertahap & terstruktur
+  2. Buatkan task list dulu sebelum memberikan penjelasan
+  3. Gunakan bahasa yang mudah dipahami pemula, gunakan penjelasan singkat dan efektif
+  4. Sertakan alasan teknis setiap keputusan
+  5. lakukan review dahulu sebelum lanjut ke tahap berikutnya
+
+## J. Tujuan Akhir
+  1. menjadi aplikasi yang siap untuk di demokan.
+  2. sudah lolos testing dan audit.
+  3. aplikasi yang siap digunakan oleh tim dan user.

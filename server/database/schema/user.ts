@@ -2,8 +2,7 @@ import { sqliteTable, integer, text, uniqueIndex, index } from 'drizzle-orm/sqli
 import { createInsertSchema, createSelectSchema } from 'drizzle-zod'
 import { z } from 'zod'
 
-export const USER_ROLES = ['ADMIN', 'CS', 'QRCC', 'MANAGEMENT'] as const
-export type UserRole = typeof USER_ROLES[number]
+import { USER_ROLES } from '../../../shared/utils/constant'
 
 export const user = sqliteTable('user', {
   id: integer('id').primaryKey({ autoIncrement: true }),

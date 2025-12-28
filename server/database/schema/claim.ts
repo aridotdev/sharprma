@@ -3,6 +3,7 @@ import { vendor } from './vendor'
 import { user } from './user'
 import { createInsertSchema, createSelectSchema } from 'drizzle-zod'
 import { z } from 'zod'
+import { CLAIM_STATUSES } from '../../../shared/utils/constant'
 
 export const claim = sqliteTable('claim', {
   id: integer('id').primaryKey({ autoIncrement: true }),

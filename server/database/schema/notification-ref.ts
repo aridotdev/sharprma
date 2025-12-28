@@ -4,6 +4,7 @@ import { vendor } from './vendor'
 import { user } from './user'
 import { createInsertSchema, createSelectSchema } from 'drizzle-zod'
 import { z } from 'zod'
+import { NOTIFICATION_STATUSES } from '../../../shared/utils/constant'
 
 export const notificationRef = sqliteTable('notification_ref', {
   id: integer('id').primaryKey({ autoIncrement: true }),
@@ -23,7 +24,7 @@ export const insertNotificationRefSchema = createInsertSchema(notificationRef, {
   notificationCode: z.string().min(1, 'Notification code is required').max(25, 'Notification code must be less than 25 characters').trim().toUpperCase(),
   modelName: z.string().min(1, 'Model name is required').max(25, 'Model name must be less than 25 characters').trim(),
   vendorId: z.number().int().positive('Vendor ID must be a positive integer'),
-  status: z.enum(['NEW', 'USED', 'EXPIRED']).default('NEW'),
+  status: z.enum(NOTIFICATION_STATUSES).default('NEW'),
   createdBy: z.number().int().positive('Created by user ID must be a positive integer')
 }).omit({
   id: true,

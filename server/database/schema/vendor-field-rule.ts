@@ -2,6 +2,7 @@ import { sqliteTable, integer, text, uniqueIndex, index } from 'drizzle-orm/sqli
 import { vendor } from './vendor'
 import { createInsertSchema, createSelectSchema } from 'drizzle-zod'
 import { z } from 'zod'
+import { FIELD_NAMES } from '../../../shared/utils/constant'
 
 
 export const vendorFieldRule = sqliteTable('vendor_field_rule', {
