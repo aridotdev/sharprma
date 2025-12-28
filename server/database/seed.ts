@@ -2,7 +2,7 @@ import { drizzle } from 'drizzle-orm/libsql'
 import { createClient } from '@libsql/client'
 import * as schema from './schema'
 import { eq } from 'drizzle-orm'
-import { PHOTO_TYPES } from '../../shared/utils/constant'
+import { PHOTO_TYPES, FIELD_NAMES } from '../../shared/utils/constant'
 
 // Load environment variables if needed
 import 'dotenv/config'
@@ -118,6 +118,37 @@ async function main() {
                 .onConflictDoUpdate({
                     target: [schema.vendorPhotoRule.vendorId, schema.vendorPhotoRule.photoType],
                     set: { isRequired: requiredTypes.includes(type), updatedAt: new Date().toISOString() }
+                })
+                .run()
+        }
+    }
+
+    // 5. Seed Vendor Field Rules
+    console.log('Seeding vendor field rules...')
+
+    // MOKA (Vendor 1) requires all fields. MTC and SDP require none.
+    const fieldRulesConfig = {
+        'MOKA': ['odfNumber', 'version', 'week'],
+        'MTC': [],
+        'SDP': []
+    }
+
+    for (const v of vendors) {
+        // @ts-expect-error - indexing with string on predefined Vendor names
+        const requiredFields = fieldRulesConfig[v.name] || []
+
+        for (const field of FIELD_NAMES) {
+            await db.insert(schema.vendorFieldRule)
+                .values({
+                    vendorId: v.id,
+                    fieldName: field,
+                    isRequired: requiredFields.includes(field),
+                    createdAt: new Date().toISOString(),
+                    updatedAt: new Date().toISOString()
+                })
+                .onConflictDoUpdate({
+                    target: [schema.vendorFieldRule.vendorId, schema.vendorFieldRule.fieldName],
+                    set: { isRequired: requiredFields.includes(field), updatedAt: new Date().toISOString() }
                 })
                 .run()
         }

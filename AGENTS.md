@@ -95,10 +95,12 @@ analytics
     - `OcSerialNo`
     - `defect`
 
-  Field kondisional (berdasarkan vendor):
+  Field kondisional (berdasarkan `VendorFieldRule`):
   - `OdfNumber` → wajib Vendor 1
   - `version` → wajib Vendor 1
   - `week` → wajib Vendor 1
+
+
 
   📌 Validasi berdasarkan VendorFieldRule
 
@@ -203,7 +205,7 @@ Bisa di-upload ulang selama belum `APPROVED`
 ## D. DESAIN DATABASE
 📌 CATATAN PENTING :
 - Semua createdAt / updatedAt → text NOT NULL
-- Semua enum → text + Zod, bukan enum DB
+- Semua enum → text + Zod, bukan enum DB. WAJIB import dari `shared/utils/constant.ts`
 - Semua FK → integer
 - TIDAK merubah dari desain yang sudah dibuat di file ini
 
@@ -212,7 +214,7 @@ Bisa di-upload ulang selama belum `APPROVED`
 | Kolom     | Tipe    | Constraint        |  Keterangan   |
 |---------  |---------|-------------------|---------------|
 |id         |	integer |	PK                |	ID vendor     |
-|name       |	text    |	NOT NULL          |	Nama vendor   |
+|name       |	text    |	NOT NULL, UNIQUE  |	Nama vendor   |
 |isActive   |	integer |	NOT NULL          |	Status akif   |
 
 
@@ -267,6 +269,13 @@ INDEX :
 INDEX :
 - UNIQUE (vendorId, fieldName)
 - INDEX (vendorId)
+
+📌 Panduan VendorFieldRule:
+| No  | Field Name  | MOKA  | MTC  | SDP |
+| ----| ----------  | ----- | ---- | ----|
+| 1   | odfNumber   | ✅    | ❌   | ❌  |
+| 2   | version     | ✅    | ❌   | ❌  |
+| 3   | week        | ✅    | ❌   | ❌  |
 
 ### 2. Transaksi
 #### 2.1 **Claim**
@@ -354,7 +363,7 @@ INDEX :
 | Kolom     | Tipe    | Constraint        |  Keterangan        |
 |---------  |---------|-------------------|--------------------|
 |id         |	integer |	PK                |	ID klaim histori   |
-|claimId    |	text    |	FK -> claim.id    | id claim           |
+|claimId    |	integer |	FK -> claim.id    | id claim           |
 |action     |	text    |	NOT NULL          |	                   |
 |fromStatus |	text    |	NOT NULL          |	status awal        |
 |toStatus   |	text    |	NOT NULL          |	status akhir       |
