@@ -201,6 +201,12 @@ Bisa di-upload ulang selama belum `APPROVED`
 ------------------------------------------------------------------------
 
 ## D. DESAIN DATABASE
+📌 CATATAN PENTING :
+- Semua createdAt / updatedAt → text NOT NULL
+- Semua enum → text + Zod, bukan enum DB
+- Semua FK → integer
+- TIDAK merubah dari desain yang sudah dibuat di file ini
+
 ### 1. Master Data
 #### 1.1 **Vendor**
 | Kolom     | Tipe    | Constraint        |  Keterangan   |
@@ -209,8 +215,6 @@ Bisa di-upload ulang selama belum `APPROVED`
 |name       |	text    |	NOT NULL          |	Nama vendor   |
 |isActive   |	integer |	NOT NULL          |	Status akif   |
 
-INDEX :
-- UNIQUE (code)
 
 #### 1.2 **ProductModel**
 | Kolom     | Tipe    | Constraint        |  Keterangan                     |
@@ -221,7 +225,7 @@ INDEX :
 |inch       |	text    |	NOT NULL          |	Ukuran inch (fix)               |
 
 INDEX :
-- UNIQUE (modelCode)
+- UNIQUE (modelName)
 - INDEX (vendorId)
 
 #### 1.3 **NotificationRef**
@@ -239,7 +243,7 @@ INDEX :
 |-------------------|---------|-------------------|-----------------------|
 |id                 |	integer |	PK                |	ID VendorPhotoRule    |
 |vendorId           |	integer |	FK -> vendor.id   |	Kode vendor           |
-|photoType          |	text    |	                  |  |
+|photoType          |	text    |	                  |                       |
 |isRequired         |	integer |	NOT NULL          |	Wajib / tidak         |
 |createdAt          |	text    |	NOT NULL          |	Waktu dibuat          |
 |updatedAt          |	text    |	NOT NULL          |	Waktu ada update      |
@@ -301,6 +305,7 @@ INDEX :
 |photoType          |	text    |	NOT NULL          | Tipe/nama foto        |
 |filePath           |	text    |	NOT NULL          |	File path foto        |
 |status             |	text    |	NOT NULL          |	Status foto           |
+|reviewNote         |	text    |	                  |	Catatan review        |
 |createdAt          |	text    |	NOT NULL          |	Waktu dibuat          |
 |updatedAt          |	text    |	NOT NULL          |	Waktu ada update      |
 

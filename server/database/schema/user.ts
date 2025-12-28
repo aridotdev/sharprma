@@ -1,10 +1,37 @@
-import { sqliteTable, integer, text } from 'drizzle-orm/sqlite-core'
+import { sqliteTable, integer, text, uniqueIndex, index } from 'drizzle-orm/sqlite-core'
+import { createInsertSchema, createSelectSchema } from 'drizzle-zod'
+import { z } from 'zod'
+
+export const USER_ROLES = ['ADMIN', 'CS', 'QRCC', 'MANAGEMENT'] as const
+export type UserRole = typeof USER_ROLES[number]
 
 export const user = sqliteTable('user', {
   id: integer('id').primaryKey({ autoIncrement: true }),
   userAuthId: text('user_auth_id').notNull().unique(),
   name: text('name').notNull(),
-  role: text('role', { enum: ['ADMIN', 'CS', 'QRCC', 'MANAGEMENT'] }).notNull(),
+  role: text('role').notNull(),
   isActive: integer('is_active', { mode: 'boolean' }).notNull().default(true),
-  createdAt: text('created_at').notNull().default(new Date().toISOString()),
+  createdAt: text('created_at').notNull()
+  // eslint-disable-next-line @stylistic/arrow-parens
+}, (table) => [
+  uniqueIndex('user_auth_id_idx').on(table.userAuthId),
+  index('user_role_idx').on(table.role)
+])
+
+// Zod schemas for validation
+export const insertUserSchema = createInsertSchema(user, {
+  userAuthId: z.string().min(1, 'User auth ID is required').max(50, 'User auth ID must be less than 50 characters').trim(),
+  name: z.string().min(1, 'Name is required').max(50, 'Name must be less than 50 characters').trim(),
+  role: z.enum(USER_ROLES, {
+    message: 'Role must be one of: ADMIN, CS, QRCC, MANAGEMENT'
+  }),
+  isActive: z.boolean().default(true)
+}).omit({
+  id: true,
+  createdAt: true
 })
+
+export const selectUserSchema = createSelectSchema(user)
+
+export type SelectUser = typeof user.$inferSelect
+export type InsertUser = z.infer<typeof insertUserSchema>

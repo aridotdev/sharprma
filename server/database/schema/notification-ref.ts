@@ -1,11 +1,36 @@
-import { sqliteTable, integer, text } from 'drizzle-orm/sqlite-core'
+/* eslint-disable @stylistic/arrow-parens */
+import { sqliteTable, integer, text, uniqueIndex, index } from 'drizzle-orm/sqlite-core'
 import { vendor } from './vendor'
+import { user } from './user'
+import { createInsertSchema, createSelectSchema } from 'drizzle-zod'
+import { z } from 'zod'
 
 export const notificationRef = sqliteTable('notification_ref', {
   id: integer('id').primaryKey({ autoIncrement: true }),
   notificationCode: text('notification_code').notNull().unique(),
   modelName: text('model_name').notNull(),
-  vendorId: integer('vendor_id').references(() => vendor.id).notNull(),
-  status: text('status', { enum: ['NEW', 'USED', 'EXPIRED'] }).notNull().default('NEW'),
-  createdBy: integer('created_by').notNull(),
+  vendorId: integer('vendor_id').references(() => vendor.id, { onDelete: 'restrict' }).notNull(),
+  status: text('status').notNull().default('NEW'),
+  createdBy: integer('created_by').references(() => user.id).notNull()
+}, (table) => [
+  uniqueIndex('notification_ref_code_uq').on(table.notificationCode),
+  index('notification_ref_vendor_idx').on(table.vendorId),
+  index('notification_ref_status_idx').on(table.status)
+])
+
+// Zod schemas for validation
+export const insertNotificationRefSchema = createInsertSchema(notificationRef, {
+  notificationCode: z.string().min(1, 'Notification code is required').max(25, 'Notification code must be less than 25 characters').trim().toUpperCase(),
+  modelName: z.string().min(1, 'Model name is required').max(25, 'Model name must be less than 25 characters').trim(),
+  vendorId: z.number().int().positive('Vendor ID must be a positive integer'),
+  status: z.enum(['NEW', 'USED', 'EXPIRED']).default('NEW'),
+  createdBy: z.number().int().positive('Created by user ID must be a positive integer')
+}).omit({
+  id: true,
 })
+
+export const selectNotificationRefSchema = createSelectSchema(notificationRef)
+
+
+export type SelectNotificationRef = typeof notificationRef.$inferSelect
+export type InsertNotificationRef = z.infer<typeof insertNotificationRefSchema>
