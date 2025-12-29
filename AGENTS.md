@@ -484,6 +484,13 @@ INDEX :
 | `/api/claim-photos/:id` | **Delete** | ✅ |
 | `/api/photo-reviews` | **Review (POST)** | ✅ |
 
+### Notification API (Selesai: 2025-12-29)
+
+| API | Type | Description | Status |
+|-----|------|-------------|--------|
+| `/api/notification-refs/validate` | **Validate (POST)** | Check exists & Status NEW | ✅ |
+| `/api/claims` | **Integration** | Auto-update Notification Status to USED | ✅ |
+
 ### Database Schema (Selesai)
 - [x] vendor.ts
 - [x] product-model.ts
