@@ -473,6 +473,17 @@ INDEX :
 |-----|------------|----------|------|-----|--------|
 | `/api/claims` | ✅ | ✅ | ✅ | ✅ | ✅ |
 
+### Photo API (Selesai: 2025-12-29)
+
+| API | Type | Status |
+|-----|------|--------|
+| `/api/claim-photos` | **Upload (POST)** | ✅ |
+| `/api/claim-photos` | **List (GET)** | ✅ |
+| `/api/claim-photos/:id` | **Read (GET)** | ✅ |
+| `/api/claim-photos/:id` | **Update (PUT)** | ✅ |
+| `/api/claim-photos/:id` | **Delete** | ✅ |
+| `/api/photo-reviews` | **Review (POST)** | ✅ |
+
 ### Database Schema (Selesai)
 - [x] vendor.ts
 - [x] product-model.ts
@@ -487,3 +498,9 @@ INDEX :
 - [x] vendor-claim.ts
 - [x] vendor-claim-item.ts
 
+### lainnya 
+- Implementation Details
+  - File Storage: ./public/uploads/claims/
+  - Ensure directory creation.
+  - Unique filename generation: {claimId}_{photoType}_{timestamp}.jpg.
+  - Nuxt/H3: Use readMultipartFormData.
