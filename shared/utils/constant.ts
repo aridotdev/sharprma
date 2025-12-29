@@ -41,7 +41,7 @@ export const NOTIFICATION_STATUSES = ['NEW', 'USED', 'EXPIRED'] as const
 export type NotificationStatus = typeof NOTIFICATION_STATUSES[number]
 
 // daftar vendor decision
-export const VENDOR_DECISIONS = ['ACCEPTED', 'REJECTED'] as const
+export const VENDOR_DECISIONS = ['PENDING', 'ACCEPTED', 'REJECTED'] as const
 export type VendorDecision = typeof VENDOR_DECISIONS[number]
 
 // daftar vendor field rule

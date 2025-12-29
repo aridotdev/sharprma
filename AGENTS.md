@@ -491,6 +491,15 @@ INDEX :
 | `/api/notification-refs/validate` | **Validate (POST)** | Check exists & Status NEW | ✅ |
 | `/api/claims` | **Integration** | Auto-update Notification Status to USED | ✅ |
 
+### Vendor Claim API (Selesai: 2025-12-29)
+
+| API | Type | Description | Status |
+|-----|------|-------------|--------|
+| `/api/vendor-claims` | **Create (POST)** | Generate Header + Items (Transactional) | ✅ |
+| `/api/vendor-claims` | **List (GET)** | List with filters | ✅ |
+| `/api/vendor-claims/:id` | **Detail (GET)** | Get Header + Joined Items | ✅ |
+| `/api/vendor-claim-items/:id` | **Update (PUT)** | Update Decision (Accept/Reject) | ✅ |
+
 ### Database Schema (Selesai)
 - [x] vendor.ts
 - [x] product-model.ts
@@ -506,8 +515,10 @@ INDEX :
 - [x] vendor-claim-item.ts
 
 ### lainnya 
-- Implementation Details
+- Photo Upload API
   - File Storage: ./public/uploads/claims/
   - Ensure directory creation.
   - Unique filename generation: {claimId}_{photoType}_{timestamp}.jpg.
   - Nuxt/H3: Use readMultipartFormData.
+- Vendor Claim API
+  - Generate vendorClaimNo (e.g. VC-{YYYYMMDD}-{Sequence}).
