@@ -1,7 +1,7 @@
 {
   "version": "6",
   "dialect": "sqlite",
-  "id": "b3397853-996e-4c2d-ae0a-bc76bf62489f",
+  "id": "513c2f9b-07c7-42c6-bf3f-8bece4d6f7a3",
   "prevId": "00000000-0000-0000-0000-000000000000",
   "tables": {
     "claim_history": {
@@ -1191,7 +1191,15 @@
           "default": true
         }
       },
-      "indexes": {},
+      "indexes": {
+        "vendor_name_unique": {
+          "name": "vendor_name_unique",
+          "columns": [
+            "name"
+          ],
+          "isUnique": true
+        }
+      },
       "foreignKeys": {},
       "compositePrimaryKeys": {},
       "uniqueConstraints": {},
