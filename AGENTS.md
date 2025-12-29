@@ -449,9 +449,35 @@ INDEX :
   3. aplikasi yang siap digunakan oleh tim dan user.
 
 ## K. Membangun Backend API Endpoints
-  1. Master Data API
-  2. Transaksi API
-  3. Photo API
-  4. Notification API
-  5. Auth API
+- [x] Master Data API
+- [ ] Transaksi API
+- [ ] Photo API
+- [ ] Notification API
+- [ ] Auth API
+
+## L. Implementation Progress
+
+### Master Data API (Selesai: 2025-12-29)
+
+| API | GET (List) | GET (ID) | POST | PUT | DELETE |
+|-----|------------|----------|------|-----|--------|
+| `/api/vendors` | ✅ | ✅ | ✅ | ✅ | ✅ |
+| `/api/product-models` | ✅ | ✅ | ✅ | ✅ | ✅ |
+| `/api/notification-refs` | ✅ | ✅ (code) | ✅ | ✅ | ✅ |
+| `/api/vendor-field-rules` | ✅ | ✅ | ✅ | ✅ | ✅ |
+| `/api/vendor-photo-rules` | ✅ | ✅ | ✅ | ✅ | ✅ |
+
+### Database Schema (Selesai)
+- [x] vendor.ts
+- [x] product-model.ts
+- [x] notification-ref.ts
+- [x] vendor-field-rule.ts
+- [x] vendor-photo-rule.ts
+- [x] user.ts
+- [x] claim.ts
+- [x] claim-photo.ts
+- [x] claim-history.ts
+- [x] photo-review.ts
+- [x] vendor-claim.ts
+- [x] vendor-claim-item.ts
 
