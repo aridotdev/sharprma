@@ -467,6 +467,12 @@ INDEX :
 | `/api/vendor-field-rules` | ✅ | ✅ | ✅ | ✅ | ✅ |
 | `/api/vendor-photo-rules` | ✅ | ✅ | ✅ | ✅ | ✅ |
 
+### Transaction API (Selesai: 2025-12-29)
+
+| API | GET (List) | GET (ID) | POST | PUT | DELETE |
+|-----|------------|----------|------|-----|--------|
+| `/api/claims` | ✅ | ✅ | ✅ | ✅ | ✅ |
+
 ### Database Schema (Selesai)
 - [x] vendor.ts
 - [x] product-model.ts

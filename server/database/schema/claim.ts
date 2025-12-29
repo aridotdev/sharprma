@@ -34,7 +34,7 @@ export const claim = sqliteTable('claim', {
 // Zod schemas for validation
 export const insertClaimSchema = createInsertSchema(claim, {
   claimNumber: z.string().min(1, 'Claim number is required').max(50, 'Claim number must be less than 50 characters'),
-  notification: z.string().max(50, 'Notification must be less than 50 characters').trim().optional(),
+  notification: z.string().max(50, 'Notification must be less than 50 characters').trim().default(''),
   modelName: z.string().min(1, 'Model name is required').max(100, 'Model name must be less than 100 characters').trim(),
   vendorId: z.number().int().positive('Vendor ID must be a positive integer'),
   inch: z.string().min(1, 'Inch size is required').max(5, 'Inch size must be less than 5 characters'),

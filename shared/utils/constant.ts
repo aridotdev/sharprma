@@ -4,7 +4,7 @@ export const USER_ROLES = ['ADMIN', 'MANAGEMENT', 'QRCC', 'CS'] as const
 export type UserRole = typeof USER_ROLES[number]
 
 // daftar claim status
-export const CLAIM_STATUSES = ['DRAFT', 'SUBMITTED', 'NEED_REVISION', 'APPROVED', 'CANCELLED'] as const
+export const CLAIM_STATUSES = ['DRAFT', 'SUBMITTED', 'IN_REVIEW', 'NEED_REVISION', 'APPROVED', 'CANCELLED'] as const
 export type ClaimStatus = typeof CLAIM_STATUSES[number]
 
 // daftar photo type
