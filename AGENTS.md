@@ -1,4 +1,4 @@
-# RMA Claim System
+ RMA Claim System
 
 ## STATUS AKHIR
 Dokumen ini menjadi **single source of truth** untuk
@@ -211,20 +211,23 @@ Bisa di-upload ulang selama belum `APPROVED`
 
 ### 1. Master Data
 #### 1.1 **Vendor**
-| Kolom     | Tipe    | Constraint        |  Keterangan   |
-|---------  |---------|-------------------|---------------|
-|id         |	integer |	PK                |	ID vendor     |
-|name       |	text    |	NOT NULL, UNIQUE  |	Nama vendor   |
-|isActive   |	integer |	NOT NULL          |	Status akif   |
-
+| Kolom     | Tipe    | Constraint        |  Keterangan     |
+|---------  |---------|-------------------|-----------------|
+|id         |	integer |	PK                |	ID vendor       |
+|name       |	text    |	NOT NULL, UNIQUE  |	Nama vendor     |
+|isActive   |	integer |	NOT NULL          |	Status akif     |
+|createdAt  |	text    |	NOT NULL          |	Waktu dibuat    |
+|updatedAt  |	text    |	NOT NULL          |	Waktu ada update|
 
 #### 1.2 **ProductModel**
 | Kolom     | Tipe    | Constraint        |  Keterangan                     |
 |---------  |---------|-------------------|---------------------------------|
-|id         |	integer |	PK                |	ID model                        |
-|vendorId   |	integer |	FK -> vendor.id   | Vendor                          |
-|modelName  |	text    |	NOT NULL          |	Nama Model                      |
-|inch       |	text    |	NOT NULL          |	Ukuran inch (fix)               |
+|id         |	integer |	PK                |	ID model           |
+|vendorId   |	integer |	FK -> vendor.id   | Vendor             |
+|modelName  |	text    |	NOT NULL          |	Nama Model         |
+|inch       |	text    |	NOT NULL          |	Ukuran inch (fix)  |
+|createdAt  |	text    |	NOT NULL          |	Waktu dibuat       |
+|updatedAt  |	text    |	NOT NULL          |	Waktu ada update   |
 
 INDEX :
 - UNIQUE (modelName)

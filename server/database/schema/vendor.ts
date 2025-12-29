@@ -4,7 +4,7 @@ import { z } from 'zod'
 
 export const vendor = sqliteTable('vendor', {
   id: integer('id').primaryKey({ autoIncrement: true }),
-  name: text('name').notNull(),
+  name: text('name').notNull().unique(),
   isActive: integer('isActive', { mode: 'boolean' }).notNull().default(true)
 })
 

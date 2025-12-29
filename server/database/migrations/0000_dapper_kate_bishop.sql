@@ -168,3 +168,5 @@ CREATE TABLE `vendor` (
 	`name` text NOT NULL,
 	`isActive` integer DEFAULT true NOT NULL
 );
+--> statement-breakpoint
+CREATE UNIQUE INDEX `vendor_name_unique` ON `vendor` (`name`);
