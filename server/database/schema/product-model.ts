@@ -20,11 +20,10 @@ export const insertProductModelSchema = createInsertSchema(productModel, {
   inch: z.string().min(1, 'Inch size is required').max(2, 'Inch size max 2 characters'),
   vendorId: z.number().int().positive('Vendor ID must be a positive integer')
 }).omit({
-  id: true,
+  id: true
 })
 
 export const selectProductModelSchema = createSelectSchema(productModel)
-
 
 export type SelectProductModel = typeof productModel.$inferInsert
 export type InsertProductModel = z.infer<typeof insertProductModelSchema>

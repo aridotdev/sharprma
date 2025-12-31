@@ -11,6 +11,7 @@ export * from './vendor-claim'
 export * from './vendor-field-rule'
 export * from './vendor-photo-rule'
 export * from './vendor'
+export * from './auth'
 
 // Re-exports are handled by export * from './file' pattern below
 // Only shared constants are explicitly re-exported at the end
