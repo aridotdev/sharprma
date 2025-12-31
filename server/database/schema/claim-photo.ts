@@ -1,11 +1,10 @@
-import { sqliteTable, integer, text, index } from 'drizzle-orm/sqlite-core'
+import { sqliteTable, integer, text, index, uniqueIndex } from 'drizzle-orm/sqlite-core'
 import { claim } from './claim'
 import { createInsertSchema, createSelectSchema } from 'drizzle-zod'
 import { z } from 'zod'
 import { CLAIM_PHOTO_STATUSES, PHOTO_TYPES } from '../../../shared/utils/constant'
 
-
-
+// Database schema for claim_photo table
 export const claimPhoto = sqliteTable('claim_photo', {
   id: integer('id').primaryKey({ autoIncrement: true }),
   claimId: integer('claim_id').references(() => claim.id, { onDelete: 'cascade' }).notNull(),
@@ -15,9 +14,9 @@ export const claimPhoto = sqliteTable('claim_photo', {
   reviewNote: text('review_note').notNull().default(''),
   createdAt: text('created_at').notNull(),
   updatedAt: text('updated_at').notNull()
-}, (table) => [
+}, table => [
   index('claim_photo_claim_idx').on(table.claimId),
-  index('claim_photo_status_idx').on(table.status)
+  uniqueIndex('claim_photo_claim_id_photo_type_idx').on(table.claimId, table.photoType)
 ])
 
 // Zod schemas for validation

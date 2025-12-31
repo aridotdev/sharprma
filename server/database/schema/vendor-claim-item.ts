@@ -1,4 +1,4 @@
-import { sqliteTable, integer, text, uniqueIndex, index } from 'drizzle-orm/sqlite-core'
+import { sqliteTable, integer, text, index } from 'drizzle-orm/sqlite-core'
 import { vendorClaim } from './vendor-claim'
 import { claim } from './claim'
 import { createInsertSchema, createSelectSchema } from 'drizzle-zod'
@@ -13,7 +13,7 @@ export const vendorClaimItem = sqliteTable('vendor_claim_item', {
   compensationAmount: integer('compensation_amount'),
   note: text('note'),
   decisionAt: text('decision_at').notNull()
-}, (table) => [
+}, table => [
   index('vendor_claim_item_vendor_claim_idx').on(table.vendorClaimId),
   index('vendor_claim_item_claim_idx').on(table.claimId)
 ])
@@ -35,7 +35,6 @@ export const insertVendorClaimItemSchema = createInsertSchema(vendorClaimItem, {
 export const selectVendorClaimItemSchema = createSelectSchema(vendorClaimItem)
 
 export const updateVendorClaimItemSchema = insertVendorClaimItemSchema.partial()
-
 
 export type SelectVendorClaimItem = typeof vendorClaimItem.$inferSelect
 export type InsertVendorClaimItem = z.infer<typeof insertVendorClaimItemSchema>

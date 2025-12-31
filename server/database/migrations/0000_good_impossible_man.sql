@@ -9,7 +9,7 @@ CREATE TABLE `claim_history` (
 	`note` text,
 	`created_at` text NOT NULL,
 	FOREIGN KEY (`claim_id`) REFERENCES `claim`(`id`) ON UPDATE no action ON DELETE cascade,
-	FOREIGN KEY (`user_id`) REFERENCES `user`(`id`) ON UPDATE no action ON DELETE no action
+	FOREIGN KEY (`user_id`) REFERENCES `user_rma`(`id`) ON UPDATE no action ON DELETE no action
 );
 --> statement-breakpoint
 CREATE INDEX `claim_history_claim_idx` ON `claim_history` (`claim_id`);--> statement-breakpoint
@@ -28,7 +28,7 @@ CREATE TABLE `claim_photo` (
 );
 --> statement-breakpoint
 CREATE INDEX `claim_photo_claim_idx` ON `claim_photo` (`claim_id`);--> statement-breakpoint
-CREATE INDEX `claim_photo_status_idx` ON `claim_photo` (`status`);--> statement-breakpoint
+CREATE UNIQUE INDEX `claim_photo_claim_id_photo_type_idx` ON `claim_photo` (`claim_id`,`photo_type`);--> statement-breakpoint
 CREATE TABLE `claim` (
 	`id` integer PRIMARY KEY AUTOINCREMENT NOT NULL,
 	`claim_number` text NOT NULL,
@@ -48,7 +48,7 @@ CREATE TABLE `claim` (
 	`created_at` text NOT NULL,
 	`updated_at` text NOT NULL,
 	FOREIGN KEY (`vendor_id`) REFERENCES `vendor`(`id`) ON UPDATE no action ON DELETE restrict,
-	FOREIGN KEY (`submitted_by`) REFERENCES `user`(`id`) ON UPDATE no action ON DELETE no action
+	FOREIGN KEY (`submitted_by`) REFERENCES `user_rma`(`id`) ON UPDATE no action ON DELETE no action
 );
 --> statement-breakpoint
 CREATE UNIQUE INDEX `claim_claim_number_unique` ON `claim` (`claim_number`);--> statement-breakpoint
@@ -65,7 +65,7 @@ CREATE TABLE `notification_ref` (
 	`status` text DEFAULT 'NEW' NOT NULL,
 	`created_by` integer NOT NULL,
 	FOREIGN KEY (`vendor_id`) REFERENCES `vendor`(`id`) ON UPDATE no action ON DELETE restrict,
-	FOREIGN KEY (`created_by`) REFERENCES `user`(`id`) ON UPDATE no action ON DELETE no action
+	FOREIGN KEY (`created_by`) REFERENCES `user_rma`(`id`) ON UPDATE no action ON DELETE no action
 );
 --> statement-breakpoint
 CREATE UNIQUE INDEX `notification_ref_notification_code_unique` ON `notification_ref` (`notification_code`);--> statement-breakpoint
@@ -80,7 +80,7 @@ CREATE TABLE `photo_review` (
 	`note` text,
 	`reviewed_at` text NOT NULL,
 	FOREIGN KEY (`claim_photo_id`) REFERENCES `claim_photo`(`id`) ON UPDATE no action ON DELETE cascade,
-	FOREIGN KEY (`reviewed_by`) REFERENCES `user`(`id`) ON UPDATE no action ON DELETE no action
+	FOREIGN KEY (`reviewed_by`) REFERENCES `user_rma`(`id`) ON UPDATE no action ON DELETE no action
 );
 --> statement-breakpoint
 CREATE INDEX `photo_review_claim_photo_idx` ON `photo_review` (`claim_photo_id`);--> statement-breakpoint
@@ -96,7 +96,7 @@ CREATE TABLE `product_model` (
 --> statement-breakpoint
 CREATE INDEX `product_model_vendor_idx` ON `product_model` (`vendor_id`);--> statement-breakpoint
 CREATE UNIQUE INDEX `product_model_name_uq` ON `product_model` (`model_name`);--> statement-breakpoint
-CREATE TABLE `user` (
+CREATE TABLE `user_rma` (
 	`id` integer PRIMARY KEY AUTOINCREMENT NOT NULL,
 	`user_auth_id` text NOT NULL,
 	`name` text NOT NULL,
@@ -105,9 +105,9 @@ CREATE TABLE `user` (
 	`created_at` text NOT NULL
 );
 --> statement-breakpoint
-CREATE UNIQUE INDEX `user_user_auth_id_unique` ON `user` (`user_auth_id`);--> statement-breakpoint
-CREATE UNIQUE INDEX `user_auth_id_idx` ON `user` (`user_auth_id`);--> statement-breakpoint
-CREATE INDEX `user_role_idx` ON `user` (`role`);--> statement-breakpoint
+CREATE UNIQUE INDEX `user_rma_user_auth_id_unique` ON `user_rma` (`user_auth_id`);--> statement-breakpoint
+CREATE UNIQUE INDEX `user_auth_id_idx` ON `user_rma` (`user_auth_id`);--> statement-breakpoint
+CREATE INDEX `user_role_idx` ON `user_rma` (`role`);--> statement-breakpoint
 CREATE TABLE `vendor_claim_item` (
 	`id` integer PRIMARY KEY AUTOINCREMENT NOT NULL,
 	`vendor_claim_id` integer NOT NULL,
@@ -132,7 +132,7 @@ CREATE TABLE `vendor_claim` (
 	`created_at` text NOT NULL,
 	`updated_at` text NOT NULL,
 	FOREIGN KEY (`vendor_id`) REFERENCES `vendor`(`id`) ON UPDATE no action ON DELETE restrict,
-	FOREIGN KEY (`created_by`) REFERENCES `user`(`id`) ON UPDATE no action ON DELETE no action
+	FOREIGN KEY (`created_by`) REFERENCES `user_rma`(`id`) ON UPDATE no action ON DELETE no action
 );
 --> statement-breakpoint
 CREATE UNIQUE INDEX `vendor_claim_vendor_claim_no_unique` ON `vendor_claim` (`vendor_claim_no`);--> statement-breakpoint
@@ -169,4 +169,57 @@ CREATE TABLE `vendor` (
 	`isActive` integer DEFAULT true NOT NULL
 );
 --> statement-breakpoint
-CREATE UNIQUE INDEX `vendor_name_unique` ON `vendor` (`name`);
+CREATE UNIQUE INDEX `vendor_name_unique` ON `vendor` (`name`);--> statement-breakpoint
+CREATE TABLE `account` (
+	`id` text PRIMARY KEY NOT NULL,
+	`accountId` text NOT NULL,
+	`providerId` text NOT NULL,
+	`userId` text NOT NULL,
+	`accessToken` text,
+	`refreshToken` text,
+	`idToken` text,
+	`accessTokenExpiresAt` integer,
+	`refreshTokenExpiresAt` integer,
+	`scope` text,
+	`password` text,
+	`createdAt` text NOT NULL,
+	`updatedAt` text NOT NULL,
+	FOREIGN KEY (`userId`) REFERENCES `user`(`id`) ON UPDATE no action ON DELETE cascade
+);
+--> statement-breakpoint
+CREATE INDEX `account_userId_idx` ON `account` (`userId`);--> statement-breakpoint
+CREATE TABLE `session` (
+	`id` text PRIMARY KEY NOT NULL,
+	`expiresAt` integer NOT NULL,
+	`token` text NOT NULL,
+	`createdAt` text NOT NULL,
+	`updatedAt` text NOT NULL,
+	`ipAddress` text,
+	`userAgent` text,
+	`userId` text NOT NULL,
+	FOREIGN KEY (`userId`) REFERENCES `user`(`id`) ON UPDATE no action ON DELETE cascade
+);
+--> statement-breakpoint
+CREATE UNIQUE INDEX `session_token_unique` ON `session` (`token`);--> statement-breakpoint
+CREATE INDEX `session_userId_idx` ON `session` (`userId`);--> statement-breakpoint
+CREATE TABLE `user` (
+	`id` text PRIMARY KEY NOT NULL,
+	`name` text NOT NULL,
+	`email` text NOT NULL,
+	`emailVerified` integer DEFAULT false NOT NULL,
+	`image` text,
+	`createdAt` text NOT NULL,
+	`updatedAt` text NOT NULL
+);
+--> statement-breakpoint
+CREATE UNIQUE INDEX `user_email_unique` ON `user` (`email`);--> statement-breakpoint
+CREATE TABLE `verification` (
+	`id` text PRIMARY KEY NOT NULL,
+	`identifier` text NOT NULL,
+	`value` text NOT NULL,
+	`expiresAt` integer NOT NULL,
+	`createdAt` text NOT NULL,
+	`updatedAt` text NOT NULL
+);
+--> statement-breakpoint
+CREATE INDEX `verification_identifier_idx` ON `verification` (`identifier`);

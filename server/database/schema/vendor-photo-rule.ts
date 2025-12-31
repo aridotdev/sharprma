@@ -4,7 +4,6 @@ import { createInsertSchema, createSelectSchema } from 'drizzle-zod'
 import { z } from 'zod'
 import { PHOTO_TYPES } from '../../../shared/utils/constant'
 
-
 export const vendorPhotoRule = sqliteTable('vendor_photo_rule', {
   id: integer('id').primaryKey({ autoIncrement: true }),
   vendorId: integer('vendor_id').references(() => vendor.id).notNull(),
@@ -12,7 +11,7 @@ export const vendorPhotoRule = sqliteTable('vendor_photo_rule', {
   isRequired: integer('is_required', { mode: 'boolean' }).notNull().default(true),
   createdAt: text('created_at').notNull(),
   updatedAt: text('updated_at').notNull()
-}, (table) => [
+}, table => [
   uniqueIndex('vendor_photo_rule_vendor_photo_type_idx').on(table.vendorId, table.photoType),
   index('vendor_photo_rule_vendor_idx').on(table.vendorId)
 ])
@@ -31,7 +30,6 @@ export const insertVendorPhotoRuleSchema = createInsertSchema(vendorPhotoRule, {
 })
 
 export const selectVendorPhotoRuleSchema = createSelectSchema(vendorPhotoRule)
-
 
 export type SelectVendorPhotoRule = typeof vendorPhotoRule.$inferSelect
 export type InsertVendorPhotoRule = z.infer<typeof insertVendorPhotoRuleSchema>

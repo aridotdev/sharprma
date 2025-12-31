@@ -1,6 +1,6 @@
 import { sqliteTable, integer, text, uniqueIndex, index } from 'drizzle-orm/sqlite-core'
 import { vendor } from './vendor'
-import { user } from './user'
+import { userRma } from './user-rma'
 import { createInsertSchema, createSelectSchema } from 'drizzle-zod'
 import { z } from 'zod'
 import { CLAIM_STATUSES } from '../../../shared/utils/constant'
@@ -20,10 +20,10 @@ export const claim = sqliteTable('claim', {
   version: text('version'),
   week: text('week'),
   claimStatus: text('claim_status').notNull().default('DRAFT'),
-  submittedBy: integer('submitted_by').references(() => user.id),
+  submittedBy: integer('submitted_by').references(() => userRma.id),
   createdAt: text('created_at').notNull(),
   updatedAt: text('updated_at').notNull()
-}, (table) => [
+}, table => [
   uniqueIndex('claim_number_idx').on(table.claimNumber),
   index('claim_vendor_idx').on(table.vendorId),
   index('claim_status_idx').on(table.claimStatus),

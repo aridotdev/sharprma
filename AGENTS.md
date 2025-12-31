@@ -321,6 +321,9 @@ INDEX :
 |createdAt          |	text    |	NOT NULL          |	Waktu dibuat          |
 |updatedAt          |	text    |	NOT NULL          |	Waktu ada update      |
 
+INDEX :
+- UNIQUE (claimId, photoType)
+- INDEX (claimId)
 
 #### 2.3 **VendorClaim**
 | Kolom             | Tipe    | Constraint        |  Keterangan           |

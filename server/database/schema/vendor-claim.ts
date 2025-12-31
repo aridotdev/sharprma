@@ -1,6 +1,6 @@
 import { sqliteTable, integer, text, uniqueIndex, index } from 'drizzle-orm/sqlite-core'
 import { vendor } from './vendor'
-import { user } from './user'
+import { userRma } from './user-rma'
 import { createInsertSchema, createSelectSchema } from 'drizzle-zod'
 import { z } from 'zod'
 
@@ -13,10 +13,10 @@ export const vendorClaim = sqliteTable('vendor_claim', {
   vendorId: integer('vendor_id').references(() => vendor.id, { onDelete: 'restrict' }).notNull(),
   submittedAt: text('submitted_at').notNull(),
   reportSnapshot: text('report_snapshot').notNull(),
-  createdBy: integer('created_by').references(() => user.id).notNull(),
+  createdBy: integer('created_by').references(() => userRma.id).notNull(),
   createdAt: text('created_at').notNull(),
   updatedAt: text('updated_at').notNull()
-}, (table) => [
+}, table => [
   uniqueIndex('vendor_claim_no_idx').on(table.vendorClaimNo),
   index('vendor_claim_vendor_idx').on(table.vendorId),
   index('vendor_claim_created_by_idx').on(table.createdBy)
@@ -24,7 +24,7 @@ export const vendorClaim = sqliteTable('vendor_claim', {
 
 // Zod schemas for validation
 export const insertVendorClaimSchema = createInsertSchema(vendorClaim, {
-  vendorClaimNo: z.string().min(1, 'Vendor claim number is required').max(50, 'Vendor claim number must be less than 50 characters').regex(/^[A-Z0-9\-\/]+$/, 'Vendor claim number must contain only uppercase letters, numbers, hyphens, and slashes').trim(),
+  vendorClaimNo: z.string().min(1, 'Vendor claim number is required').max(50, 'Vendor claim number must be less than 50 characters').regex(/^[A-Z0-9\-/]+$/, 'Vendor claim number must contain only uppercase letters, numbers, hyphens, and slashes').trim(),
   vendorId: z.number().int().positive('Vendor ID must be a positive integer'),
   submittedAt: z.string().min(1, 'Submitted at is required'),
   reportSnapshot: z.string().min(1, 'Report snapshot is required').max(10000, 'Report snapshot must be less than 10000 characters'),
@@ -38,8 +38,6 @@ export const insertVendorClaimSchema = createInsertSchema(vendorClaim, {
 export const selectVendorClaimSchema = createSelectSchema(vendorClaim)
 
 export const updateVendorClaimSchema = insertVendorClaimSchema.partial()
-
-
 
 export type SelectVendorClaim = typeof vendorClaim.$inferSelect
 export type InsertVendorClaim = z.infer<typeof insertVendorClaimSchema>
