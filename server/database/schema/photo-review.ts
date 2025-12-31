@@ -1,6 +1,6 @@
-import { sqliteTable, integer, text, uniqueIndex, index } from 'drizzle-orm/sqlite-core'
+import { sqliteTable, integer, text, index } from 'drizzle-orm/sqlite-core'
 import { claimPhoto } from './claim-photo'
-import { user } from './user'
+import { userRma } from './user-rma'
 import { createInsertSchema, createSelectSchema } from 'drizzle-zod'
 import { z } from 'zod'
 
@@ -10,11 +10,11 @@ export type PhotoReviewStatus = typeof PHOTO_REVIEW_STATUSES[number]
 export const photoReview = sqliteTable('photo_review', {
   id: integer('id').primaryKey({ autoIncrement: true }),
   claimPhotoId: integer('claim_photo_id').references(() => claimPhoto.id, { onDelete: 'cascade' }).notNull(),
-  reviewedBy: integer('reviewed_by').references(() => user.id).notNull(),
+  reviewedBy: integer('reviewed_by').references(() => userRma.id).notNull(),
   status: text('status').notNull(),
   note: text('note'),
   reviewedAt: text('reviewed_at').notNull()
-}, (table) => ({
+}, table => ({
   claimPhotoIdx: index('photo_review_claim_photo_idx').on(table.claimPhotoId),
   reviewedByIdx: index('photo_review_reviewed_by_idx').on(table.reviewedBy),
   statusIdx: index('photo_review_status_idx').on(table.status)

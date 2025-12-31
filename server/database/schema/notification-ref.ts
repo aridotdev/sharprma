@@ -1,7 +1,7 @@
 /* eslint-disable @stylistic/arrow-parens */
 import { sqliteTable, integer, text, uniqueIndex, index } from 'drizzle-orm/sqlite-core'
 import { vendor } from './vendor'
-import { user } from './user'
+import { userRma } from './user-rma'
 import { createInsertSchema, createSelectSchema } from 'drizzle-zod'
 import { z } from 'zod'
 import { NOTIFICATION_STATUSES } from '../../../shared/utils/constant'
@@ -12,8 +12,8 @@ export const notificationRef = sqliteTable('notification_ref', {
   modelName: text('model_name').notNull(),
   vendorId: integer('vendor_id').references(() => vendor.id, { onDelete: 'restrict' }).notNull(),
   status: text('status').notNull().default('NEW'),
-  createdBy: integer('created_by').references(() => user.id).notNull()
-}, (table) => [
+  createdBy: integer('created_by').references(() => userRma.id).notNull()
+}, table => [
   uniqueIndex('notification_ref_code_uq').on(table.notificationCode),
   index('notification_ref_vendor_idx').on(table.vendorId),
   index('notification_ref_status_idx').on(table.status)
@@ -27,11 +27,10 @@ export const insertNotificationRefSchema = createInsertSchema(notificationRef, {
   status: z.enum(NOTIFICATION_STATUSES).default('NEW'),
   createdBy: z.number().int().positive('Created by user ID must be a positive integer')
 }).omit({
-  id: true,
+  id: true
 })
 
 export const selectNotificationRefSchema = createSelectSchema(notificationRef)
-
 
 export type SelectNotificationRef = typeof notificationRef.$inferSelect
 export type InsertNotificationRef = z.infer<typeof insertNotificationRefSchema>
