@@ -29,7 +29,7 @@ export const auth = betterAuth({
   ],
   advanced: {
     database: {
-      generateId: 'serial'
+      generateId: false
     },
     useSecureCookies: true,
     cookiePrefix: 'rma_'

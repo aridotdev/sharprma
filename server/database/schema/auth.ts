@@ -23,7 +23,7 @@ export const user = sqliteTable('user', {
 export const session = sqliteTable(
   'session',
   {
-    id: text().primaryKey(),
+    id: integer().primaryKey({ autoIncrement: true }),
     expiresAt: integer({ mode: 'timestamp_ms' }).notNull(),
     token: text().notNull().unique(),
     createdAt: text()
@@ -34,7 +34,7 @@ export const session = sqliteTable(
       .notNull(),
     ipAddress: text(),
     userAgent: text(),
-    userId: text()
+    userId: integer()
       .notNull()
       .references(() => user.id, { onDelete: 'cascade' })
   },
@@ -44,10 +44,10 @@ export const session = sqliteTable(
 export const account = sqliteTable(
   'account',
   {
-    id: text().primaryKey(),
+    id: integer().primaryKey({ autoIncrement: true }),
     accountId: text().notNull(),
     providerId: text().notNull(),
-    userId: text()
+    userId: integer()
       .notNull()
       .references(() => user.id, { onDelete: 'cascade' }),
     accessToken: text(),
@@ -70,7 +70,7 @@ export const account = sqliteTable(
 export const verification = sqliteTable(
   'verification',
   {
-    id: text().primaryKey(),
+    id: integer().primaryKey({ autoIncrement: true }),
     identifier: text().notNull(),
     value: text().notNull(),
     expiresAt: integer().notNull(),
