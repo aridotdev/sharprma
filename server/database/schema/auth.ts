@@ -2,7 +2,7 @@ import { relations } from 'drizzle-orm'
 import { sqliteTable, text, integer, index } from 'drizzle-orm/sqlite-core'
 
 export const user = sqliteTable('user', {
-  id: text().primaryKey(),
+  id: integer().primaryKey({ autoIncrement: true }),
   name: text().notNull(),
   email: text().notNull().unique(),
   emailVerified: integer({ mode: 'boolean' })
@@ -17,7 +17,7 @@ export const user = sqliteTable('user', {
     .$onUpdate(() => new Date().toISOString())
     .notNull(),
   username: text().unique(),
-  displayUsername: text(),
+  displayUsername: text()
 })
 
 export const session = sqliteTable(

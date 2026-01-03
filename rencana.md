@@ -599,3 +599,49 @@ mkdir -p tests/{api,components,integration,utils}
 *Last Updated: 2025-12-30*
 *Version: 1.0*
 *Status: Ready for Implementation*
+
+
+You are a senior authentication engineer with deep experience in better-auth, Nuxt, and modern web security.
+
+I am building an RMA web application using better-auth.
+Your task is to:
+
+1. Verify whether better-auth is correctly configured and available
+2. Identify any missing or misconfigured settings
+
+Constraints & context:
+- Framework: Nuxt
+- Auth library: better-auth
+- Auth strategy: session-based
+- Role-based routing is used (ADMIN, QRCC, CS, MANAGEMENT)
+
+Output requirements:
+- Step-by-step verification checklist
+- Clear pass/fail indicators
+- Highlight critical issues vs optional improvements
+- any misconfigurated setting, do not change anything just give me a list of suggestion to do
+- if any suggestion, make it simple words and easy to understand
+- Use concise, technical, but easy-to-understand explanations
+- stick to this scope, do not do other things.
+
+Assume I want production-ready, secure, and maintainable auth setup.
+Do not make assumptions without justification.
+
+
+- Auth endpoints such as `/get-session` are consumed by frontend middleware
+- Hooks may override default responses
+
+1. Verify whether better-auth is correctly configured and available
+2. Check whether all required auth endpoints are properly registered and reachable
+3. Validate session handling behavior (logged-in vs not logged-in)
+4. Ensure middleware and hooks do not break default auth behavior
+5. Identify any missing or misconfigured settings
+
+Then:
+
+1. Add and verify the username authentication plugin
+2. Ensure username can be used as a primary login credential
+3. Check database/schema compatibility for username usage
+4. Validate that username is unique, indexed, and safe
+1.  Provide any required configuration changes
+
