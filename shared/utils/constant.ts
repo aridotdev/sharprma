@@ -21,18 +21,18 @@ export type ClaimAction = typeof CLAIM_ACTIONS[number]
 
 // daftar claim history action
 export const CLAIM_HISTORY_ACTIONS = [
-    'CREATE',
-    'SUBMIT',
-    'REVIEW',
-    'APPROVE',
-    'REJECT',
-    'REQUEST_REVISION',
-    'CANCEL',
-    'UPDATE',
-    'UPLOAD_PHOTO',
-    'REVIEW_PHOTO',
-    'GENERATE_VENDOR_CLAIM',
-    'UPDATE_VENDOR_DECISION'
+  'CREATE',
+  'SUBMIT',
+  'REVIEW',
+  'APPROVE',
+  'REJECT',
+  'REQUEST_REVISION',
+  'CANCEL',
+  'UPDATE',
+  'UPLOAD_PHOTO',
+  'REVIEW_PHOTO',
+  'GENERATE_VENDOR_CLAIM',
+  'UPDATE_VENDOR_DECISION'
 ] as const
 export type ClaimHistoryAction = typeof CLAIM_HISTORY_ACTIONS[number]
 

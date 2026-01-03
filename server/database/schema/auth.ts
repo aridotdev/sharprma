@@ -15,7 +15,9 @@ export const user = sqliteTable('user', {
   updatedAt: text()
     .$defaultFn(() => new Date().toISOString())
     .$onUpdate(() => new Date().toISOString())
-    .notNull()
+    .notNull(),
+  username: text().unique(),
+  displayUsername: text(),
 })
 
 export const session = sqliteTable(
@@ -51,12 +53,8 @@ export const account = sqliteTable(
     accessToken: text(),
     refreshToken: text(),
     idToken: text(),
-    accessTokenExpiresAt: integer({
-      mode: 'timestamp_ms'
-    }),
-    refreshTokenExpiresAt: integer({
-      mode: 'timestamp_ms'
-    }),
+    accessTokenExpiresAt: integer(),
+    refreshTokenExpiresAt: integer(),
     scope: text(),
     password: text(),
     createdAt: text()
@@ -75,7 +73,7 @@ export const verification = sqliteTable(
     id: text().primaryKey(),
     identifier: text().notNull(),
     value: text().notNull(),
-    expiresAt: integer({ mode: 'timestamp_ms' }).notNull(),
+    expiresAt: integer().notNull(),
     createdAt: text()
       .$defaultFn(() => new Date().toISOString())
       .notNull(),
