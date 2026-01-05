@@ -34,6 +34,12 @@ export default defineEventHandler(async (event) => {
       if (existingNotification.length > 0) {
         // Case A: Notification exists
         const notification = existingNotification[0]
+        if (!notification) {
+          throw createError({
+            statusCode: 404,
+            statusMessage: 'Notification not found'
+          })
+        }
 
         // validate status must be NEW
         if (notification.status !== 'NEW') {
