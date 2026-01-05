@@ -10,6 +10,7 @@ export const notificationRef = sqliteTable('notification_ref', {
   id: integer('id').primaryKey({ autoIncrement: true }),
   notificationCode: text('notification_code').notNull().unique(),
   modelName: text('model_name').notNull(),
+  branch: text('branch').notNull(),
   vendorId: integer('vendor_id').references(() => vendor.id, { onDelete: 'restrict' }).notNull(),
   status: text('status').notNull().default('NEW'),
   createdBy: integer('created_by').references(() => userRma.id).notNull()
@@ -23,6 +24,7 @@ export const notificationRef = sqliteTable('notification_ref', {
 export const insertNotificationRefSchema = createInsertSchema(notificationRef, {
   notificationCode: z.string().min(1, 'Notification code is required').max(25, 'Notification code must be less than 25 characters').trim().toUpperCase(),
   modelName: z.string().min(1, 'Model name is required').max(25, 'Model name must be less than 25 characters').trim(),
+  branch: z.string().min(1, 'Branch is required').max(50, 'Branch must be less than 50 characters').trim(),
   vendorId: z.number().int().positive('Vendor ID must be a positive integer'),
   status: z.enum(NOTIFICATION_STATUSES).default('NEW'),
   createdBy: z.number().int().positive('Created by user ID must be a positive integer')

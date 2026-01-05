@@ -9,6 +9,7 @@ export const userRma = sqliteTable('user_rma', {
   userAuthId: text('user_auth_id').notNull().unique(),
   name: text('name').notNull(),
   role: text('role').notNull(),
+  branch: text('branch').notNull(),
   isActive: integer('is_active', { mode: 'boolean' }).notNull().default(true),
   createdAt: text('created_at').notNull()
   // eslint-disable-next-line @stylistic/arrow-parens
@@ -24,6 +25,7 @@ export const insertUserSchema = createInsertSchema(userRma, {
   role: z.enum(USER_ROLES, {
     message: 'Role must be one of: ADMIN, CS, QRCC, MANAGEMENT'
   }),
+  branch: z.string().min(1, 'Branch is required').max(50, 'Branch must be less than 50 characters').trim(),
   isActive: z.boolean().default(true)
 }).omit({
   id: true,
