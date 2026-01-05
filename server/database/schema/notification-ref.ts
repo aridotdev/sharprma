@@ -1,4 +1,3 @@
-/* eslint-disable @stylistic/arrow-parens */
 import { sqliteTable, integer, text, uniqueIndex, index } from 'drizzle-orm/sqlite-core'
 import { vendor } from './vendor'
 import { userRma } from './user-rma'

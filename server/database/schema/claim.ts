@@ -12,6 +12,7 @@ export const claim = sqliteTable('claim', {
   modelName: text('model_name').notNull(),
   vendorId: integer('vendor_id').references(() => vendor.id, { onDelete: 'restrict' }).notNull(),
   inch: text('inch').notNull(),
+  branch: text('branch').notNull(),
   odfNumber: text('odf_number'),
   panelSerialNo: text('panel_serial_no').notNull(),
   ocSerialNo: text('oc_serial_no').notNull(),
@@ -49,6 +50,7 @@ export const insertClaimSchema = createInsertSchema(claim, {
   submittedBy: z.number().int().positive('Submitted by user ID must be a positive integer').optional()
 }).omit({
   id: true,
+  branch: true,
   createdAt: true,
   updatedAt: true
 })

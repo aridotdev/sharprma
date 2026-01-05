@@ -2,6 +2,9 @@ import { betterAuth } from 'better-auth'
 import { drizzleAdapter } from 'better-auth/adapters/drizzle'
 import db from './db' // your drizzle instance
 import { username } from 'better-auth/plugins'
+import { userRma } from '../database/schema'
+import { eq } from 'drizzle-orm'
+import type { H3Event } from 'h3'
 
 export const auth = betterAuth({
   database: drizzleAdapter(db, {
@@ -42,3 +45,35 @@ export const auth = betterAuth({
     }
   }
 })
+
+/**
+ * Get current user's branch from auth session
+ * @param event - H3 event from request handler
+ * @returns User's branch string
+ * @throws Error if not authenticated or user not found
+ */
+export async function getCurrentUserBranch(event: H3Event): Promise<string> {
+  const session = await auth.api.getSession({ headers: event.headers })
+
+  if (!session) {
+    throw createError({
+      statusCode: 401,
+      statusMessage: 'Unauthorized - No active session'
+    })
+  }
+
+  const user = await db
+    .select({ branch: userRma.branch })
+    .from(userRma)
+    .where(eq(userRma.userAuthId, session.user.id))
+    .limit(1)
+
+  if (!user[0]) {
+    throw createError({
+      statusCode: 404,
+      statusMessage: 'User not found in business user table'
+    })
+  }
+
+  return user[0].branch
+}

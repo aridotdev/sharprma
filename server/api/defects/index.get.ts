@@ -1,9 +1,9 @@
 import db from '../../utils/db'
-import { vendor } from '../../database/schema'
+import { defect } from '../../database/schema'
 import { eq } from 'drizzle-orm'
 import { z } from 'zod'
 
-// Query schema for filtering
+// Query schema
 const querySchema = z.object({
   isActive: z.coerce.boolean().optional()
 })
@@ -12,18 +12,29 @@ export default defineEventHandler(async (event) => {
   try {
     const query = await getValidatedQuery(event, querySchema.parse)
 
-    let queryBuilder = db.select().from(vendor).$dynamic()
+    let queryBuilder = db
+      .select({
+        id: defect.id,
+        defectName: defect.defectName,
+        isActive: defect.isActive,
+        createdAt: defect.createdAt,
+        updatedAt: defect.updatedAt
+      })
+      .from(defect)
+      .$dynamic()
 
-    // Filter by isActive if provided
     if (query.isActive !== undefined) {
-      queryBuilder = queryBuilder.where(eq(vendor.isActive, query.isActive))
+      queryBuilder = queryBuilder.where(eq(defect.isActive, query.isActive))
+    } else {
+      // Default: only return active defects
+      queryBuilder = queryBuilder.where(eq(defect.isActive, true))
     }
 
-    const vendors = await queryBuilder
+    const results = await queryBuilder.orderBy(defect.defectName)
 
     return {
       success: true,
-      data: vendors
+      data: results
     }
   } catch (error) {
     if (error instanceof z.ZodError) {
@@ -35,7 +46,7 @@ export default defineEventHandler(async (event) => {
     }
     throw createError({
       statusCode: 500,
-      statusMessage: 'Failed to fetch vendors',
+      statusMessage: 'Failed to fetch defects',
       data: error instanceof Error ? error.message : 'Unknown error'
     })
   }

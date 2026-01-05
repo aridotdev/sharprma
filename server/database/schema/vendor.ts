@@ -13,7 +13,7 @@ export const insertVendorSchema = createInsertSchema(vendor, {
   name: z.string().min(1, 'Vendor name is required').max(25, 'Vendor name must be less than 25 characters').trim(),
   isActive: z.boolean().default(true)
 }).omit({
-  id: true,
+  id: true
 })
 
 export const selectVendorSchema = createSelectSchema(vendor)

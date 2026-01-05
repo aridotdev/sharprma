@@ -1,15 +1,15 @@
 import db from '../../utils/db'
-import { vendorFieldRule, insertVendorFieldRuleSchema } from '../../database/schema'
+import { defect, insertDefectSchema } from '../../database/schema'
 import { z } from 'zod'
 
 export default defineEventHandler(async (event) => {
   try {
-    const body = await readValidatedBody(event, insertVendorFieldRuleSchema.parse)
+    const body = await readValidatedBody(event, insertDefectSchema.parse)
 
     const now = new Date().toISOString()
 
     const result = await db
-      .insert(vendorFieldRule)
+      .insert(defect)
       .values({
         ...body,
         createdAt: now,
@@ -20,7 +20,7 @@ export default defineEventHandler(async (event) => {
     return {
       success: true,
       data: result[0],
-      message: 'Field rule created successfully'
+      message: 'Defect created successfully'
     }
   } catch (error) {
     if (error instanceof z.ZodError) {
@@ -30,9 +30,17 @@ export default defineEventHandler(async (event) => {
         data: error.issues
       })
     }
+    // Handle unique constraint violation for defectName
+    if (error instanceof Error && error.message.includes('UNIQUE constraint failed')) {
+      throw createError({
+        statusCode: 409,
+        statusMessage: 'Defect name already exists',
+        data: error.message
+      })
+    }
     throw createError({
       statusCode: 500,
-      statusMessage: 'Failed to create field rule',
+      statusMessage: 'Failed to create defect',
       data: error instanceof Error ? error.message : 'Unknown error'
     })
   }

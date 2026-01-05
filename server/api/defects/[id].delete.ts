@@ -1,5 +1,5 @@
 import db from '../../utils/db'
-import { vendorClaimItem, updateVendorClaimItemSchema } from '../../database/schema'
+import { defect } from '../../database/schema'
 import { eq } from 'drizzle-orm'
 import { z } from 'zod'
 
@@ -11,28 +11,37 @@ const paramsSchema = z.object({
 export default defineEventHandler(async (event) => {
   try {
     const params = await getValidatedRouterParams(event, paramsSchema.parse)
-    const body = await readValidatedBody(event, updateVendorClaimItemSchema.parse)
 
-    const result = await db
-      .update(vendorClaimItem)
-      .set({
-        ...body,
-        decisionAt: new Date().toISOString() // Update decision time on change
-      })
-      .where(eq(vendorClaimItem.id, params.id))
-      .returning()
+    // Check if defect exists
+    const existing = await db
+      .select()
+      .from(defect)
+      .where(eq(defect.id, params.id))
+      .limit(1)
 
-    if (result.length === 0) {
+    if (existing.length === 0) {
       throw createError({
         statusCode: 404,
-        statusMessage: 'Vendor claim item not found'
+        statusMessage: 'Defect not found'
       })
     }
+
+    const now = new Date().toISOString()
+
+    // Soft delete by setting isActive to false
+    const result = await db
+      .update(defect)
+      .set({
+        isActive: false,
+        updatedAt: now
+      })
+      .where(eq(defect.id, params.id))
+      .returning()
 
     return {
       success: true,
       data: result[0],
-      message: 'Vendor decision updated successfully'
+      message: 'Defect deleted successfully'
     }
   } catch (error) {
     if (error && typeof error === 'object' && 'statusCode' in error) {
@@ -47,7 +56,7 @@ export default defineEventHandler(async (event) => {
     }
     throw createError({
       statusCode: 500,
-      statusMessage: 'Failed to update vendor claim item',
+      statusMessage: 'Failed to delete defect',
       data: error instanceof Error ? error.message : 'Unknown error'
     })
   }
