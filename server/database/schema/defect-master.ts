@@ -4,7 +4,7 @@ import { z } from 'zod'
 
 export const defect = sqliteTable('defect_master', {
   id: integer('id').primaryKey({ autoIncrement: true }),
-  defectName: text('defect_name').notNull().unique(),
+  name: text('defect_name').notNull().unique(),
   isActive: integer('is_active', { mode: 'boolean' }).notNull().default(true),
   createdAt: text('created_at').notNull(),
   updatedAt: text('updated_at').notNull()
@@ -14,7 +14,7 @@ export const defect = sqliteTable('defect_master', {
 
 // Zod schemas for validation
 export const insertDefectSchema = createInsertSchema(defect, {
-  defectName: z.string().min(1, 'Defect name is required').max(50, 'Defect name must be less than 50 characters').trim(),
+  name: z.string().min(1, 'Defect name is required').max(50, 'Defect name must be less than 50 characters').trim(),
   isActive: z.boolean().default(true)
 }).omit({
   id: true,

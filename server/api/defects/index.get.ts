@@ -15,7 +15,7 @@ export default defineEventHandler(async (event) => {
     let queryBuilder = db
       .select({
         id: defect.id,
-        defectName: defect.defectName,
+        defectName: defect.name,
         isActive: defect.isActive,
         createdAt: defect.createdAt,
         updatedAt: defect.updatedAt
@@ -30,7 +30,7 @@ export default defineEventHandler(async (event) => {
       queryBuilder = queryBuilder.where(eq(defect.isActive, true))
     }
 
-    const results = await queryBuilder.orderBy(defect.defectName)
+    const results = await queryBuilder.orderBy(defect.name)
 
     return {
       success: true,

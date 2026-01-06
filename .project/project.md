@@ -280,6 +280,16 @@ INDEX :
 | 2   | version     | ✅    | ❌   | ❌  |
 | 3   | week        | ✅    | ❌   | ❌  |
 
+#### 1.5 **DefectMaster**
+| Kolom             | Tipe    | Constraint        |  Keterangan           |
+|-------------------|---------|-------------------|-----------------------|
+|id                 |	integer |	PK                |	ID VendorFieldRule    |
+|name               |	text    |	NOT NULL, UNIQUE  | nama defect           |
+|isActive           |	integer |	NOT NULL          |	aktif / tidak         |
+|createdAt          |	text    |	NOT NULL          |	Waktu dibuat          |
+|updatedAt          |	text    |	NOT NULL          |	Waktu ada update      |
+
+
 ### 2. Transaksi
 #### 2.1 **Claim**
 | Kolom             | Tipe    | Constraint        |  Keterangan           |
@@ -439,12 +449,7 @@ INDEX :
 - **File Naming**: PascalCase for components, camelCase for utils/composables
 - **Testing**: Vitest with `.test.ts` or `.spec.ts` suffixes in test files
 
-## I. Cara Kerja
-  1. Kerjakan bertahap & terstruktur
-  2. Buatkan task list dulu sebelum memberikan penjelasan
-  3. Gunakan bahasa yang mudah dipahami pemula, gunakan penjelasan singkat dan efektif
-  4. Sertakan alasan teknis setiap keputusan
-  5. lakukan review dahulu sebelum lanjut ke tahap berikutnya
+## I. 
 
 ## J. Tujuan Akhir
   1. menjadi aplikasi yang siap untuk di demokan.

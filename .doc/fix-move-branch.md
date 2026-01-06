@@ -540,7 +540,7 @@ Setelah migration diaplikasikan, berikut checklist testing yang perlu dilakukan:
 
 - [Drizzle ORM Documentation](https://orm.drizzle.team/)
 - [Zod Validation](https://zod.dev/)
-- [Nuxt 3 Documentation](https://nuxt.com/docs)
+- [Nuxt 4 Documentation](https://nuxt.com/docs)
 - [Better Auth Documentation](https://www.better-auth.com/)
 
 ---
