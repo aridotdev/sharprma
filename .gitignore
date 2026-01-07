@@ -25,3 +25,6 @@ logs
 
 # db
 local.db
+
+# other
+.claude
