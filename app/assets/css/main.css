@@ -2,8 +2,19 @@
 @import "@nuxt/ui";
 
 @theme static {
-  --font-sans: 'Public Sans', sans-serif;
+  /* Font families */
+  --font-sans: 'DM Sans', sans-serif;
+  --font-display: 'DM Sans', sans-serif;
+  --font-body: 'DM Sans', sans-serif;
 
+  /* Custom colors */
+  /* --color-primary: #0f49bd; */
+  --color-primary-dark: #0a348a;
+  --color-accent: #2563eb;
+  --color-background-light: #f6f6f8;
+  --color-background-dark: #101622;
+
+  /* Green color palette */
   --color-green-50: #EFFDF5;
   --color-green-100: #D9FBE8;
   --color-green-200: #B3F5D1;
@@ -15,4 +26,10 @@
   --color-green-800: #016538;
   --color-green-900: #0A5331;
   --color-green-950: #052E16;
+}
+
+
+/* Base font size */
+html {
+  font-size: 16px;
 }
