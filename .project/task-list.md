@@ -212,30 +212,14 @@
 
 **Blocker:** Without authentication UI, users cannot access the system at all.
 
-- [ ] **SignIn.vue page** ([app/pages/SignIn.vue](app/pages/SignIn.vue)) - Currently 0 lines
-  - [ ] Username/Email toggle tabs (UTabs component)
-  - [ ] Username input field with validation
-  - [ ] Email input field with validation
-  - [ ] Password input field
+- [ ] **SignIn.vue page** ([app/pages/SignIn.vue](app/pages/index.vue))
+  - [x] Username or email input field with validation
+  - [x] Password input field
   - [ ] Submit button with loading state
   - [ ] Error message display (UAlert)
-  - [ ] "Don't have account?" link to SignUp
   - [ ] Form validation before submission
   - [ ] Integration with authClient.signIn.username() / signIn.email()
   - [ ] Redirect to dashboard on successful login
-
-- [ ] **SignUp.vue page** ([app/pages/SignUp.vue](app/pages/SignUp.vue)) - Currently 0 lines
-  - [ ] Name input field
-  - [ ] Email input field with validation
-  - [ ] Username input field with validators (3-20 chars, no blocked usernames)
-  - [ ] Display Username input field (alphanumeric + underscore + hyphen)
-  - [ ] Password input field with strength indicator
-  - [ ] Submit button with loading state
-  - [ ] Error message display (UAlert)
-  - [ ] "Already have account?" link to SignIn
-  - [ ] Form validation before submission
-  - [ ] Integration with authClient.signUp.email()
-  - [ ] Redirect to dashboard on successful signup
 
 - [ ] **Auth middleware** ([app/middleware/auth.global.ts](app/middleware/auth.global.ts))
   - [ ] Check session on route change
@@ -1027,12 +1011,11 @@ Components to create in [app/components/](app/components/) directory:
 
 1. ✅ Review this task list document
 2. ❌ Implement [app/pages/SignIn.vue](app/pages/SignIn.vue)
-3. ❌ Implement [app/pages/SignUp.vue](app/pages/SignUp.vue)
-4. ❌ Create [app/middleware/auth.global.ts](app/middleware/auth.global.ts)
-5. ❌ Create [app/composables/useAuth.ts](app/composables/useAuth.ts)
-6. ❌ Test authentication flow (signup → login → logout)
-7. ❌ Create [app/components/AppHeader.vue](app/components/AppHeader.vue) with logout button
-8. ❌ Move to Phase 2 (CS workflow)
+3. ❌ Create [app/middleware/auth.global.ts](app/middleware/auth.global.ts)
+4. ❌ Create [app/composables/useAuth.ts](app/composables/useAuth.ts)
+5. ❌ Test authentication flow (signup → login → logout)
+6. ❌ Create [app/components/AppHeader.vue](app/components/AppHeader.vue) with logout button
+7. ❌ Move to Phase 2 (CS workflow)
 
 ---
 
