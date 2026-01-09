@@ -37,6 +37,16 @@ analytics
 
 -   Akses penuh
 
+| Menu             | CS | QRCC | Management | Admin |
+| ---------------- | -- | ---- | ---------- | ----- |
+| Create Claim     | ✅  | ❌    | ❌          | ❌     |
+| Review Claim     | ❌  | ✅    | ❌          | ✅     |
+| Approve / Reject | ❌  | ✅    | ❌          | ✅     |
+| Reports          | ❌  | ✅    | ✅          | ✅     |
+| Master Data      | ❌  | ✅    | ❌          | ✅     |
+| User Management  | ❌  | ❌    | ❌          | ✅     |
+
+
 ------------------------------------------------------------------------
 
 ## C. ALUR UTAMA SISTEM
@@ -280,7 +290,7 @@ INDEX :
 | 2   | version     | ✅    | ❌   | ❌  |
 | 3   | week        | ✅    | ❌   | ❌  |
 
-#### 1.5 **DefectMaster**
+#### 1.6 **DefectMaster**
 | Kolom             | Tipe    | Constraint        |  Keterangan           |
 |-------------------|---------|-------------------|-----------------------|
 |id                 |	integer |	PK                |	ID VendorFieldRule    |
@@ -530,3 +540,5 @@ INDEX :
   - Nuxt/H3: Use readMultipartFormData.
 - Vendor Claim API
   - Generate vendorClaimNo (e.g. VC-{YYYYMMDD}-{Sequence}).
+
+
