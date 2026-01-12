@@ -4,6 +4,7 @@
 @theme static {
   /* Font families */
   --font-sans: 'DM Sans', sans-serif;
+  --font-inter: 'Inter', sans-serif;
   --font-display: 'DM Sans', sans-serif;
   --font-body: 'DM Sans', sans-serif;
 
@@ -94,6 +95,9 @@
   --ui-bg: var(--color-background-dark);
 }
 
+:root {
+  --ui-text: var(--color-primary-600);
+}
 
 /* Base font size */
 html {
