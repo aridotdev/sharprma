@@ -86,9 +86,12 @@
   --color-info-950: #172554;
 
   /* Dark mode background - Deep blue-gray */
-  --color-background-dark: #0f172a;
+  --color-background-dark: #0f172b;
   --color-surface-dark: #1e293b;
   --color-surface-light: #f8fafc;
+
+  /* UI Background - Used for dark theme background across all pages */
+  --ui-bg: var(--color-background-dark);
 }
 
 
