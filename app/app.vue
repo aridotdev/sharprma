@@ -4,7 +4,7 @@ useHead({
     { name: 'viewport', content: 'width=device-width, initial-scale=1' }
   ],
   link: [
-    { rel: 'icon', href: '/sharp-logo.svg' }
+    { rel: 'icon', href: '/icon.svg' }
   ],
   htmlAttrs: {
     lang: 'en'
