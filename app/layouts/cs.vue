@@ -31,11 +31,8 @@ const dropdownItems = computed<DropdownMenuItem[][]>(() => [
   <UApp>
     <UHeader>
       <template #title>
-        <img
-          src="/Logo.png"
-          class="h-10 w-auto"
-          alt="RMA Portal Logo"
-        >
+        <AppLogo />
+        <!-- <img src="/Logo.png" class="h-10 w-auto" alt="RMA Portal Logo"> -->
       </template>
 
       <template #right>
@@ -44,14 +41,12 @@ const dropdownItems = computed<DropdownMenuItem[][]>(() => [
 
           <UColorModeButton />
 
-          <UDropdownMenu :items="dropdownItems">
-            <UButton
-              icon="i-lucide-user"
-              color="neutral"
-              variant="ghost"
-              size="sm"
-              square
-            />
+          <UDropdownMenu :items="dropdownItems" :content="{
+            align: 'end',
+            side: 'bottom',
+            sideOffset: 8
+          }">
+            <UButton icon="i-lucide-user" color="neutral" variant="ghost" size="sm" square />
           </UDropdownMenu>
         </div>
       </template>
@@ -67,7 +62,7 @@ const dropdownItems = computed<DropdownMenuItem[][]>(() => [
       </template> -->
     </UHeader>
 
-    <UMain>
+    <UMain class="max-w-7xl mx-auto lg:p-8">
       <slot />
     </UMain>
 

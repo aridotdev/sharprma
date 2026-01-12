@@ -14,7 +14,7 @@ definePageMeta({
 </script>
 
 <template>
-  <div class="min-h-screen bg-primary-50/50 dark:bg-primary-950">
+  <div class="min-h-screen">
     <h1>Customer Service Dashboard</h1>
     <!-- <NavBar /> -->
     <!-- <main class="container mx-auto px-4 to-6 py-6 to-p-8">
