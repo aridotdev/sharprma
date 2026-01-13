@@ -29,12 +29,12 @@
 ---
 
 ### Frontend - Auth Composables
-- [ ] **Create useAuthSession composable**
-  - [ ] Use Better Auth client's useSession hook
-  - [ ] Expose: session, user, role, isAuthenticated, isLoading
-  - [ ] Implement refreshSession() function
-  - [ ] Handle session errors gracefully
-  - [ ] File: [app/composables/useAuthSession.ts](app/composables/useAuthSession.ts) (new)
+- [x] **Create useAuthSession composable**
+  - [x] Use Better Auth client's useSession hook
+  - [x] Expose: session, user, role, isAuthenticated, isLoading
+  - [x] Implement refreshSession() function
+  - [x] Handle session errors gracefully
+  - [x] File: [app/composables/useAuthSession.ts](app/composables/useAuthSession.ts) (new)
 
 - [ ] **Update useAuthUser composable**
   - [ ] Replace manual state with useAuthSession

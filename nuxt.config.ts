@@ -1,4 +1,6 @@
 // https://nuxt.com/docs/api/configuration/nuxt-config
+import { fileURLToPath } from 'node:url'
+
 export default defineNuxtConfig({
   modules: [
     '@nuxt/eslint',
@@ -24,6 +26,14 @@ export default defineNuxtConfig({
       stylistic: {
         commaDangle: 'never',
         braceStyle: '1tbs'
+      }
+    }
+  },
+
+  vite: {
+    resolve: {
+      alias: {
+        '~/lib': fileURLToPath(new URL('./lib', import.meta.url))
       }
     }
   }
