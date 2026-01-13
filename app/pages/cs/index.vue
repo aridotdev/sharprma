@@ -43,7 +43,7 @@ async function onSubmit(event: FormSubmitEvent<Schema>) {
       <UForm :state="state" @submit="onSubmit" class="w-full max-w-xl">
         <UFormField name="notification">
           <div
-            class="group px-2 py-2 flex items-center border border-gray-200 dark:border-gray-700 rounded-full bg-white dark:bg-gray-800/50 focus-within:border-primary-500 dark:focus-within:border-primary-400 hover:border-gray-300 dark:hover:border-gray-600 transition-all duration-200 shadow-md hover:shadow-md">
+            class="group px-2 py-2 flex items-center border border-gray-200 dark:border-gray-700 rounded-lg bg-white dark:bg-gray-800/50 focus-within:border-primary-500 dark:focus-within:border-primary-400 hover:border-gray-300 dark:hover:border-gray-600 transition-all duration-200 shadow-md hover:shadow-md">
 
             <!-- Search Icon -->
             <UIcon name="i-lucide-search" class="w-5 h-5 text-gray-400 dark:text-gray-500 mr-3 shrink-0" />
@@ -57,7 +57,7 @@ async function onSubmit(event: FormSubmitEvent<Schema>) {
 
             <!-- Search Button -->
             <UButton type="submit" size="xl" color="primary" :disabled="!state.notification?.trim()"
-              class="ml-3 shrink-0 rounded-full">
+              class="ml-3 shrink-0 rounded-md">
               Search
             </UButton>
           </div>
