@@ -15,6 +15,13 @@ export const useAuthSession = () => {
   const isLoading = ref(false)
   const error = ref<any>(null)
 
+  const { $auth } = useNuxtApp()
+
+  return useAsyncData(
+    'auth-session',
+    () => $auth.getSession(),
+    { server: false }
+  )
   /**
    * Fetch current session from server
    */

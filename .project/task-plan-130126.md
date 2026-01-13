@@ -46,12 +46,22 @@
 ---
 
 ### Frontend - Auth Plugin
-- [ ] **Create Better Auth client plugin**
-  - [ ] Create Nuxt plugin to initialize auth client on app startup
+- [x] **Create Better Auth client plugin**
+  - [x] Create Nuxt plugin to initialize auth client on app startup
   - [ ] Set up auth client with baseURL
   - [ ] Provide auth client globally via provide()
   - [ ] Handle SSR compatibility
   - [ ] File: [app/plugins/auth.client.ts](app/plugins/auth.client.ts) (new)
+
+alur final :
+auth.client.ts
+        ↓
+useAuthSession()
+        ↓
+useAuthUser()
+        ↓
+middleware / menu / page
+
 
 ---
 
