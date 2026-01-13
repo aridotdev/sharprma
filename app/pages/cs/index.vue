@@ -27,7 +27,7 @@ async function onSubmit(event: FormSubmitEvent<Schema>) {
   <div class="h-full w-full">
     <!-- Hero Section -->
     <section class="h-full w-full flex flex-col items-center justify-center overflow-hidden">
-      <UBadge icon="i-lucide-square" color="success" variant="soft" size="sm" class="rounded-full px-2 py-1">
+      <UBadge icon="i-lucide-square" color="success" variant="soft" size="sm" class="rounded-sm px-2 py-1">
         System Online
       </UBadge>
       <p class="text-[72px] font-extrabold font-inter">Search and Create</p>
