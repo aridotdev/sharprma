@@ -1,12 +1,22 @@
 @import "tailwindcss";
 @import "@nuxt/ui";
 
+html,
+body {
+  height: 100vh;
+  overflow: hidden;
+}
+
+* {
+  box-sizing: border-box;
+}
+
 @theme static {
   /* Font families */
-  --font-sans: 'DM Sans', sans-serif;
-  --font-inter: 'Inter', sans-serif;
-  --font-display: 'DM Sans', sans-serif;
-  --font-body: 'DM Sans', sans-serif;
+  --font-sans: "DM Sans", sans-serif;
+  --font-inter: "Inter", sans-serif;
+  --font-display: "DM Sans", sans-serif;
+  --font-body: "DM Sans", sans-serif;
 
   /* Primary color - Blue-gray (slate based) */
   --color-primary-50: #f8fafc;
@@ -97,9 +107,20 @@
 
 :root {
   --ui-text: var(--color-primary-600);
+  --app-bg: #f8fafc; /* light background */
+  --app-text: #0f172a; /* light text */
 }
 
 /* Base font size */
 html {
   font-size: 16px;
+}
+
+.dark {
+  --app-bg: #0f172b; /* dark background */
+  --app-text: #f8fafc; /* dark text */
+}
+body {
+  background-color: var(--app-bg);
+  font-family: var(--font-body);
 }

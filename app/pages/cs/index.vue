@@ -24,9 +24,9 @@ async function onSubmit(event: FormSubmitEvent<Schema>) {
 </script>
 
 <template>
-  <div>
+  <div class="h-full w-full">
     <!-- Hero Section -->
-    <section class="min-h-screen flex flex-col items-center py-32">
+    <section class="h-full w-full flex flex-col items-center justify-center overflow-hidden">
       <UBadge icon="i-lucide-square" color="success" variant="soft" size="sm" class="rounded-full px-2 py-1">
         System Online
       </UBadge>

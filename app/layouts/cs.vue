@@ -62,7 +62,7 @@ const dropdownItems = computed<DropdownMenuItem[][]>(() => [
       </template> -->
     </UHeader>
 
-    <UMain class="max-w-7xl mx-auto lg:p-8">
+    <UMain class="max-w-7xl mx-auto lg:p-8 h-[calc(100vh-64px)] overflow-hidden">
       <slot />
     </UMain>
 
