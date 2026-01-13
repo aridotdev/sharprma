@@ -2,6 +2,7 @@ import db from '../../utils/db'
 import { claim, claimHistory, updateClaimSchema } from '../../database/schema'
 import { eq } from 'drizzle-orm'
 import { z } from 'zod'
+import { getCurrentUser } from '../../utils/auth'
 // import { CLAIM_STATUSES, CLAIM_HISTORY_ACTIONS } from '../../../shared/utils/constant'
 
 // Params schema
@@ -9,15 +10,16 @@ const paramsSchema = z.object({
   id: z.coerce.number().int().positive()
 })
 
-// Extend update schema to include userId and note for history
+// Extend update schema to include note for history (userId and userRole will be extracted from session)
 const extendedUpdateSchema = updateClaimSchema.extend({
-  userId: z.number().int().positive().optional(),
-  userRole: z.enum(['ADMIN', 'CS', 'QRCC', 'MANAGEMENT']).optional(),
   note: z.string().optional()
 })
 
 export default defineEventHandler(async (event) => {
   try {
+    // Get current user from session
+    const currentUser = await getCurrentUser(event)
+
     const params = await getValidatedRouterParams(event, paramsSchema.parse)
     const body = await readValidatedBody(event, extendedUpdateSchema.parse)
 
@@ -55,9 +57,7 @@ export default defineEventHandler(async (event) => {
     const now = new Date().toISOString()
     const updates: any = { ...body, updatedAt: now }
 
-    // Remove history-only fields from updates
-    delete updates.userId
-    delete updates.userRole
+    // Remove note from updates (history-only field)
     delete updates.note
 
     let historyRecord = null
@@ -75,23 +75,16 @@ export default defineEventHandler(async (event) => {
       else if (toStatus === 'CANCELLED') action = 'CANCEL'
       else if (body.claimStatus === 'IN_REVIEW') action = 'REVIEW'
 
-      // Validate required fields for history if status changed
-      if (!body.userId || !body.userRole) {
-        // Warning: In a real app we might get this from session/auth context
-        // For now, we expect it in body for history logging
-      }
-
-      if (body.userId && body.userRole) {
-        historyRecord = {
-          claimId: params.id,
-          action: action,
-          fromStatus: fromStatus,
-          toStatus: toStatus,
-          userId: body.userId,
-          userRole: body.userRole,
-          note: body.note || '',
-          createdAt: now
-        }
+      // Create history record with user data from session
+      historyRecord = {
+        claimId: params.id,
+        action,
+        fromStatus,
+        toStatus,
+        userId: currentUser.userRmaId,
+        userRole: currentUser.role,
+        note: body.note || '',
+        createdAt: now
       }
     }
 

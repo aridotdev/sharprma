@@ -1,8 +1,8 @@
 import db from '../../utils/db'
-import { claim, insertClaimSchema, notificationRef, userRma, productModel } from '../../database/schema'
+import { claim, insertClaimSchema, notificationRef, productModel } from '../../database/schema'
 import { eq, and, like, desc, inArray } from 'drizzle-orm'
 import { z } from 'zod'
-import { auth } from '../../utils/auth'
+import { getCurrentUser } from '../../utils/auth'
 
 async function generateClaimNumber(db: any): Promise<string> {
   const today = new Date()
@@ -48,6 +48,10 @@ export default defineEventHandler(async (event) => {
 
     const now = new Date().toISOString()
     const notificationCode = body.notification.toUpperCase()
+
+    // Get current user early (needed for manual entry case)
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    const currentUser = await getCurrentUser(event)
 
     const result = await db.transaction(async (tx) => {
       // 2. Generate claim number
@@ -153,40 +157,17 @@ export default defineEventHandler(async (event) => {
           })
         }
 
-        // 3c. Get user login for user.id and user.branch
-        const session = await auth.api.getSession({ headers: event.headers })
-
-        if (!session) {
-          throw createError({
-            statusCode: 401,
-            statusMessage: 'Unauthorized'
-          })
-        }
-
-        const user = await db
-          .select({ id: userRma.id, branch: userRma.branch })
-          .from(userRma)
-          .where(eq(userRma.userAuthId, session.user.id))
-          .limit(1)
-
-        if (!user[0]) {
-          throw createError({
-            statusCode: 404,
-            statusMessage: 'User not found in business user table'
-          })
-        }
-
-        // 3d. Create new notificationRef with status USED
+        // 3c. Create new notificationRef with status USED using user from session
         await tx.insert(notificationRef).values({
           notificationCode: notificationCode,
           modelName: body.modelName,
-          branch: user[0].branch,
+          branch: currentUser.branch,
           vendorId: body.vendorId,
           status: 'USED',
-          createdBy: user[0].id
+          createdBy: currentUser.userRmaId
         })
 
-        claimBranch = user[0].branch
+        claimBranch = currentUser.branch
       }
 
       // 4. Insert Claim
