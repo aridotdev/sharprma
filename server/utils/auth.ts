@@ -47,6 +47,52 @@ export const auth = betterAuth({
 })
 
 /**
+ * Extend session with user_rma data
+ * This function adds role, branch, and userRmaId to the session
+ * @param session - Better Auth session object
+ * @returns Session with extended user data
+ */
+export async function extendSessionWithUserData(session: any) {
+  if (!session?.user?.id) {
+    return session
+  }
+
+  try {
+    // Fetch user_rma record
+    const userRmaRecord = await db
+      .select({
+        id: userRma.id,
+        role: userRma.role,
+        branch: userRma.branch,
+        isActive: userRma.isActive
+      })
+      .from(userRma)
+      .where(eq(userRma.userAuthId, session.user.id.toString()))
+      .limit(1)
+
+    if (userRmaRecord.length > 0 && userRmaRecord[0]) {
+      const record = userRmaRecord[0]
+      // Add user_rma data to session
+      return {
+        ...session,
+        user: {
+          ...session.user,
+          userRmaId: record.id,
+          role: record.role,
+          branch: record.branch,
+          isActive: record.isActive
+        }
+      }
+    }
+
+    return session
+  } catch (error) {
+    console.error('Error extending session with user_rma data:', error)
+    return session
+  }
+}
+
+/**
  * Get current user's branch from auth session
  * @param event - H3 event from request handler
  * @returns User's branch string
@@ -62,18 +108,54 @@ export async function getCurrentUserBranch(event: H3Event): Promise<string> {
     })
   }
 
-  const user = await db
-    .select({ branch: userRma.branch })
-    .from(userRma)
-    .where(eq(userRma.userAuthId, session.user.id))
-    .limit(1)
+  // Extend session with user_rma data
+  const extendedSession = await extendSessionWithUserData(session)
 
-  if (!user[0]) {
+  if (!extendedSession.user.branch) {
     throw createError({
       statusCode: 404,
       statusMessage: 'User not found in business user table'
     })
   }
 
-  return user[0].branch
+  return extendedSession.user.branch
+}
+
+/**
+ * Get current user with role from auth session
+ * @param event - H3 event from request handler
+ * @returns User object with id, name, email, username, role, branch, userRmaId
+ * @throws Error if not authenticated or user not found
+ */
+export async function getCurrentUser(event: H3Event) {
+  const session = await auth.api.getSession({ headers: event.headers })
+
+  if (!session) {
+    throw createError({
+      statusCode: 401,
+      statusMessage: 'Unauthorized - No active session'
+    })
+  }
+
+  // Extend session with user_rma data
+  const extendedSession = await extendSessionWithUserData(session)
+
+  if (!extendedSession.user.role) {
+    throw createError({
+      statusCode: 404,
+      statusMessage: 'User not found in business user table'
+    })
+  }
+
+  // Return user data needed for API endpoints
+  return {
+    id: extendedSession.user.id,
+    userRmaId: extendedSession.user.userRmaId,
+    name: extendedSession.user.name,
+    email: extendedSession.user.email,
+    username: extendedSession.user.username,
+    role: extendedSession.user.role,
+    branch: extendedSession.user.branch,
+    isActive: extendedSession.user.isActive
+  }
 }
