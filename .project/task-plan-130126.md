@@ -36,12 +36,12 @@
   - [x] Handle session errors gracefully
   - [x] File: [app/composables/useAuthSession.ts](app/composables/useAuthSession.ts) (new)
 
-- [ ] **Update useAuthUser composable**
-  - [ ] Replace manual state with useAuthSession
-  - [ ] Ensure role is properly exposed
-  - [ ] Add signOut function that calls authClient.signIn()
-  - [ ] Add checkRole(requiredRole) utility
-  - [ ] File: [app/composables/useAuthUser.ts](app/composables/useAuthUser.ts)
+- [x] **Update useAuthUser composable**
+  - [x] Replace manual state with useAuthSession
+  - [x] Ensure role is properly exposed
+  - [x] Add signOut function that calls authClient.signIn()
+  - [x] Add checkRole(requiredRole) utility
+  - [x] File: [app/composables/useAuthUser.ts](app/composables/useAuthUser.ts)
 
 ---
 

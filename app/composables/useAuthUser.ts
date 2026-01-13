@@ -1,41 +1,34 @@
 // /composables/useAuthUser.ts
 import { useAuthSession } from './useAuthSession'
+import { authClient } from '../lib/auth-client'
 
 /**
  * useAuthUser Composable
  *
- * Simplified auth user composable that wraps useAuthSession
- * and provides a cleaner API for user-related operations.
+ * Simplified auth user composable that directly uses useAuthSession
+ * without manual state management.
  *
- * For advanced features (signOut, refresh, role checks), use useAuthSession directly.
+ * For advanced features (refresh, role checks), use useAuthSession directly.
  */
 export const useAuthUser = () => {
-  const {
-    user,
-    role,
-    branch,
-    isAuthenticated,
-    isLoading,
-    checkRole,
-    signOut
-  } = useAuthSession()
+  const authSession = useAuthSession()
 
   /**
    * Normalized user object
    * Safe to use even when session is null
    */
   const normalizedUser = computed(() => {
-    if (!user.value) return null
+    if (!authSession.user.value) return null
 
     return {
-      id: user.value.id,
-      userRmaId: user.value.userRmaId,
-      name: user.value.name,
-      email: user.value.email,
-      username: user.value.username,
-      role: user.value.role, // 'ADMIN' | 'MANAGEMENT' | 'QRCC' | 'CS'
-      branch: user.value.branch,
-      isActive: user.value.isActive
+      id: authSession.user.value.id,
+      userRmaId: authSession.user.value.userRmaId,
+      name: authSession.user.value.name,
+      email: authSession.user.value.email,
+      username: authSession.user.value.username,
+      role: authSession.user.value.role, // 'ADMIN' | 'MANAGEMENT' | 'QRCC' | 'CS'
+      branch: authSession.user.value.branch,
+      isActive: authSession.user.value.isActive
     }
   })
 
@@ -44,17 +37,47 @@ export const useAuthUser = () => {
    * Alias for checkRole from useAuthSession
    */
   const hasRole = (roles: string | string[]) => {
-    return checkRole(roles)
+    return authSession.checkRole(roles)
+  }
+
+  /**
+   * Check if user has required role
+   * @param requiredRole - Single role string to check
+   * @returns true if user has the required role
+   */
+  const checkRole = (requiredRole: string): boolean => {
+    return authSession.checkRole(requiredRole)
+  }
+
+  /**
+   * Sign out function that directly calls authClient.signOut()
+   */
+  const signOut = async () => {
+    try {
+      await authClient.signOut()
+      await navigateTo('/auth/login')
+    } catch (err) {
+      console.error('Sign out error:', err)
+      throw err
+    }
   }
 
   return {
     user: normalizedUser,
-    role,
-    branch,
-    isAuthenticated,
-    isLoading,
+    role: authSession.role,
+    branch: authSession.branch,
+    userRmaId: authSession.userRmaId,
+    isActive: authSession.isActive,
+    isAuthenticated: authSession.isAuthenticated,
+    isLoading: authSession.isLoading,
     hasRole,
-    signOut
+    checkRole,
+    signOut,
+    // Role helpers from useAuthSession
+    isAdmin: authSession.isAdmin,
+    isManagement: authSession.isManagement,
+    isQRCC: authSession.isQRCC,
+    isCS: authSession.isCS
   }
 }
 
@@ -62,5 +85,3 @@ export const useAuthUser = () => {
  * Type definition for normalized user object
  */
 export type AuthUser = ReturnType<typeof useAuthUser>['user']['value']
-
-

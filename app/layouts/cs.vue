@@ -41,12 +41,21 @@ const dropdownItems = computed<DropdownMenuItem[][]>(() => [
 
           <UColorModeButton />
 
-          <UDropdownMenu :items="dropdownItems" :content="{
-            align: 'end',
-            side: 'bottom',
-            sideOffset: 8
-          }">
-            <UButton icon="i-lucide-user" color="neutral" variant="ghost" size="sm" square />
+          <UDropdownMenu
+            :items="dropdownItems"
+            :content="{
+              align: 'end',
+              side: 'bottom',
+              sideOffset: 8
+            }"
+          >
+            <UButton
+              icon="i-lucide-user"
+              color="neutral"
+              variant="ghost"
+              size="sm"
+              square
+            />
           </UDropdownMenu>
         </div>
       </template>
