@@ -1,4 +1,6 @@
+import { computed, ref } from 'vue'
 import { authClient } from '../lib/auth-client'
+import { navigateTo } from 'nuxt/app'
 
 /**
  * useAuthSession Composable
@@ -18,8 +20,8 @@ export const useAuthSession = () => {
   const sessionData = computed(() => {
     const result = sessionResult.value
     if (!result) return null
-    // Result might be { data: Session } or directly Session
-    return result.data || result
+    // Result has data property containing session info
+    return result.data
   })
 
   /**
@@ -32,23 +34,23 @@ export const useAuthSession = () => {
    * User's role from user_rma table
    * Possible values: 'ADMIN', 'MANAGEMENT', 'QRCC', 'CS'
    */
-  const role = computed(() => user.value?.role || null)
+  const role = computed(() => (user.value as any)?.role || null)
 
   /**
    * User's branch code
    */
-  const branch = computed(() => user.value?.branch || null)
+  const branch = computed(() => (user.value as any)?.branch || null)
 
   /**
    * User RMA ID (business user table ID)
    * Different from auth user ID
    */
-  const userRmaId = computed(() => user.value?.userRmaId || null)
+  const userRmaId = computed(() => (user.value as any)?.userRmaId || null)
 
   /**
    * Whether user account is active
    */
-  const isActive = computed(() => user.value?.isActive ?? true)
+  const isActive = computed(() => (user.value as any)?.isActive ?? true)
 
   /**
    * Authentication status

@@ -28,6 +28,7 @@ analytics
 -   Approve / reject claim
 -   Generate vendor claim
 -   Analytics & dashboard
+-   Melihat Lapooran
 
 ### MANAGEMENT
 
@@ -37,6 +38,7 @@ analytics
 
 -   Akses penuh
 
+### RINGKASAN ROLE
 | Menu             | CS | QRCC | Management | Admin |
 | ---------------- | -- | ---- | ---------- | ----- |
 | Create Claim     | ✅  | ❌    | ❌          | ❌     |
@@ -61,7 +63,7 @@ analytics
 #### 1. CS Klik tombol "Buat Klaim RMA Baru"
   - Membuka halaman Klaim RMA Baru dan menampilkan Input kosong `Notification Code`
 #### 2. CS Mengisi informasi awal
-  **A. Cara 1 - mengisi Notification Code**
+  **A. Mengisi Notification Code**
   - CS mengisi field notification
   - CS klik enter untuk Cari / Validasi
   - Sistem melakukan :
@@ -81,7 +83,7 @@ analytics
       - Sistem Menampilkan pesan: **“Notification tidak ditemukan”**
       - membuka halaman input nama model
 
-  **B. Cara 2 - mengisi nama model**
+  **B. Mengisi nama model**
   - CS mengisi field nama model
   - CS klik enter untuk cari / validasi
   - Sistem melakukan :

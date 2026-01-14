@@ -45,10 +45,10 @@ export const auth = betterAuth({
     },
     // Extend session with user_rma data
     // This callback is executed when session is fetched
-    async onCreate(session) {
+    async onCreate(session: any) {
       return await extendSessionWithUserData(session)
     },
-    async getSession(session) {
+    async getSession(session: any) {
       return await extendSessionWithUserData(session)
     }
   }

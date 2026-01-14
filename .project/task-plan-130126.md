@@ -157,7 +157,7 @@ CS / Dashboard
   - [ ] Call authClient.signUp.email()
   - [ ] Handle success (redirect to login or auto-login)
   - [ ] Handle errors (show UAlert)
-  - [ ] File: [app/pages/signup.vue](app/pages/signup.vue) (new)
+  - [ ] File: [app/pages/signup.vue](app/pages/dashboard/auth/signup.vue) (new)
 
 - [ ] **Create user_rma record on sign up**
   - [ ] After successful auth user creation

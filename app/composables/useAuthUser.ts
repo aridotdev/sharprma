@@ -1,6 +1,8 @@
 // /composables/useAuthUser.ts
+import { computed } from 'vue'
 import { useAuthSession } from './useAuthSession'
 import { authClient } from '../lib/auth-client'
+import { navigateTo } from 'nuxt/app'
 
 /**
  * useAuthUser Composable
@@ -20,15 +22,16 @@ export const useAuthUser = () => {
   const normalizedUser = computed(() => {
     if (!authSession.user.value) return null
 
+    const user = authSession.user.value as any
     return {
-      id: authSession.user.value.id,
-      userRmaId: authSession.user.value.userRmaId,
-      name: authSession.user.value.name,
-      email: authSession.user.value.email,
-      username: authSession.user.value.username,
-      role: authSession.user.value.role, // 'ADMIN' | 'MANAGEMENT' | 'QRCC' | 'CS'
-      branch: authSession.user.value.branch,
-      isActive: authSession.user.value.isActive
+      id: user.id,
+      userRmaId: user.userRmaId,
+      name: user.name,
+      email: user.email,
+      username: user.username,
+      role: user.role, // 'ADMIN' | 'MANAGEMENT' | 'QRCC' | 'CS'
+      branch: user.branch,
+      isActive: user.isActive
     }
   })
 
