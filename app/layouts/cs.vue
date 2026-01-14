@@ -2,7 +2,7 @@
 import type { DropdownMenuItem, NavigationMenuItem } from '@nuxt/ui'
 
 const items = computed<NavigationMenuItem[]>(() => [{
-  label: 'Reports'
+  label: 'Claims'
 }])
 
 const dropdownItems = computed<DropdownMenuItem[][]>(() => [

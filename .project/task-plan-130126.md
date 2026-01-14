@@ -83,7 +83,7 @@ CS / Dashboard
   - [ ] Handle authentication errors (show UAlert)
   - [ ] Redirect to dashboard on success
   - [ ] Validate form before submission
-  - [ ] File: [app/pages/login.vue](app/pages/login.vue)
+  - [ ] File: [app/pages/login.vue](app/pages/auth/login.vue)
 
 - [ ] **Add login form validation**
   - [ ] Username/email required validation
