@@ -1,4 +1,5 @@
 # Sharp RMA System - Auth Implementation Plan
+
 **Date:** 2026-01-13
 **Focus:** Complete Authentication Backend & Frontend Integration
 **Estimated Time:** 3-4 days
@@ -8,13 +9,16 @@
 ## 📋 Phase 1: Critical Auth Tasks (Priority 1)
 
 ### Backend - Auth Integration
+
 - [x] **Integrate user_rma.role into Better Auth session**
+
   - [x] Modify Better Auth config to include role in session data
   - [x] Create custom session callback to fetch role from user_rma table
   - [x] Test that role is available in auth.api.getSession()
   - [x] File: [server/utils/auth.ts](server/utils/auth.ts)
 
 - [x] **Create getCurrentUser helper with role**
+
   - [x] Create server utility to get current user with role from session
   - [x] Return: { id, name, email, username, role, branch }
   - [x] Use in API endpoints instead of reading from request body
@@ -29,7 +33,9 @@
 ---
 
 ### Frontend - Auth Composables
+
 - [x] **Create useAuthSession composable**
+
   - [x] Use Better Auth client's useSession hook
   - [x] Expose: session, user, role, isAuthenticated, isLoading
   - [x] Implement refreshSession() function
@@ -46,27 +52,31 @@
 ---
 
 ### Frontend - Auth Plugin
+
 - [x] **Create Better Auth client plugin**
   - [x] Create Nuxt plugin to initialize auth client on app startup
-  - [ ] Set up auth client with baseURL
-  - [ ] Provide auth client globally via provide()
-  - [ ] Handle SSR compatibility
-  - [ ] File: [app/plugins/auth.client.ts](app/plugins/auth.client.ts) (new)
+  - [x] Set up auth client with baseURL
+  - [x] Provide auth client globally via provide()
+  - [x] Handle SSR compatibility
+  - [x] File: [app/plugins/auth.client.ts](app/plugins/auth.client.ts) (new)
 
 alur final :
-auth.client.ts
-        ↓
-useAuthSession()
-        ↓
-useAuthUser()
-        ↓
-middleware / menu / page
-
+User buka aplikasi
+↓
+Login Page (welcome + form)
+↓
+Auth success
+↓
+Auto redirect by role
+↓
+CS / Dashboard
 
 ---
 
 ### Frontend - Login Page
+
 - [ ] **Implement login functionality in login.vue**
+
   - [ ] Get form values (username/email, password)
   - [ ] Call authClient.signIn.username() or authClient.signIn.email()
   - [ ] Handle loading state during authentication
@@ -84,7 +94,9 @@ middleware / menu / page
 ---
 
 ### Frontend - Middleware
+
 - [ ] **Create auth.global.ts middleware**
+
   - [ ] Check session on every route change
   - [ ] Get session using authClient.useSession()
   - [ ] Redirect to /login if not authenticated
@@ -106,6 +118,7 @@ middleware / menu / page
 ---
 
 ### Frontend - Logout Functionality
+
 - [ ] **Implement logout in AppHeader component**
   - [ ] Create logout button in header menu
   - [ ] Call authClient.signOut() on click
@@ -117,6 +130,7 @@ middleware / menu / page
 ---
 
 ### Testing - Auth Flow
+
 - [ ] **Test complete authentication flow**
   - [ ] Test: Sign up → Create user_rma record → Login
   - [ ] Test: Login with username
@@ -134,7 +148,9 @@ middleware / menu / page
 ## 📋 Phase 2: High Priority Auth Tasks
 
 ### Frontend - Sign Up Page
+
 - [ ] **Create sign up page**
+
   - [ ] Create /signup page with form
   - [ ] Fields: name, email, username, password, confirm password
   - [ ] Validation: all fields required, password match, email format
@@ -153,7 +169,9 @@ middleware / menu / page
 ---
 
 ### Frontend - Session Management
+
 - [ ] **Add auto session refresh**
+
   - [ ] Check session expiry before API calls
   - [ ] Refresh session if expiring soon
   - [ ] Handle refresh failures (redirect to login)
@@ -167,6 +185,7 @@ middleware / menu / page
 ---
 
 ### Frontend - Error Handling
+
 - [ ] **Create auth error handling**
   - [ ] Show user-friendly error messages
   - [ ] Handle network errors during auth
@@ -180,7 +199,9 @@ middleware / menu / page
 ## 📋 Phase 3: Medium Priority Auth Tasks
 
 ### Backend - Additional Auth Features
+
 - [ ] **Add email verification flow**
+
   - [ ] Configure Better Auth to send verification emails
   - [ ] Create email templates
   - [ ] Handle email verification callback
@@ -188,6 +209,7 @@ middleware / menu / page
   - [ ] Resend verification email functionality
 
 - [ ] **Add password reset flow**
+
   - [ ] Configure Better Auth password reset
   - [ ] Create /forgot-password page
   - [ ] Create /reset-password page with token
@@ -204,6 +226,7 @@ middleware / menu / page
 ---
 
 ### Configuration
+
 - [ ] **Use environment variables for auth config**
   - [ ] Move Better Auth URL to .env
   - [ ] Add APP_URL environment variable
@@ -214,7 +237,9 @@ middleware / menu / page
 ---
 
 ### UI Improvements
+
 - [ ] **Create loading states for auth**
+
   - [ ] Add skeleton loaders for login page
   - [ ] Add loading spinner during authentication
   - [ ] Add loading state for protected routes
@@ -232,7 +257,9 @@ middleware / menu / page
 ## 📋 Phase 4: Documentation & Polish
 
 ### Documentation
+
 - [ ] **Document auth setup**
+
   - [ ] Add auth setup to README.md
   - [ ] Document environment variables
   - [ ] Document how to create users with roles
@@ -249,7 +276,9 @@ middleware / menu / page
 ---
 
 ### Testing & Bug Fixes
+
 - [ ] **Fix known auth issues**
+
   - [ ] Fix userId/userRole extraction from session
   - [ ] Test session on different browsers
   - [ ] Test session on mobile devices
@@ -268,6 +297,7 @@ middleware / menu / page
 ## 📊 Progress Tracking
 
 ### Phase 1: Critical Auth Tasks
+
 - [ ] 0/8 Backend tasks completed
 - [ ] 0/2 Composables tasks completed
 - [ ] 0/1 Plugin tasks completed
@@ -275,18 +305,22 @@ middleware / menu / page
 - [ ] 0/2 Middleware tasks completed
 - [ ] 0/1 Logout tasks completed
 - [ ] 0/1 Testing tasks completed
-**Progress: 0% (0/17 tasks)**
+      **Progress: 0% (0/17 tasks)**
 
 ### Phase 2: High Priority
+
 **Progress: 0% (0/7 tasks)**
 
 ### Phase 3: Medium Priority
+
 **Progress: 0% (0/8 tasks)**
 
 ### Phase 4: Documentation & Polish
+
 **Progress: 0% (0/4 tasks)**
 
 ### Overall Progress
+
 **Total: 0/36 tasks completed (0%)**
 
 ---
@@ -294,6 +328,7 @@ middleware / menu / page
 ## 🎯 Success Criteria
 
 Auth implementation is complete when:
+
 - ✅ Users can sign up and create user_rma record
 - ✅ Users can log in with username or email
 - ✅ Session persists across page reloads
