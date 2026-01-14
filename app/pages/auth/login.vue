@@ -131,14 +131,14 @@ function onSubmit(payload: FormSubmitEvent<Schema>) {
               </UAuthForm>
             </div>
             <div class="mt-8 pt-6 border-t border-[#e7ebf3] dark:border-gray-700 text-center">
-              <p class="text-xs text-[#64748b] dark:text-gray-500 mb-2">
+              <p class="text-xs text-primary-500 dark:text-gray-500 mb-2">
                 Don't have an account? <a
                   class="text-primary dark:text-blue-400 font-semibold hover:underline"
                   href="#"
                 >Contact
                   Support</a>
               </p>
-              <p class="text-xs text-[#64748b] dark:text-gray-500">
+              <p class="text-xs text-primary-500 dark:text-gray-500">
                 SEID internal system <br>
                 Version 1.0.0
               </p>

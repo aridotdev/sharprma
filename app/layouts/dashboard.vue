@@ -29,6 +29,13 @@ const links = [[{
     open.value = false
   }
 }, {
+  label: 'User Management',
+  icon: 'i-lucide-users',
+  to: '/dashboard/users',
+  onSelect: () => {
+    open.value = false
+  }
+}, {
   label: 'Settings',
   to: '/dashboard/settings',
   icon: 'i-lucide-settings',
