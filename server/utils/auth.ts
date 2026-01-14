@@ -42,6 +42,14 @@ export const auth = betterAuth({
     cookieCache: {
       enabled: true,
       maxAge: 60 * 60 // 1 hour
+    },
+    // Extend session with user_rma data
+    // This callback is executed when session is fetched
+    async onCreate(session) {
+      return await extendSessionWithUserData(session)
+    },
+    async getSession(session) {
+      return await extendSessionWithUserData(session)
     }
   }
 })

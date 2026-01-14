@@ -10,50 +10,17 @@ import { authClient } from '../lib/auth-client'
  * @returns {Object} Auth session state and methods
  */
 export const useAuthSession = () => {
-  // Reactive state
-  const session = ref<any>(null)
-  const isLoading = ref(false)
-  const error = ref<any>(null)
+  // Better Auth's useSession returns a reactive Ref<SessionResult>
+  // This automatically fetches and updates session state
+  const sessionResult = authClient.useSession()
 
-  const { $auth } = useNuxtApp()
-
-  return useAsyncData(
-    'auth-session',
-    () => $auth.getSession(),
-    { server: false }
-  )
-  /**
-   * Fetch current session from server
-   */
-  const fetchSession = async () => {
-    isLoading.value = true
-    error.value = null
-
-    try {
-      // Better Auth's useSession is a ref, not a function
-      const sessionRef = authClient.useSession()
-
-      // Access the ref value
-      if (sessionRef?.value) {
-        session.value = sessionRef.value
-      }
-    } catch (err) {
-      console.error('Error fetching session:', err)
-      error.value = err
-      session.value = null
-    } finally {
-      isLoading.value = false
-    }
-  }
-
-  // Fetch session on composable creation
-  fetchSession()
-
-  /**
-   * Reactive session data
-   * Contains user info with extended fields (role, branch, userRmaId, isActive)
-   */
-  const sessionData = computed(() => session.value?.data || session.value)
+  // Extract session data - access reactive value
+  const sessionData = computed(() => {
+    const result = sessionResult.value
+    if (!result) return null
+    // Result might be { data: Session } or directly Session
+    return result.data || result
+  })
 
   /**
    * Current authenticated user
@@ -89,11 +56,33 @@ export const useAuthSession = () => {
   const isAuthenticated = computed(() => !!sessionData.value && !!user.value)
 
   /**
+   * Loading state
+   */
+  const isLoading = ref(false)
+
+  /**
+   * Error state
+   */
+  const error = ref<any>(null)
+
+  /**
    * Refresh session data
    * Call this to manually refresh session from server
    */
   const refreshSession = async () => {
-    await fetchSession()
+    isLoading.value = true
+    error.value = null
+    try {
+      // Re-fetch session by calling the session endpoint
+      const session = await authClient.getSession()
+      return session
+    } catch (err) {
+      console.error('Error refreshing session:', err)
+      error.value = err
+      throw err
+    } finally {
+      isLoading.value = false
+    }
   }
 
   /**
@@ -101,14 +90,18 @@ export const useAuthSession = () => {
    * Uses Better Auth client's signOut method
    */
   const signOut = async () => {
+    isLoading.value = true
+    error.value = null
     try {
       await authClient.signOut()
-      session.value = null
       // After sign out, navigate to login page
-      await navigateTo('/login')
+      await navigateTo('/auth/login')
     } catch (err) {
       console.error('Sign out error:', err)
+      error.value = err
       throw err
+    } finally {
+      isLoading.value = false
     }
   }
 
