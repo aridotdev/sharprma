@@ -5,13 +5,13 @@ import { z } from 'zod'
 import { FIELD_NAMES } from '../../../shared/utils/constant'
 
 export const vendorFieldRule = sqliteTable('vendor_field_rule', {
-  id: integer('id').primaryKey({ autoIncrement: true }),
-  vendorId: integer('vendor_id').references(() => vendor.id, { onDelete: 'cascade' }).notNull(),
-  fieldName: text('field_name').notNull(),
-  isRequired: integer('is_required', { mode: 'boolean' }).notNull().default(false),
-  createdAt: text('created_at').notNull(),
-  updatedAt: text('updated_at').notNull()
-}, table => [
+  id: integer().primaryKey({ autoIncrement: true }),
+  vendorId: integer().references(() => vendor.id, { onDelete: 'cascade' }).notNull(),
+  fieldName: text().notNull(),
+  isRequired: integer({ mode: 'boolean' }).notNull().default(false),
+  createdAt: integer({ mode: 'timestamp' }).notNull().default(new Date()),
+  updatedAt: integer({ mode: 'timestamp' }).notNull().default(new Date())
+}, (table) => [
   uniqueIndex('vendor_field_rule_vendor_field_name_idx').on(table.vendorId, table.fieldName),
   index('vendor_field_rule_vendor_idx').on(table.vendorId)
 ])

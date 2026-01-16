@@ -3,9 +3,11 @@ import { createInsertSchema, createSelectSchema } from 'drizzle-zod'
 import { z } from 'zod'
 
 export const vendor = sqliteTable('vendor', {
-  id: integer('id').primaryKey({ autoIncrement: true }),
-  name: text('name').notNull().unique(),
-  isActive: integer('isActive', { mode: 'boolean' }).notNull().default(true)
+  id: integer().primaryKey({ autoIncrement: true }),
+  name: text().notNull().unique(),
+  isActive: integer({ mode: 'boolean' }).notNull().default(true),
+  createdAt: integer({ mode: 'timestamp' }).notNull().default(new Date()),
+  updatedAt: integer({ mode: 'timestamp' }).notNull().default(new Date())
 })
 
 // Zod schemas for validation

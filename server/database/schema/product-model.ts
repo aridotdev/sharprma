@@ -5,18 +5,21 @@ import { createInsertSchema, createSelectSchema } from 'drizzle-zod'
 import { z } from 'zod'
 
 export const productModel = sqliteTable('product_model', {
-  id: integer('id').primaryKey({ autoIncrement: true }),
-  vendorId: integer('vendor_id').references(() => vendor.id, { onDelete: 'cascade' }).notNull(),
-  modelName: text('model_name').notNull(),
-  inch: text('inch').notNull()
+  id: integer().primaryKey({ autoIncrement: true }),
+  name: text().notNull(),
+  inch: text().notNull(),
+  vendorId: integer().references(() => vendor.id, { onDelete: 'cascade' }).notNull(),
+  isActive: integer({ mode: 'boolean' }).notNull().default(true),
+  createdAt: integer({ mode: 'timestamp' }).notNull().default(new Date()),
+  updatedAt: integer({ mode: 'timestamp' }).notNull().default(new Date())
 }, (table) => [
   index('product_model_vendor_idx').on(table.vendorId),
-  uniqueIndex('product_model_name_uq').on(table.modelName)
+  uniqueIndex('product_model_name_uq').on(table.name)
 ])
 
 // Zod schemas for validation
 export const insertProductModelSchema = createInsertSchema(productModel, {
-  modelName: z.string().min(1, 'Model name is required').max(25, 'Model name must be less than 25 characters').trim(),
+  name: z.string().min(1, 'Model name is required').max(25, 'Model name must be less than 25 characters').trim(),
   inch: z.string().min(1, 'Inch size is required').max(2, 'Inch size max 2 characters'),
   vendorId: z.number().int().positive('Vendor ID must be a positive integer')
 }).omit({

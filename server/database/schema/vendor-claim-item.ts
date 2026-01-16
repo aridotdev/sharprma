@@ -6,14 +6,14 @@ import { z } from 'zod'
 import { VENDOR_DECISIONS } from '../../../shared/utils/constant'
 
 export const vendorClaimItem = sqliteTable('vendor_claim_item', {
-  id: integer('id').primaryKey({ autoIncrement: true }),
-  claimId: integer('claim_id').references(() => claim.id, { onDelete: 'restrict' }).notNull(),
-  vendorClaimId: integer('vendor_claim_id').references(() => vendorClaim.id, { onDelete: 'cascade' }).notNull(),
-  vendorDecision: text('vendor_decision').notNull(),
-  compensationAmount: integer('compensation_amount'),
-  note: text('note'),
-  decisionAt: text('decision_at').notNull()
-}, table => [
+  id: integer().primaryKey({ autoIncrement: true }),
+  claimId: integer().references(() => claim.id, { onDelete: 'restrict' }).notNull(),
+  vendorClaimId: integer().references(() => vendorClaim.id, { onDelete: 'cascade' }).notNull(),
+  vendorDecision: text().notNull(),
+  compensationAmount: integer(),
+  note: text(),
+  decisionAt: integer({ mode: 'timestamp' }).notNull().default(new Date())
+}, (table) => [
   index('vendor_claim_item_vendor_claim_idx').on(table.vendorClaimId),
   index('vendor_claim_item_claim_idx').on(table.claimId)
 ])

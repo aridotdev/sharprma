@@ -6,24 +6,24 @@ import { z } from 'zod'
 import { CLAIM_STATUSES } from '../../../shared/utils/constant'
 
 export const claim = sqliteTable('claim', {
-  id: integer('id').primaryKey({ autoIncrement: true }),
-  claimNumber: text('claim_number').notNull().unique(),
-  notificationCode: text('notification_code').notNull(),
-  modelName: text('model_name').notNull(),
-  inch: text('inch').notNull(),
-  branch: text('branch').notNull(),
-  vendorId: integer('vendor_id').references(() => vendor.id, { onDelete: 'restrict' }).notNull(),
-  odfNumber: text('odf_number'),
-  panelSerialNo: text('panel_serial_no').notNull(),
-  ocSerialNo: text('oc_serial_no').notNull(),
-  defect: text('defect').notNull(),
-  version: text('version'),
-  week: text('week'),
-  claimStatus: text('claim_status').notNull().default('DRAFT'),
-  submittedBy: integer('submitted_by').references(() => userRma.id),
-  createdAt: text('created_at').notNull(),
-  updatedAt: text('updated_at').notNull()
-}, table => [
+  id: integer().primaryKey({ autoIncrement: true }),
+  claimNumber: text().notNull().unique(),
+  notificationCode: text().notNull(),
+  modelName: text().notNull(),
+  inch: text().notNull(),
+  branch: text().notNull(),
+  vendorId: integer().references(() => vendor.id, { onDelete: 'restrict' }).notNull(),
+  odfNumber: text(),
+  panelSerialNo: text().notNull(),
+  ocSerialNo: text().notNull(),
+  defect: text().notNull(),
+  version: text(),
+  week: text(),
+  claimStatus: text().notNull().default('DRAFT'),
+  submittedBy: integer().references(() => userRma.id),
+  createdAt: integer({ mode: 'timestamp' }).notNull().default(new Date()),
+  updatedAt: integer({ mode: 'timestamp' }).notNull().default(new Date())
+}, (table) => [
   uniqueIndex('claim_number_idx').on(table.claimNumber),
   index('claim_vendor_idx').on(table.vendorId),
   index('claim_status_idx').on(table.claimStatus),

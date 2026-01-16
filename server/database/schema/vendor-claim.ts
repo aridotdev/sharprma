@@ -8,16 +8,16 @@ export const VENDOR_CLAIM_STATUSES = ['DRAFT', 'CREATED', 'PROCESSING', 'COMPLET
 export type VendorClaimStatus = typeof VENDOR_CLAIM_STATUSES[number]
 
 export const vendorClaim = sqliteTable('vendor_claim', {
-  id: integer('id').primaryKey({ autoIncrement: true }),
-  vendorClaimNo: text('vendor_claim_no').notNull().unique(),
-  vendorId: integer('vendor_id').references(() => vendor.id, { onDelete: 'restrict' }).notNull(),
-  submittedAt: text('submitted_at').notNull(),
-  status: text('status').notNull(),
-  reportSnapshot: text('report_snapshot').notNull(),
-  createdBy: integer('created_by').references(() => userRma.id).notNull(),
-  createdAt: text('created_at').notNull(),
-  updatedAt: text('updated_at').notNull()
-}, table => [
+  id: integer().primaryKey({ autoIncrement: true }),
+  vendorClaimNo: text().notNull().unique(),
+  vendorId: integer().references(() => vendor.id, { onDelete: 'restrict' }).notNull(),
+  submittedAt: text().notNull(),
+  status: text().notNull(),
+  reportSnapshot: text().notNull(),
+  createdBy: integer().references(() => userRma.id).notNull(),
+  createdAt: integer({ mode: 'timestamp' }).notNull().default(new Date()),
+  updatedAt: integer({ mode: 'timestamp' }).notNull().default(new Date())
+}, (table) => [
   uniqueIndex('vendor_claim_no_idx').on(table.vendorClaimNo),
   index('vendor_claim_vendor_idx').on(table.vendorId),
   index('vendor_claim_created_by_idx').on(table.createdBy)

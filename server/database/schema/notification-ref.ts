@@ -6,14 +6,14 @@ import { z } from 'zod'
 import { NOTIFICATION_STATUSES } from '../../../shared/utils/constant'
 
 export const notificationRef = sqliteTable('notification_ref', {
-  id: integer('id').primaryKey({ autoIncrement: true }),
-  notificationCode: text('notification_code').notNull().unique(),
-  modelName: text('model_name').notNull(),
-  branch: text('branch').notNull(),
-  vendorId: integer('vendor_id').references(() => vendor.id, { onDelete: 'restrict' }).notNull(),
-  status: text('status').notNull().default('NEW'),
-  createdBy: integer('created_by').references(() => userRma.id).notNull()
-}, table => [
+  id: integer().primaryKey({ autoIncrement: true }),
+  notificationCode: text().notNull().unique(),
+  modelName: text().notNull(),
+  branch: text().notNull(),
+  vendorId: integer().references(() => vendor.id, { onDelete: 'restrict' }).notNull(),
+  status: text().notNull().default('NEW'),
+  createdBy: integer().references(() => userRma.id).notNull()
+}, (table) => [
   uniqueIndex('notification_ref_code_uq').on(table.notificationCode),
   index('notification_ref_vendor_idx').on(table.vendorId),
   index('notification_ref_status_idx').on(table.status)

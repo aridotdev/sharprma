@@ -5,13 +5,13 @@ import { z } from 'zod'
 import { PHOTO_TYPES } from '../../../shared/utils/constant'
 
 export const vendorPhotoRule = sqliteTable('vendor_photo_rule', {
-  id: integer('id').primaryKey({ autoIncrement: true }),
-  vendorId: integer('vendor_id').references(() => vendor.id).notNull(),
-  photoType: text('photo_type').notNull(),
-  isRequired: integer('is_required', { mode: 'boolean' }).notNull().default(true),
-  createdAt: text('created_at').notNull(),
-  updatedAt: text('updated_at').notNull()
-}, table => [
+  id: integer().primaryKey({ autoIncrement: true }),
+  vendorId: integer().references(() => vendor.id).notNull(),
+  photoType: text().notNull(),
+  isRequired: integer({ mode: 'boolean' }).notNull().default(true),
+  createdAt: integer({ mode: 'timestamp' }).notNull().default(new Date()),
+  updatedAt: integer({ mode: 'timestamp' }).notNull().default(new Date())
+}, (table) => [
   uniqueIndex('vendor_photo_rule_vendor_photo_type_idx').on(table.vendorId, table.photoType),
   index('vendor_photo_rule_vendor_idx').on(table.vendorId)
 ])

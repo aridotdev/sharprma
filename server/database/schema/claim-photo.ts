@@ -6,15 +6,15 @@ import { CLAIM_PHOTO_STATUSES, PHOTO_TYPES } from '../../../shared/utils/constan
 
 // Database schema for claim_photo table
 export const claimPhoto = sqliteTable('claim_photo', {
-  id: integer('id').primaryKey({ autoIncrement: true }),
-  claimId: integer('claim_id').references(() => claim.id, { onDelete: 'cascade' }).notNull(),
-  photoType: text('photo_type').notNull(),
-  filePath: text('file_path').notNull(),
-  status: text('status').notNull().default('PENDING'),
-  reviewNote: text('review_note').notNull().default(''),
-  createdAt: text('created_at').notNull(),
-  updatedAt: text('updated_at').notNull()
-}, table => [
+  id: integer().primaryKey({ autoIncrement: true }),
+  claimId: integer().references(() => claim.id, { onDelete: 'cascade' }).notNull(),
+  photoType: text().notNull(),
+  filePath: text().notNull(),
+  status: text().notNull().default('PENDING'),
+  reviewNote: text().notNull().default(''),
+  createdAt: integer({ mode: 'timestamp' }).notNull().default(new Date()),
+  updatedAt: integer({ mode: 'timestamp' }).notNull().default(new Date())
+}, (table) => [
   index('claim_photo_claim_idx').on(table.claimId),
   uniqueIndex('claim_photo_claim_id_photo_type_idx').on(table.claimId, table.photoType)
 ])

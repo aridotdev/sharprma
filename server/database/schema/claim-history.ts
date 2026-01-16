@@ -7,16 +7,16 @@ import { CLAIM_HISTORY_ACTIONS, CLAIM_STATUSES, USER_ROLES } from '../../../shar
 
 // Definition of the claim_history table
 export const claimHistory = sqliteTable('claim_history', {
-  id: integer('id').primaryKey({ autoIncrement: true }),
-  claimId: integer('claim_id').references(() => claim.id, { onDelete: 'cascade' }).notNull(),
-  action: text('action').notNull(),
-  fromStatus: text('from_status').notNull(),
-  toStatus: text('to_status').notNull(),
-  userId: integer('user_id').references(() => userRma.id).notNull(),
-  userRole: text('user_role').notNull(),
-  note: text('note'),
-  createdAt: text('created_at').notNull()
-}, table => [
+  id: integer().primaryKey({ autoIncrement: true }),
+  claimId: integer().references(() => claim.id, { onDelete: 'cascade' }).notNull(),
+  action: text().notNull(),
+  fromStatus: text().notNull(),
+  toStatus: text().notNull(),
+  userId: integer().references(() => userRma.id).notNull(),
+  userRole: text().notNull(),
+  note: text(),
+  createdAt: integer({ mode: 'timestamp' }).notNull().default(new Date())
+}, (table) => [
   index('claim_history_claim_idx').on(table.claimId),
   index('claim_history_user_idx').on(table.userId),
   index('claim_history_action_idx').on(table.action)

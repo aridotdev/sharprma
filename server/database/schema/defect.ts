@@ -2,13 +2,13 @@ import { sqliteTable, integer, text, index } from 'drizzle-orm/sqlite-core'
 import { createInsertSchema, createSelectSchema } from 'drizzle-zod'
 import { z } from 'zod'
 
-export const defect = sqliteTable('defect_master', {
-  id: integer('id').primaryKey({ autoIncrement: true }),
-  name: text('defect_name').notNull().unique(),
-  isActive: integer('is_active', { mode: 'boolean' }).notNull().default(true),
-  createdAt: text('created_at').notNull(),
-  updatedAt: text('updated_at').notNull()
-}, table => [
+export const defect = sqliteTable('defect', {
+  id: integer().primaryKey({ autoIncrement: true }),
+  name: text().notNull().unique(),
+  isActive: integer({ mode: 'boolean' }).notNull().default(true),
+  createdAt: integer({ mode: 'timestamp' }).notNull().default(new Date()),
+  updatedAt: integer({ mode: 'timestamp' }).notNull().default(new Date())
+}, (table) => [
   index('defect_is_active_idx').on(table.isActive)
 ])
 

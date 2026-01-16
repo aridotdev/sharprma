@@ -8,17 +8,17 @@ export const PHOTO_REVIEW_STATUSES = ['VERIFIED', 'REJECT'] as const
 export type PhotoReviewStatus = typeof PHOTO_REVIEW_STATUSES[number]
 
 export const photoReview = sqliteTable('photo_review', {
-  id: integer('id').primaryKey({ autoIncrement: true }),
-  claimPhotoId: integer('claim_photo_id').references(() => claimPhoto.id, { onDelete: 'cascade' }).notNull(),
-  reviewedBy: integer('reviewed_by').references(() => userRma.id).notNull(),
-  status: text('status').notNull(),
-  note: text('note'),
-  reviewedAt: text('reviewed_at').notNull()
-}, table => ({
-  claimPhotoIdx: index('photo_review_claim_photo_idx').on(table.claimPhotoId),
-  reviewedByIdx: index('photo_review_reviewed_by_idx').on(table.reviewedBy),
-  statusIdx: index('photo_review_status_idx').on(table.status)
-}))
+  id: integer().primaryKey({ autoIncrement: true }),
+  claimPhotoId: integer().references(() => claimPhoto.id, { onDelete: 'cascade' }).notNull(),
+  reviewedBy: integer().references(() => userRma.id).notNull(),
+  status: text().notNull(),
+  note: text(),
+  reviewedAt: integer({ mode: 'timestamp' }).notNull().default(new Date())
+}, (table) => [
+  index('photo_review_claim_photo_idx').on(table.claimPhotoId),
+  index('photo_review_reviewed_by_idx').on(table.reviewedBy),
+  index('photo_review_status_idx').on(table.status)
+])
 
 // Zod schemas for validation
 export const insertPhotoReviewSchema = createInsertSchema(photoReview, {
