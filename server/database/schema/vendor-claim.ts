@@ -4,7 +4,7 @@ import { userRma } from './user-rma'
 import { createInsertSchema, createSelectSchema } from 'drizzle-zod'
 import { z } from 'zod'
 
-export const VENDOR_CLAIM_STATUSES = ['DRAFT', 'SUBMITTED', 'ACKNOWLEDGED', 'PROCESSING', 'COMPLETED', 'REJECTED'] as const
+export const VENDOR_CLAIM_STATUSES = ['DRAFT', 'CREATED', 'PROCESSING', 'COMPLETED'] as const
 export type VendorClaimStatus = typeof VENDOR_CLAIM_STATUSES[number]
 
 export const vendorClaim = sqliteTable('vendor_claim', {
@@ -12,6 +12,7 @@ export const vendorClaim = sqliteTable('vendor_claim', {
   vendorClaimNo: text('vendor_claim_no').notNull().unique(),
   vendorId: integer('vendor_id').references(() => vendor.id, { onDelete: 'restrict' }).notNull(),
   submittedAt: text('submitted_at').notNull(),
+  status: text('status').notNull(),
   reportSnapshot: text('report_snapshot').notNull(),
   createdBy: integer('created_by').references(() => userRma.id).notNull(),
   createdAt: text('created_at').notNull(),

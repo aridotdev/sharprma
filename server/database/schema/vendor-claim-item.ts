@@ -7,8 +7,8 @@ import { VENDOR_DECISIONS } from '../../../shared/utils/constant'
 
 export const vendorClaimItem = sqliteTable('vendor_claim_item', {
   id: integer('id').primaryKey({ autoIncrement: true }),
-  vendorClaimId: integer('vendor_claim_id').references(() => vendorClaim.id, { onDelete: 'cascade' }).notNull(),
   claimId: integer('claim_id').references(() => claim.id, { onDelete: 'restrict' }).notNull(),
+  vendorClaimId: integer('vendor_claim_id').references(() => vendorClaim.id, { onDelete: 'cascade' }).notNull(),
   vendorDecision: text('vendor_decision').notNull(),
   compensationAmount: integer('compensation_amount'),
   note: text('note'),
