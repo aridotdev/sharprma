@@ -3,19 +3,22 @@ import { createInsertSchema, createSelectSchema } from 'drizzle-zod'
 import { z } from 'zod'
 
 import { USER_ROLES } from '../../../shared/utils/constant'
+import { sql } from 'drizzle-orm/sql'
 
 export const userRma = sqliteTable('user_rma', {
-  id: integer('id').primaryKey({ autoIncrement: true }),
-  userAuthId: text('user_auth_id').notNull().unique(),
-  name: text('name').notNull(),
-  role: text('role').notNull(),
-  branch: text('branch').notNull(),
+  id: integer().primaryKey({ autoIncrement: true }),
+  userAuthId: text().notNull().unique(),
+  name: text().notNull(),
+  role: text().notNull(),
+  branch: text(),
   isActive: integer('is_active', { mode: 'boolean' }).notNull().default(true),
-  createdAt: text('created_at').notNull()
-  // eslint-disable-next-line @stylistic/arrow-parens
+  mustChangePassword: integer('must_change_password', { mode: 'boolean' }).notNull().default(true), // ← NEW
+  createdAt: integer('created_at', { mode: 'timestamp' }).notNull().default(sql`(unixepoch())`),
+  updatedAt: integer('updated_at', { mode: 'timestamp' }).notNull().default(sql`(unixepoch())`)
 }, (table) => [
   uniqueIndex('user_auth_id_idx').on(table.userAuthId),
-  index('user_role_idx').on(table.role)
+  index('user_role_idx').on(table.role),
+  index('user_branch_idx').on(table.branch)
 ])
 
 // Zod schemas for validation
@@ -25,11 +28,12 @@ export const insertUserSchema = createInsertSchema(userRma, {
   role: z.enum(USER_ROLES, {
     message: 'Role must be one of: ADMIN, CS, QRCC, MANAGEMENT'
   }),
-  branch: z.string().min(1, 'Branch is required').max(50, 'Branch must be less than 50 characters').trim(),
+  branch: z.string().optional(),
   isActive: z.boolean().default(true)
 }).omit({
   id: true,
-  createdAt: true
+  createdAt: true,
+  updatedAt: true
 })
 
 export const selectUserSchema = createSelectSchema(userRma)
