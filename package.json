@@ -14,22 +14,32 @@
     "test:coverage": "vitest --coverage",
     "test:unit": "vitest --project unit",
     "test:nuxt": "vitest --project nuxt",
-    "test:e2e": "vitest --project e2e"
+    "test:e2e": "vitest --project e2e",
+    "db:generate": "drizzle-kit generate",
+    "db:migrate": "drizzle-kit migrate",
+    "db:studio": "drizzle-kit studio"
   },
   "dependencies": {
     "@iconify-json/lucide": "^1.2.87",
     "@iconify-json/simple-icons": "^1.2.68",
+    "@libsql/client": "^0.17.0",
     "@nuxt/test-utils": "3.23.0",
     "@nuxt/ui": "^4.4.0",
+    "dotenv": "^17.2.4",
+    "drizzle-orm": "^0.45.1",
+    "drizzle-zod": "^0.8.3",
     "nuxt": "^4.3.0",
-    "tailwindcss": "^4.1.18"
+    "tailwindcss": "^4.1.18",
+    "zod": "^4.3.6"
   },
   "devDependencies": {
     "@nuxt/eslint": "^1.13.0",
     "@vitest/coverage-v8": "^4.0.18",
     "@vue/test-utils": "^2.4.6",
+    "drizzle-kit": "^0.31.8",
     "eslint": "^9.39.2",
     "happy-dom": "^20.5.0",
+    "tsx": "^4.21.0",
     "typescript": "^5.9.3",
     "vitest": "^4.0.18",
     "vue-tsc": "^3.2.4"
