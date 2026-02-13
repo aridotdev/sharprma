@@ -49,7 +49,7 @@ Membangun sistem internal RMA (Return Merchandise Authorization) Claim dengan:
 
 ---
 
-## 2. TECH STACK | [Back to Top](#-table-of-contents)
+## 2. TECH STACK
 
 ### 2.1 Core Stack (WAJIB)
 
@@ -148,12 +148,114 @@ project-root/
 
 ### 3.3 Separation of Concerns
 
-| Layer | Tanggung Jawab | Tidak Boleh | Folder |
-| ----- | -------------- | ----------- | ------ |
-| API Route  | HTTP, Auth, Validasi input dasar | Business logic, Query DB | server/api/\* |
-| Service | Business logic, Koordinasi | Query DB langsung, HTTP stuff | server/services/\*.service.ts |
-| Repository | CRUD database | Business logic, Auth | server/repositories/\*.repo.ts |
+| Layer      | Tanggung Jawab                   | Tidak Boleh                   | Folder                         |
+| ---------- | -------------------------------- | ----------------------------- | ------------------------------ |
+| API Route  | HTTP, Auth, Validasi input dasar | Business logic, Query DB      | server/api/\*                  |
+| Service    | Business logic, Koordinasi       | Query DB langsung, HTTP stuff | server/services/\*.service.ts  |
+| Repository | CRUD database                    | Business logic, Auth          | server/repositories/\*.repo.ts |
 
 ---
+
+## 4. DATABASE DESIGN
+
+### 4.1 Design Principles
+
+- **Timestamp Format**: `integer` (Unix miliseconds) with Drizzle `mode: 'timestamp_ms'`
+- **Boolean Format**: `integer` with Drizzle `mode: 'boolean'` (0/1 → true/false)
+- **Enum Format**: `text` + Zod validation (no DB enum)
+- **Soft Delete Strategy**: Use flags/status instead of actual deletion
+- **Foreign Keys**: All integer type
+- **Audit Trail**: Append-only history log
+
+### 4.2 Timestamp Implementation
+
+```typescript
+// Standard timestamp field
+createdAt: integer({ mode: 'timestamp_ms' })
+  .notNull()
+  .default(sql`(unixepoch() * 1000)`),
+
+updatedAt: integer({ mode: 'timestamp_ms' })
+  .notNull()
+  .default(sql`(unixepoch() * 1000)`)
+  .$onUpdateFn(() => new Date())
+```
+
+### 4.3 Cascade Delete Strategy
+
+#### Vendor (Soft Delete)
+
+```
+Strategy: isActive flag
+- Vendor tidak benar-benar dihapus
+- isActive = false untuk non-aktifkan
+- Semua relasi TIDAK PERLU onDelete
+- Data historis tetap utuh
+```
+
+#### User (Soft Delete)
+
+```
+Strategy: isActive flag
+- User tidak benar-benar dihapus
+- isActive = false untuk non-aktifkan
+- Semua relasi TIDAK PERLU onDelete
+- Data historis tetap utuh
+- User non-aktif tidak bisa login
+```
+
+#### Claim (Soft Delete via Status)
+
+```
+Strategy: claimStatus = 'ARCHIVED'
+- Claim tidak benar-benar dihapus
+- "Hapus claim" = ubah status jadi ARCHIVED
+- Semua relasi TIDAK PERLU onDelete
+- Claim ARCHIVED tidak muncul di list aktif
+- Audit trail tetap lengkap
+```
+
+### 4.4 Master Tables
+
+#### 4.4.1 Vendor
+
+| Kolom     | Tipe    | Constraint       | Keterangan       |
+| --------- | ------- | ---------------- | ---------------- |
+| id        | integer | PK               | ID vendor        |
+| name      | text    | NOT NULL, UNIQUE | Nama vendor      |
+| isActive  | integer | NOT NULL         | Boolean          |
+| createdBy | integer | NOT NULL         | ID user          |
+| updatedBy | integer | NOT NULL         | ID user          |
+| createdAt | integer | NOT NULL         | Waktu dibuat     |
+| updatedAt | integer | NOT NULL         | Waktu ada update |
+
+INDEX :
+
+- UNIQUE (name)
+
+📌 CATATAN PENTING : data awal vendor : `MOKA`, `MTC`, `SDP`
+📌 CATATAN: Vendor menggunakan soft delete (isActive flag)
+
+#### 4.4.2 ProductModel
+
+| Kolom     | Tipe    | Constraint       | Keterangan       |
+| --------- | ------- | ---------------- | ---------------- |
+| id        | integer | PK               | ID product model |
+| name      | text    | NOT NULL, UNIQUE | Nama product     |
+| inch      | integer | NOT NULL         | Ukuran layar     |
+| vendorId  | integer | FK -> vendor.id  | ID vendor        |
+| isActive  | integer | NOT NULL         | Boolean          |
+| createdBy | integer | FK -> profile.id | ID user          |
+| updatedBy | integer | FK -> profile.id | ID user          |
+| createdAt | integer | NOT NULL         | Waktu dibuat     |
+| updatedAt | integer | NOT NULL         | Waktu ada update |
+
+INDEX :
+
+- UNIQUE (name)
+- INDEX (vendorId)
+
+📌 CATATAN: ProductModel menggunakan soft delete (isActive flag)
+
 
 
