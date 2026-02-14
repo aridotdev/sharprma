@@ -259,4 +259,115 @@ INDEX :
 
 ---
 
+#### 4.4.2 ProductModel
 
+| Kolom     | Tipe    | Constraint                            | Keterangan    |
+| --------- | ------- | ------------------------------------- | ------------- |
+| id        | integer | PK                                    | ID model      |
+| name      | text    | NOT NULL, UNIQUE                      | Nama Model    |
+| inch      | integer | NOT NULL                              | Ukuran inch   |
+| vendorId  | integer | FK -> vendor.id onDelete: 'restrict'  | Kode vendor   |
+| isActive  | integer | NOT NULL                              | Boolean       |
+| createdBy | integer | FK -> profile.id onDelete: 'restrict' | dibuat Oleh   |
+| updatedBy | integer | FK -> profile.id onDelete: 'restrict' | diupdate Oleh |
+| createdAt | integer | NOT NULL                              | Waktu dibuat  |
+| updatedAt | integer | NOT NULL                              | Waktu update  |
+
+INDEX :
+
+- UNIQUE (name)
+- INDEX (vendorId)
+
+#### 4.4.3 NotificationRef
+
+| Kolom            | Tipe    | Constraint                            | Keterangan                          |
+| ---------------- | ------- | ------------------------------------- | ----------------------------------- |
+| id               | integer | PK                                    | ID notificatin ref                  |
+| notificationCode | text    | UNIQUE                                | Kode notifikasi                     |
+| notificationDate | integer | NOT NULL                              | Tanggal notifikasi (Unix timestamp) |
+| modelName        | text    | NOT NULL                              | Nama model                          |
+| branch           | text    | NOT NULL                              | Cabang CS                           |
+| vendorId         | integer | FK -> vendor.id onDelete: 'restrict'  | Kode vendor                         |
+| status           | text    | NOT NULL                              | NEW / USED / EXPIRED                |
+| createdBy        | integer | FK -> profile.id onDelete: 'restrict' | dibuat oleh                         |
+| updatedBy        | integer | FK -> profile.id onDelete: 'restrict' | diupdate oleh                       |
+| createdAt        | integer | NOT NULL                              | Waktu dibuat                        |
+| updatedAt        | integer | NOT NULL                              | Waktu diupdate                      |
+
+INDEX :
+
+- UNIQUE (notificationCode)
+- INDEX (vendorId)
+- INDEX (notificationDate)
+- INDEX (status)
+
+#### 4.4.4 VendorPhotoRule
+
+| Kolom      | Tipe    | Constraint                            | Keterangan         |
+| ---------- | ------- | ------------------------------------- | ------------------ |
+| id         | integer | PK                                    | ID VendorPhotoRule |
+| vendorId   | integer | FK -> vendor.id onDelete: 'restrict'  | Kode vendor        |
+| photoType  | text    | NOT NULL                              |                    |
+| isRequired | integer | NOT NULL                              | Boolean            |
+| createdBy  | integer | FK -> profile.id onDelete: 'restrict' | dibuat oleh        |
+| updatedBy  | integer | FK -> profile.id onDelete: 'restrict' | diupdate oleh      |
+| createdAt  | integer | NOT NULL                              | Waktu dibuat       |
+| updatedAt  | integer | NOT NULL                              | Waktu ada update   |
+
+INDEX :
+
+- UNIQUE (vendorId, photoType)
+- INDEX (vendorId)
+
+📌 Validasi ENUM -> backend/Zod CLAIM / CLAIM_ZOOM / ODF / PANEL_SN / WO_PANEL / WO_PANEL_SN
+
+📌 Panduan :
+| photoType | MOKA | MTC | SDP |
+| ----------- | ---- | --- | --- |
+| CLAIM | ✅ | ✅ | ✅ |
+| CLAIM_ZOOM | ✅ | ✅ | ✅ |
+| ODF | ✅ | ✅ | ✅ |
+| PANEL_SN | ✅ | ✅ | ✅ |
+| WO_PANEL | ✅ | ❌ | ❌ |
+| WO_PANEL_SN | ✅ | ❌ | ❌ |
+
+#### 4.4.5 VendorFieldRule
+
+| Kolom      | Tipe    | Constraint                            | Keterangan                 |
+| ---------- | ------- | ------------------------------------- | -------------------------- |
+| id         | integer | PK                                    | ID VendorFieldRule         |
+| vendorId   | integer | FK --> vendor.id onDelete: 'restrict' | Kode vendor                |
+| fieldName  | text    | NOT NULL                              | odfNumber / version / week |
+| isRequired | integer | NOT NULL                              | Boolean                    |
+| createdBy  | integer | FK -> profile.id onDelete: 'restrict' | dibuat oleh                |
+| updatedBy  | integer | FK -> profile.id onDelete: 'restrict' | diupdate oleh              |
+| createdAt  | integer | NOT NULL                              | Waktu dibuat               |
+| updatedAt  | integer | NOT NULL                              | Waktu ada update           |
+
+INDEX :
+
+- UNIQUE (vendorId, fieldName)
+- INDEX (vendorId)
+
+📌 Panduan :
+| No | Field Name |MOKA |MTC |SDP |
+|----| ---------- |---- |--- |----|
+| 1 | odfNumber | ✅ |❌ | ❌ |
+| 2 | version | ✅ |❌ | ❌ |
+| 3 | week | ✅ |❌ | ❌ |
+
+#### 4.4.6 DefectMaster
+
+| Kolom     | Tipe    | Constraint                            | Keterangan       |
+| --------- | ------- | ------------------------------------- | ---------------- |
+| id        | integer | PK                                    | ID DefectMaster  |
+| name      | text    | NOT NULL, UNIQUE                      | nama defect      |
+| isActive  | integer | NOT NULL                              | Boolean          |
+| createdBy | integer | FK -> profile.id onDelete: 'restrict' | dibuat oleh      |
+| updatedBy | integer | FK -> profile.id onDelete: 'restrict' | diupdate oleh    |
+| createdAt | integer | NOT NULL                              | Waktu dibuat     |
+| updatedAt | integer | NOT NULL                              | Waktu ada update |
+
+INDEX :
+
+- UNIQUE (name)
