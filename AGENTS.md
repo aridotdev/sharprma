@@ -1,1 +1,0 @@
-# Guideline for AI Coding Agents

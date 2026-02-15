@@ -189,7 +189,6 @@ updatedAt: integer({ mode: 'timestamp_ms' })
 Strategy: isActive flag
 - Vendor tidak benar-benar dihapus
 - isActive = false untuk non-aktifkan
-- Semua relasi TIDAK PERLU onDelete
 - Data historis tetap utuh
 ```
 
@@ -199,7 +198,6 @@ Strategy: isActive flag
 Strategy: isActive flag
 - User tidak benar-benar dihapus
 - isActive = false untuk non-aktifkan
-- Semua relasi TIDAK PERLU onDelete
 - Data historis tetap utuh
 - User non-aktif tidak bisa login
 ```
@@ -210,7 +208,6 @@ Strategy: isActive flag
 Strategy: claimStatus = 'ARCHIVED'
 - Claim tidak benar-benar dihapus
 - "Hapus claim" = ubah status jadi ARCHIVED
-- Semua relasi TIDAK PERLU onDelete
 - Claim ARCHIVED tidak muncul di list aktif
 - Audit trail tetap lengkap
 ```
@@ -219,45 +216,24 @@ Strategy: claimStatus = 'ARCHIVED'
 
 #### 4.4.1 Vendor
 
-| Kolom     | Tipe    | Constraint       | Keterangan       |
-| --------- | ------- | ---------------- | ---------------- |
-| id        | integer | PK               | ID vendor        |
-| name      | text    | NOT NULL, UNIQUE | Nama vendor      |
-| isActive  | integer | NOT NULL         | Boolean          |
-| createdBy | integer | NOT NULL         | ID user          |
-| updatedBy | integer | NOT NULL         | ID user          |
-| createdAt | integer | NOT NULL         | Waktu dibuat     |
-| updatedAt | integer | NOT NULL         | Waktu ada update |
+| Kolom     | Tipe    | Constraint                            | Keterangan       |
+| --------- | ------- | ------------------------------------- | ---------------- |
+| id        | integer | PK                                    | ID vendor        |
+| name      | text    | NOT NULL, UNIQUE                      | Nama vendor      |
+| isActive  | integer | NOT NULL                              | Boolean          |
+| createdBy | integer | FK -> profile.id onDelete: 'restrict' | ID user          |
+| updatedBy | integer | FK -> profile.id onDelete: 'restrict' | ID user          |
+| createdAt | integer | NOT NULL                              | Waktu dibuat     |
+| updatedAt | integer | NOT NULL                              | Waktu ada update |
 
 INDEX :
-
+- INDEX (isActive)
+- INDEX (createdAt)
 - UNIQUE (name)
 
 📌 CATATAN PENTING : data awal vendor : `MOKA`, `MTC`, `SDP`
 📌 CATATAN: Vendor menggunakan soft delete (isActive flag)
 
-#### 4.4.2 ProductModel
-
-| Kolom     | Tipe    | Constraint       | Keterangan       |
-| --------- | ------- | ---------------- | ---------------- |
-| id        | integer | PK               | ID product model |
-| name      | text    | NOT NULL, UNIQUE | Nama product     |
-| inch      | integer | NOT NULL         | Ukuran layar     |
-| vendorId  | integer | FK -> vendor.id  | ID vendor        |
-| isActive  | integer | NOT NULL         | Boolean          |
-| createdBy | integer | FK -> profile.id | ID user          |
-| updatedBy | integer | FK -> profile.id | ID user          |
-| createdAt | integer | NOT NULL         | Waktu dibuat     |
-| updatedAt | integer | NOT NULL         | Waktu ada update |
-
-INDEX :
-
-- UNIQUE (name)
-- INDEX (vendorId)
-
-📌 CATATAN: ProductModel menggunakan soft delete (isActive flag)
-
----
 
 #### 4.4.2 ProductModel
 
@@ -274,9 +250,11 @@ INDEX :
 | updatedAt | integer | NOT NULL                              | Waktu update  |
 
 INDEX :
-
-- UNIQUE (name)
+- UNIQUE (name, vendorId)
 - INDEX (vendorId)
+- INDEX (isActive)
+- INDEX (createdAt)
+- INDEX (vendorId, isActive)
 
 #### 4.4.3 NotificationRef
 
@@ -300,6 +278,10 @@ INDEX :
 - INDEX (vendorId)
 - INDEX (notificationDate)
 - INDEX (status)
+- INDEX (createdAt)
+- INDEX (vendorId, status)
+- INDEX (vendorId, notificationDate)
+
 
 #### 4.4.4 VendorPhotoRule
 
@@ -318,6 +300,8 @@ INDEX :
 
 - UNIQUE (vendorId, photoType)
 - INDEX (vendorId)
+- INDEX (createdAt)
+- INDEX (isRequired)
 
 📌 Validasi ENUM -> backend/Zod CLAIM / CLAIM_ZOOM / ODF / PANEL_SN / WO_PANEL / WO_PANEL_SN
 
@@ -348,7 +332,8 @@ INDEX :
 
 - UNIQUE (vendorId, fieldName)
 - INDEX (vendorId)
-
+- INDEX (createdAt)
+  
 📌 Panduan :
 | No | Field Name |MOKA |MTC |SDP |
 |----| ---------- |---- |--- |----|
@@ -371,3 +356,5 @@ INDEX :
 INDEX :
 
 - UNIQUE (name)
+- INDEX (isActive)
+- INDEX (createdAt)
