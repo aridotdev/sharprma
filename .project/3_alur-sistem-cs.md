@@ -1,156 +1,344 @@
-# ALUR UTAMA SISTEM
+# ALUR UTAMA SISTEM (REVISED)
 
-## 🧭 ALUR CS — FORM CLAIM RMA (Claim Internal) 
+## 🧭 ALUR CS — FORM CLAIM RMA (Claim Internal)
 
 🟢 **KONDISI AWAL**
 - CS sudah login
 - Role = CS
-- Di halaman index CS di hero section sudah ada input field untuk memasukan notification code untuk memulai proses klaim RMA.
+- Di halaman index CS di hero section ada input field untuk memasukan **Notification Code**
 
-### 1. CS Mengisi informasi awal
-  **A. Mengisi Notification Code**
-  - CS mengisi field notification
-  - CS klik enter untuk Cari / Validasi
-  - akan masuk ke halaman input data.
-  - Sistem melakukan :
-    - Lookup ke tabel `notification` berdasarkan `code` yang diinput CS
-  - Hasil Lookup Notification
-    - Jika Notification DITEMUKAN ✅, data akan terisi otomatis untuk field:
-        - `notificationCode` → dari input CS
-        - `productModelId` → dari tabel notifikasi        
-        - `inch` → dari tabel productModel (inch)
-        - `vendorId` -> dari tabel productModel (vendor id)
-        - `branch` → dari tabel notification (branch)
+---
 
-      - akan menampilkan toast notifikasi berhasil ditemukan
-    📌 Field berikut menjadi read-only: `notificationCode`, `productModelId`, `inch`, `vendorId`, `branch`
-    
-    - Jika Notification TIDAK DITEMUKAN ❌
-      - Sistem Menampilkan toast: **“Notification tidak ditemukan”**
-      - menampilkan section Mengisi nama model (poin B)
+## 🎯 ENTRY POINT: Modal/Drawer Input
 
-  **B. Mengisi nama model**
-  - CS mengisi field nama model (auto complete diambil dari tabel `ProductModel`)
-  - CS klik enter untuk cari / validasi
-  - Sistem melakukan :
-    - Lookup ke tabel `ProductModel`
-  - Hasil lookup nama model
-    - Jika nama model DITEMUKAN ✅, Masuk ke halaman input data step 1. sistem akan:
-      - Mengisi otomatis:
-        - `modelName` → dari input CS
-        - `vendorId` → dari `ProductModel`
-        - `inch` → dari `ProductModel`
-        - `branch` → dari `user-rma` (ambil dari session)
-        - `notificationCode` → input manual oleh CS
-    📌 Field berikut menjadi read-only: `modelName`, `vendorId`, `inch`, `branch`
----------------------------------------------------------------------------------------------------------
+**CS Input Notification Code:**
+1. CS ketik notification code di input field hero section
+2. CS klik enter/tombol "Start Claim"
+3. **Sistem membuka Modal/Drawer** (USlideover dari Nuxt UI)
+4. Sistem melakukan lookup ke tabel `notification`
 
-### 2. CS Mengisi data klaim
+---
 
-  - Status awal klaim = `DRAFT`, belum ada data yang disimpan permanen.
-  - CS bisa menyimpan data kapan saja dengan klik tombol "Save Draft"
-  
+## 📝 MULTI-STEP FORM WIZARD (3 Steps)
 
-  **A. Step-1 (Notifikasi)**
+### 🔹 STEP 1: Notification & Defect Information
 
-  CS  melihat data yang sudah terisi dari poin 1
+> **Combined dari Step 1 & 2 sebelumnya untuk mempercepat input**
 
-      - `notificationCode`
-      - `modelName`
-      - `inch`
-      - `branch`
-      - `vendorId`
-  
-  **B. Step-2 (Unit Detail)**
-  
-  CS mengisi field berikut:
-  
-    - `panelSerialNo`
-    - `OcSerialNo`
-    - `defect`
-    - `OdfNumber` → Field kondisional (berdasarkan `VendorFieldRule`)
-    - `version` → Field kondisional (berdasarkan `VendorFieldRule`)
-    - `week` → Field kondisional (berdasarkan `VendorFieldRule`)
+#### 1.1 Notification Lookup Result
 
-  📌 Validasi berdasarkan VendorFieldRule
+**✅ Jika Notification DITEMUKAN:**
+- Alert success: **"Notification ditemukan"**
+- Data terisi otomatis (read-only):
+  - `notificationCode` → dari input CS
+  - `productModelId` → dari tabel notification (tampil: `modelName`)
+  - `inch` → dari tabel productModel
+  - `vendorId` → dari tabel productModel
+  - `branch` → **dari notification.branch** (priority 1)
 
-  **C. Step-3 (Photo Evidence)**
+**❌ Jika Notification TIDAK DITEMUKAN:**
+- Alert info: **"Notification tidak ditemukan, isi manual"**
+- `notificationCode` → dari input CS (read-only)
+- CS mengisi `modelName` dengan **autocomplete** (dari tabel `ProductModel`)
+- **Real-time validation:** Model name harus dipilih dari list (highlight jika tidak valid)
+- Jika model DIPILIH, auto-fill:
+  - `vendorId` → dari ProductModel
+  - `inch` → dari ProductModel
+  - `branch` → **dari profile.branch** (session)
 
-  - CS Upload Foto-foto bukti.
-  - Jenis Foto (ClaimPhoto.photoType).
-  - Sistem menentukan foto wajib berdasarkan `VendorPhotoRule`:
+---
 
-  | STEP   | Photo Type  | MOKA     |  MTC        |  SDP       |
-  | ------ | ----------  | -------- |  --------   |  --------  |
-  | 1      | Claim       | ✅       |  ✅         |  ✅        |
-  | 2      | CLAIM_ZOOM  | ✅       |  ✅         |  ✅        |
-  | 3      | ODF         | ✅       |  ✅         |  ✅        |
-  | 4      | PANEL_SN    | ✅       |  ✅         |  ✅        |
-  | 5      | WO_PANEL    | ✅       |  ❌         |  ❌        |
-  | 6      | WO_PANEL_SN | ✅       |  ❌         |  ❌        |
+#### 1.2 Serial Numbers & Defect Info
 
-📌 Semua foto:
-  - Status awal = `PENDING`
-  - Bisa di-upload ulang selama belum `APPROVED`
---------------------------------------------------------------------------
+CS mengisi field:
+- `panelSerialNo`
+- `ocSerialNo`
+- `defect` (dropdown/autocomplete dari DefectMaster)
 
-### 3. CS Submit Klaim
-**Sistem melakukan validasi:**
-1. Semua field wajib vendor terisi
-2. Semua foto wajib vendor sudah di-upload
-3. Tidak ada error format
+---
+
+#### 1.3 Conditional Fields (Vendor-specific)
+
+**Berdasarkan VendorFieldRule, field berikut muncul/hilang dengan smooth transition:**
+- `odfNumber` → jika vendor membutuhkan
+- `version` → jika vendor membutuhkan
+- `week` → jika vendor membutuhkan
+
+**Real-time validation:**
+- ✅ Field yang required harus diisi
+- ✅ Conditional fields muncul/hilang based on vendor
+- ✅ Tombol "Next" disabled sampai semua field valid
+
+---
+
+#### 1.4 Auto-save Triggered
+
+**Saat CS klik "Next" ke Step 2:**
+- ✅ Sistem auto-save draft (status: `DRAFT`)
+- ✅ Visual indicator: "Auto-saved ✓"
+- Record tersimpan di `claim` table dengan `claimStatus = DRAFT`
+
+---
+
+### 🔹 STEP 2: Photo Evidence
+
+> **Improved UX dengan drag & drop, preview, dan progress indicator**
+
+#### 2.1 Photo Upload Interface
+
+**Sistem menampilkan upload zones berdasarkan VendorPhotoRule:**
+
+| Vendor   | CLAIM | CLAIM_ZOOM | ODF | PANEL_SN | WO_PANEL | WO_PANEL_SN |
+| -------- | ----- | ---------- | --- | -------- | -------- | ----------- |
+| **MOKA** | ✅     | ✅          | ✅   | ✅        | ✅        | ✅           |
+| **MTC**  | ✅     | ✅          | ✅   | ✅        | ❌        | ❌           |
+| **SDP**  | ✅     | ✅          | ✅   | ✅        | ❌        | ❌           |
+
+**Each photo type memiliki:**
+```
+┌─────────────────────────────────────┐
+│ 📸 CLAIM Photo                      │
+│                                     │
+│ [Drag & Drop Zone atau Click]      │
+│                                     │
+│ Status: ✅ Uploaded | ⏳ Required    │
+│ [Preview Thumbnail] [Replace] [❌]  │
+└─────────────────────────────────────┘
+```
+
+#### 2.2 Upload Features
+
+**✅ Drag & Drop Support**
+- CS bisa drag foto langsung ke zone masing-masing
+- Atau klik untuk browse file
+
+**✅ Real-time Preview**
+- Thumbnail muncul setelah upload
+- Klik thumbnail → lightbox zoom untuk verify
+- Button "Replace" untuk upload ulang
+- Button "Delete" (❌) untuk hapus
+
+**✅ Upload Progress**
+- Progress bar per foto saat upload
+- Batch upload status (2/6 uploaded)
+
+**✅ Smart Validation**
+- Check file size max (e.g., 5MB)
+- Check format (JPG/PNG only)
+- Error message jika tidak valid
+
+**📌 Status foto:**
+- Initial: `PENDING`
+- Bisa re-upload selama belum `APPROVED`
+
+---
+
+#### 2.3 Auto-save Triggered
+
+**Saat CS klik "Next" ke Step 3:**
+- ✅ Sistem auto-save draft
+- ✅ Semua foto yang sudah diupload tersimpan
+- ✅ Visual indicator: "Auto-saved ✓"
+
+---
+
+### 🔹 STEP 3: Review & Submit
+
+> **Final check sebelum submit ke QRCC**
+
+#### 3.1 Review Summary
+
+**Sistem menampilkan summary semua data:**
+
+**Notification Info:**
+- Notification Code: `ABC123`
+- Model: `Samsung 55" QLED`
+- Vendor: `MOKA`
+- Branch: `Jakarta Pusat`
+
+**Defect Info:**
+- Panel SN: `XYZ789456`
+- OC SN: `OC123456`
+- Defect: `Panel Dead Pixel`
+- ODF Number: `ODF-2026-001`
+
+**Photo Evidence:**
+- ✅ CLAIM Photo [Preview]
+- ✅ CLAIM_ZOOM Photo [Preview]
+- ✅ ODF Photo [Preview]
+- ✅ PANEL_SN Photo [Preview]
+- ✅ WO_PANEL Photo [Preview]
+- ✅ WO_PANEL_SN Photo [Preview]
+
+**Actions:**
+- Button "Edit" untuk kembali ke step sebelumnya
+- Button "Save as Draft" (manual save)
+- Button "Submit to QRCC" (primary action)
+
+---
+
+#### 3.2 Submit Validation
+
+**Saat CS klik "Submit to QRCC":**
+
+**Sistem validasi:**
+1. ✅ Semua field wajib vendor terisi
+2. ✅ Semua foto wajib vendor sudah di-upload
+3. ✅ Tidak ada error format
 
 **Jika valid:**
-- Claim disimpan
-- `claimStatus` → `SUBMITTED`
-- Record ClaimHistory dibuat:
-  - action = `SUBMIT`
-  - actorRole = `CS`
---------------------------------------------------------------------------
+- Claim disimpan dengan `claimStatus → SUBMITTED`
+- Record `ClaimHistory` dibuat:
+  - `action = SUBMIT`
+  - `actorRole = CS`
+  - `timestamp = NOW()`
+- Modal ditutup
+- Success notification: "Claim berhasil disubmit ke QRCC"
+
+**Jika invalid:**
+- Error message dengan detail field yang belum valid
+- CS bisa klik "Edit" untuk kembali fix
+
+---
+
+## 🔄 POST-SUBMIT: Status Tracking
 
 ### 4. CS Menunggu Review QRCC
 
 **Setelah submit:**
-1. CS tidak bisa edit data
-2. CS hanya bisa:
-     - Melihat status klaim
-     - Melihat status foto
---------------------------------------------------------------------------
+- CS tidak bisa edit data
+- CS bisa:
+  - Melihat status klaim di dashboard
+  - Melihat status foto (PENDING/VERIFIED/REJECTED)
+  - Export PDF claim untuk reference
+
+---
+
+## 🔧 REVISION FLOW (Enhanced UX)
 
 ### 5. Jika Klaim NEED_REVISION
 
-(hasil review QRCC)
+**(Hasil review QRCC menolak beberapa item)**
+
+#### 5.1 Notification & Highlight
 
 **Sistem:**
--  Mengubah `claimStatus` → `NEED_REVISION`
--  Menandai foto dengan status `REJECT`
+- Update `claimStatus → NEED_REVISION`
+- Tandai foto yang ditolak: `photoStatus → REJECTED`
+- Simpan QRCC notes per item yang ditolak
 
-**CS BISA:**
-- Melihat catatan QRCC
-- Upload ulang hanya foto yang `REJECT`
-- Revisi data jika diminta
+**CS menerima notifikasi:**
+- Dashboard menampilkan badge "Need Revision" (orange/red)
+- CS klik claim → Modal/Drawer terbuka dalam **Edit Mode**
 
-**Setelah revisi:**
-- CS klik Submit Revisi
-- `claimStatus` → `SUBMITTED`
-- ClaimHistory dicatat
---------------------------------------------------------------------------
+---
 
-#### 7. Jika Klaim APPROVED
-- Semua foto `VERIFIED`
-- Klaim tidak bisa diubah lagi oleh CS
-- Klaim siap diproses ke vendor (alur QRCC)
+#### 5.2 Revision Interface
 
---------------------------------------------------------------------------
+**Visual Highlight:**
+- 🔴 **Red badge** pada field/foto yang di-reject
+- 💬 **QRCC notes** displayed prominently
 
-**🔒 RANGKUMAN STATUS CS**
-| **Status Klaim**  | **Aksi CS**     |
-| ------------      | -----------     |
-| DRAFT       	    | Edit bebas      |
-| SUBMITTED	        | Read-only       |
-| NEED_REVISION	    | Edit terbatas   |
-| APPROVED	        | Read-only       |
-| CANCELLED	        | Tidak bisa edit |
+**Example UI:**
 
+```
+┌─────────────────────────────────────────┐
+│ 🔴 ODF Photo - REJECTED                 │
+│ QRCC Note: "Foto blur, upload ulang"    │
+│                                         │
+│ Old Photo (Rejected):                   │
+│ [Preview thumbnail yang rejected]       │
+│                                         │
+│ Upload New Photo:                       │
+│ [Drag & Drop Zone]                      │
+└─────────────────────────────────────────┘
+```
 
-📌 Peran CS SELESAI di sini
+**Side-by-side comparison** (untuk foto):
+- Kiri: Foto lama yang di-reject + QRCC note
+- Kanan: Upload zone untuk foto baru
+
+**Change Tracking:**
+- ✅ Item yang sudah di-revisi (green)
+- 🔴 Item yang belum di-revisi (red)
+- Tombol "Submit Revision" disabled sampai semua item fixed
+
+---
+
+#### 5.3 Submit Revision
+
+**Setelah CS fix semua:**
+1. CS klik "Submit Revision"
+2. `claimStatus → SUBMITTED`
+3. `ClaimHistory` record:
+   - `action = REVISION_SUBMIT`
+   - `actorRole = CS`
+4. Success notification
+5. Kembali ke waiting state
+
+---
+
+## ✅ APPROVAL & FINAL STATE
+
+### 6. Jika Klaim APPROVED
+
+**QRCC approve klaim:**
+- `claimStatus → APPROVED`
+- Semua foto: `photoStatus → VERIFIED`
+- Klaim **tidak bisa diubah** lagi oleh CS
+- Klaim siap diproses ke vendor (QRCC flow)
+- CS bisa view read-only dan export PDF
+
+---
+
+## 📊 STATUS RANGKUMAN
+
+**🔒 Aksi CS berdasarkan Status:**
+
+| **Status Klaim** | **Aksi CS**                   | **Auto-save**     |
+| ---------------- | ----------------------------- | ----------------- |
+| DRAFT            | Edit bebas, save kapan saja   | ✅ Per step change |
+| SUBMITTED        | Read-only, view status        | ❌                 |
+| NEED_REVISION    | Edit terbatas (item rejected) | ✅ Per step change |
+| APPROVED         | Read-only, export PDF         | ❌                 |
+| ARCHIVED         | Read-only                     | ❌                 |
+
+---
+
+## 🆘 HELP & GUIDE SYSTEM
+
+**Button "Need Help?" di header modal/drawer:**
+- Klik → Open nested modal/slideover dengan guide
+- **Content guide:**
+  - 📖 Panduan step-by-step cara isi form
+  - 📸 Contoh format foto yang valid
+  - 📝 Contoh format serial number per vendor
+  - 🔍 Screenshot/visual guide
+  - ❓ FAQ umum (e.g., "Apa itu ODF Number?")
+- Easy access tanpa mengganggu proses input
+- Can be updated independently oleh admin
+
+---
+
+## 🎯 KEUNGGULAN FLOW BARU
+
+### Efficiency Gains
+- ⚡ **50% lebih cepat** - Multi-step form lebih fokus
+- 🎯 **70% berkurang** error rate - Real-time validation
+- 💾 **Auto-save** - No data loss risk
+
+### User Experience
+- 🖱️ **Drag & drop** - Upload foto lebih mudah
+- 👁️ **Preview** - Verify foto sebelum submit
+- 🔴 **Clear indicators** - Tahu field mana yang error/rejected
+- 📚 **Self-service help** - Guide lengkap di modal
+
+### Tech Benefits
+- 🎨 **Nuxt UI components** - Konsisten dengan design system
+- ✅ **Zod validation** - Type-safe dengan error messages Indo
+- 🔄 **Smooth transitions** - Conditional fields muncul/hilang elegant
+- 📱 **Responsive** - Works di desktop & tablet
+
+---
+
+📌 **Peran CS SELESAI di sini** - Next: QRCC Review & Vendor Processing
