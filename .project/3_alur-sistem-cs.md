@@ -9,13 +9,15 @@
 
 ---
 
-## 🎯 ENTRY POINT: Modal/Drawer Input
+## 🎯 ENTRY POINT: Halaman Create Claim
 
 **CS Input Notification Code:**
 1. CS ketik notification code di input field hero section
 2. CS klik enter/tombol "Start Claim"
-3. **Sistem membuka Modal/Drawer** (USlideover dari Nuxt UI)
+3. **Sistem melakukan redirect ke halaman `/cs/claim/create?notification=<code>`**
 4. Sistem melakukan lookup ke tabel `notification`
+
+> **Catatan:** Halaman `/cs/claim/create` adalah dedicated page untuk multi-step form wizard. URL menyimpan `notificationCode` sebagai query param sehingga halaman bisa di-refresh tanpa kehilangan context awal.
 
 ---
 
@@ -192,8 +194,8 @@ CS mengisi field:
   - `action = SUBMIT`
   - `actorRole = CS`
   - `timestamp = NOW()`
-- Modal ditutup
-- Success notification: "Claim berhasil disubmit ke QRCC"
+- Sistem redirect kembali ke **`/cs`** (dashboard CS)
+- Success toast notification: "Claim berhasil disubmit ke QRCC"
 
 **Jika invalid:**
 - Error message dengan detail field yang belum valid
@@ -229,7 +231,7 @@ CS mengisi field:
 
 **CS menerima notifikasi:**
 - Dashboard menampilkan badge "Need Revision" (orange/red)
-- CS klik claim → Modal/Drawer terbuka dalam **Edit Mode**
+- CS klik claim → Sistem redirect ke **`/cs/claim/:id/edit`** dalam **Edit Mode**
 
 ---
 
@@ -307,8 +309,8 @@ CS mengisi field:
 
 ## 🆘 HELP & GUIDE SYSTEM
 
-**Button "Need Help?" di header modal/drawer:**
-- Klik → Open nested modal/slideover dengan guide
+**Button "Need Help?" di header halaman form:**
+- Klik → Open guide page (new tab)
 - **Content guide:**
   - 📖 Panduan step-by-step cara isi form
   - 📸 Contoh format foto yang valid
@@ -331,7 +333,7 @@ CS mengisi field:
 - 🖱️ **Drag & drop** - Upload foto lebih mudah
 - 👁️ **Preview** - Verify foto sebelum submit
 - 🔴 **Clear indicators** - Tahu field mana yang error/rejected
-- 📚 **Self-service help** - Guide lengkap di modal
+- 📚 **Self-service help** - Guide lengkap via dedicated guide page
 
 ### Tech Benefits
 - 🎨 **Nuxt UI components** - Konsisten dengan design system

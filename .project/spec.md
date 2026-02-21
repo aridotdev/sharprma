@@ -1,7 +1,7 @@
 # RMA CLAIM SYSTEM - FINAL SPECIFICATION DOCUMENT
 
 > **Status**: FINALIZED & LOCKED ✅  
-> **Last Update**: 2026-02-07  
+> **Last Update**: 2026-02-22  
 > **Purpose**: Single source of truth untuk development
 
 ---
@@ -9,156 +9,26 @@
 ## 📋 TABLE OF CONTENTS
 
 1. [Project Overview](#1-project-overview)
-2. [Tech Stack](#2-tech-stack)
-3. [System Architecture](#system-architecture)
-4. [Database Design](#database-design)
-5. [Authentication & Authorization](#authentication--authorization)
-6. [Business Logic & Flows](#business-logic--flows)
-7. [API Endpoints Specification](#api-endpoints-specification)
-8. [File Management](#file-management)
-9. [Reports & Analytics](#reports--analytics)
-10. [Development Guidelines](#development-guidelines)
+2. [User Role & Pages](#2-user-role-pages)
+3. [Database Design](#3-database-design)
+4. [Flow](#4-flow)
+
 
 ---
 
 ## 1. PROJECT OVERVIEW
 
-### 1.1 Tujuan Sistem
+refer to [1_project.md](1_project.md)
 
-Membangun sistem internal RMA (Return Merchandise Authorization) Claim dengan:
+## 2. USER ROLE & PAGES
 
-- Alur CS → QRCC → Vendor
-- Validasi foto & data berbasis vendor
-- Audit trail lengkap
-- Reporting & analytics
-
-### 1.2 User Roles & Capabilities
-
-| Role           | Capabilities    |
-| -------------- | --------------- |
-| **CS**         | Create & revisi claim, Upload foto, View status |
-| **QRCC**       | Review & verify foto, Approve/reject claim, Generate vendor claim, Analytics & reports, CRUD master data |
-| **MANAGEMENT** | View reports & analytics |
-| **ADMIN**      | Full access + user management |
-
-### 1.3 Target
-
-- Internal company use
-- Small user base (< 100 users)
-- Ready for demo & production
+refer to [2_user-and-role.md](2_user-and-role.md)
 
 ---
 
-## 2. TECH STACK
+## 3. DATABASE DESIGN
 
-### 2.1 Core Stack (WAJIB)
-
-```
-Frontend & Backend: Nuxt 4
-UI Components: Nuxt UI
-Icons: iconify-json/lucide
-Database: SQLite
-ORM: Drizzle ORM
-Language: TypeScript
-Auth: Better-Auth
-Validation: Zod
-```
-
-### 2.2 Utilities
-
-```
-Date/Time: date-fns
-Charts: unovis/vue
-Excel: xlsx
-Image Processing: sharp
-Environment: dotenv
-Styling: tailwindcss
-Linting: eslint
-```
-
-### 2.3 Commands
-
-```bash
-npm run dev              # Development server
-npm run build            # Production build
-npm run preview          # nuxt preview
-npm run postinstall      # nuxt prepare
-npm run lint             # ESLint checking
-npm run lint:fix         # ESLint Error Fixing
-npm run typecheck        # TypeScript validation
-npm run test             # Run all tests (Vitest)
-npm run db:generate      # Generate migrations
-npm run db:migrate       # Apply migrations
-npm run db:studio        # Database studio
-```
-
----
-
-## 3. SYSTEM ARCHITECTURE
-
-### 3.1 Folder Structure
-
-```
-project-root/
-├── app
-│   ├── assets/                 # main directory of the Nuxt application
-│   ├── components/
-│   ├── pages/
-│   ├── composables/
-│   ├── app.config.ts
-│   └── app.vue
-├── server/
-│   ├── api/                    # API endpoints
-│   │   ├── auth/               # Better-auth routes
-│   │   ├── claims/             # Claim CRUD
-│   │   ├── photos/             # Photo upload/review
-│   │   ├── master/             # Master data endpoints
-│   │   └── reports/            # Analytics & reports
-│   ├── database/
-│   │   ├── schema/             # Drizzle schemas
-│   │   │   └── index.ts        # Export all
-│   │   ├── migrations/         # Auto-generated
-│   │   └── index.ts            # DB connection
-│   ├── middleware/             # Auth, role checking
-│   ├── repositories/           # DB operations
-│   ├── services/               # Business logic
-│   └── utils/                  # Helpers, validators
-├── shared/                     # Shared between client & server
-│   ├── types/                  # TypeScript types
-│   ├── constants/              # Enums, configs
-│   └── schemas/                # Zod schemas
-├── public/
-│   └── uploads/
-│       └── claims/             # Photo storage
-│           ├── *.jpg           # Original photos
-│           └── thumbs/         # Thumbnails
-└── .docs/                      # Project documentation
-```
-
-### 3.2 Code Style Guidelines
-
-- **Formatting**: 2-space indentation, LF line endings
-- **Vue Components**: `<script setup lang="ts">` with Composition API
-- **Imports**: Relative imports only - Vue/Nuxt → third-party → local
-- **Database**: Drizzle ORM with SQLite
-- **Validation**: Zod schema validation untuk semua API routes
-- **Error Handling**: `createError()` with proper status codes
-- **File Naming**: PascalCase for components, camelCase for utils/composables
-- **Testing**: Vitest with `.test.ts`, `.spec.ts` suffixes
-
-### 3.3 Separation of Concerns
-
-| Layer      | Tanggung Jawab                   | Tidak Boleh                   | Folder                         |
-| ---------- | -------------------------------- | ----------------------------- | ------------------------------ |
-| API Route  | HTTP, Auth, Validasi input dasar | Business logic, Query DB      | server/api/\*                  |
-| Service    | Business logic, Koordinasi       | Query DB langsung, HTTP stuff | server/services/\*.service.ts  |
-| Repository | CRUD database                    | Business logic, Auth          | server/repositories/\*.repo.ts |
-
----
-
-## 4. DATABASE DESIGN
-
-### 4.1 Design Principles
+### 3.1 Design Principles
 
 - **Timestamp Format**: `integer` (Unix miliseconds) with Drizzle `mode: 'timestamp_ms'`
 - **Boolean Format**: `integer` with Drizzle `mode: 'boolean'` (0/1 → true/false)
@@ -167,7 +37,7 @@ project-root/
 - **Foreign Keys**: All integer type
 - **Audit Trail**: Append-only history log
 
-### 4.2 Timestamp Implementation
+### 3.2 Timestamp Implementation
 
 ```typescript
 // Standard timestamp field
@@ -181,7 +51,7 @@ updatedAt: integer({ mode: 'timestamp_ms' })
   .$onUpdateFn(() => new Date())
 ```
 
-### 4.3 Cascade Delete Strategy
+### 3.3 Cascade Delete Strategy
 
 #### Vendor (Soft Delete)
 
@@ -212,9 +82,9 @@ Strategy: claimStatus = 'ARCHIVED'
 - Audit trail tetap lengkap
 ```
 
-### 4.4 Master Tables
+### 3.4 Master Tables
 
-#### 4.4.1 Vendor
+#### 3.4.1 Vendor
 
 | Kolom     | Tipe    | Constraint                            | Keterangan       |
 | --------- | ------- | ------------------------------------- | ---------------- |
@@ -235,7 +105,7 @@ INDEX :
 📌 CATATAN: Vendor menggunakan soft delete (isActive flag)
 
 
-#### 4.4.2 ProductModel
+#### 3.4.2 ProductModel
 
 | Kolom     | Tipe    | Constraint                            | Keterangan    |
 | --------- | ------- | ------------------------------------- | ------------- |
@@ -256,7 +126,7 @@ INDEX :
 - INDEX (createdAt)
 - INDEX (vendorId, isActive)
 
-#### 4.4.3 NotificationRef
+#### 3.4.3 NotificationMaster
 
 | Kolom            | Tipe    | Constraint                            | Keterangan                          |
 | ---------------- | ------- | ------------------------------------- | ----------------------------------- |
@@ -283,7 +153,7 @@ INDEX :
 - INDEX (vendorId, notificationDate)
 
 
-#### 4.4.4 VendorPhotoRule
+#### 3.4.4 VendorPhotoRule
 
 | Kolom      | Tipe    | Constraint                            | Keterangan         |
 | ---------- | ------- | ------------------------------------- | ------------------ |
@@ -306,16 +176,16 @@ INDEX :
 📌 Validasi ENUM -> backend/Zod CLAIM / CLAIM_ZOOM / ODF / PANEL_SN / WO_PANEL / WO_PANEL_SN
 
 📌 Panduan :
-| photoType | MOKA | MTC | SDP |
+| photoType   | MOKA | MTC | SDP |
 | ----------- | ---- | --- | --- |
-| CLAIM | ✅ | ✅ | ✅ |
-| CLAIM_ZOOM | ✅ | ✅ | ✅ |
-| ODF | ✅ | ✅ | ✅ |
-| PANEL_SN | ✅ | ✅ | ✅ |
-| WO_PANEL | ✅ | ❌ | ❌ |
-| WO_PANEL_SN | ✅ | ❌ | ❌ |
+| CLAIM       | ✅    | ✅   | ✅   |
+| CLAIM_ZOOM  | ✅    | ✅   | ✅   |
+| ODF         | ✅    | ✅   | ✅   |
+| PANEL_SN    | ✅    | ✅   | ✅   |
+| WO_PANEL    | ✅    | ❌   | ❌   |
+| WO_PANEL_SN | ✅    | ❌   | ❌   |
 
-#### 4.4.5 VendorFieldRule
+#### 3.4.5 VendorFieldRule
 
 | Kolom      | Tipe    | Constraint                            | Keterangan                 |
 | ---------- | ------- | ------------------------------------- | -------------------------- |
@@ -335,13 +205,13 @@ INDEX :
 - INDEX (createdAt)
   
 📌 Panduan :
-| No | Field Name |MOKA |MTC |SDP |
-|----| ---------- |---- |--- |----|
-| 1 | odfNumber | ✅ |❌ | ❌ |
-| 2 | version | ✅ |❌ | ❌ |
-| 3 | week | ✅ |❌ | ❌ |
+| No  | Field Name | MOKA | MTC | SDP |
+| --- | ---------- | ---- | --- | --- |
+| 1   | odfNumber  | ✅    | ❌   | ❌   |
+| 2   | version    | ✅    | ❌   | ❌   |
+| 3   | week       | ✅    | ❌   | ❌   |
 
-#### 4.4.6 DefectMaster
+#### 3.4.6 DefectMaster
 
 | Kolom     | Tipe    | Constraint                            | Keterangan       |
 | --------- | ------- | ------------------------------------- | ---------------- |
@@ -358,3 +228,233 @@ INDEX :
 - UNIQUE (name)
 - INDEX (isActive)
 - INDEX (createdAt)
+
+---
+
+### 3.5 Transaction Table
+
+#### 3.5.1 Claim
+
+| Kolom            | Tipe    | Constraint       | Keterangan                          |
+| ---------------- | ------- | ---------------- | ----------------------------------- |
+| id               | integer | PK               | ID Klaim                            |
+| claimNumber      | text    | NOT NULL, UNIQUE | Kode Klaim                          |
+| notificationCode | text    | NOT NULL         | Nomor Notifikasi                    |
+| notificationDate | Integer | NOT NULL         | Tanggal Notifikasi (Unix timestamp) |
+| modelName        | text    | NOT NULL         | Nama model                          |
+| vendorId         | integer | FK -> vendor.id  | Kode vendor                         |
+| inch             | text    | NOT NULL         | Ukuran inch                         |
+| branch           | text    | NOT NULL         | Nama cabang                         |
+| odfNumber        | text    |                  | Nomor Odf                           |
+| panelSerialNo    | text    | NOT NULL         | Nomor seri panel                    |
+| ocSerialNo       | text    | NOT NULL         | Nomor seri oc                       |
+| defect           | text    | NOT NULL         | Nama kerusakan                      |
+| version          | text    |                  | Nomor versi                         |
+| week             | text    |                  | Kode Week                           |
+| claimStatus      | text    | NOT NULL         | Status Klaim                        |
+| submittedBy      | integer | FK -> profile.id | Id CS                               |
+| createdAt        | integer | NOT NULL         | Waktu dibuat                        |
+| updatedAt        | integer | NOT NULL         | Waktu ada update                    |
+
+INDEX :
+
+- UNIQUE (claimNumber)
+- INDEX (vendorId)
+- INDEX (claimStatus)
+- INDEX (submittedBy)
+- INDEX (vendorId, claimStatus )
+
+📌 CATATAN PENTING :
+
+- Generate claimNumber (CL-{YYYYMMDD}-{Sequence}).
+- branch sanpshot dari user_rma.branch || notificationRef.branch
+- CLAIM_STATUSES = ['DRAFT', 'SUBMITTED', 'IN_REVIEW', 'NEED_REVISION', 'APPROVED', 'ARCHIVED']
+- Claim menggunakan soft delete via claimStatus = ARCHIVED
+
+---
+
+#### 3.5.2 ClaimPhoto
+
+| Kolom         | Tipe    | Constraint                          | Keterangan       |
+| ------------- | ------- | ----------------------------------- | ---------------- |
+| id            | integer | PK                                  | ID Klaim foto    |
+| claimId       | integer | FK -> claim.id onDelete: 'restrict' | Kode Klaim       |
+| photoType     | text    | NOT NULL                            | Tipe/nama foto   |
+| filePath      | text    | NOT NULL                            | File path foto   |
+| thumbnailPath | text    |                                     | Thumbnail path   |
+| status        | text    | NOT NULL                            | Status foto      |
+| reviewNote    | text    |                                     | Catatan review   |
+| createdAt     | integer | NOT NULL                            | Waktu dibuat     |
+| updatedAt     | integer | NOT NULL                            | Waktu ada update |
+
+INDEX :
+
+- UNIQUE (claimId, photoType)
+- INDEX (claimId)
+
+Photo Upload API
+
+- File Storage: ./public/uploads/claims/
+- Ensure directory creation.
+- Unique filename generation: {claimId}_{photoType}_{timestamp}.jpg.
+- Nuxt/H3: Use readMultipartFormData.
+- Tambahkan Validasi File :
+  const ALLOWED*TYPES = ['image/jpeg', 'image/png']
+  const MAX_SIZE = 5 * 1024 \_ 1024 // 5MB
+
+  // Server-side validation
+  if (!ALLOWED_TYPES.includes(file.type)) {
+  throw createError({ statusCode: 400, message: 'Invalid file type' })
+  }
+
+- Tambahkan Security
+  // Jangan trust user input untuk path
+  const sanitizedFilename = `${claimId}_${photoType}_${Date.now()}.jpg`
+  const safePath = join(UPLOAD_DIR, sanitizedFilename)
+
+  // Prevent directory traversal
+  if (!safePath.startsWith(UPLOAD_DIR)) {
+  throw createError({ statusCode: 400, message: 'Invalid path' })
+  }
+
+- Tambahkan Thumbnail generation (library sharp node.js)
+- Thumbnail size 300x300px
+- enum photoType = ["CLAIM", "CLAIM_ZOOM", "ODF", "PANEL_SN", "WO_PANEL", "WO_PANEL_SN"]
+
+---
+
+#### 3.5.3 VendorClaim
+
+| Kolom          | Tipe    | Constraint       | Keterangan                             |
+| -------------- | ------- | ---------------- | -------------------------------------- |
+| id             | integer | PK               | ID vendor klaim                        |
+| vendorClaimNo  | text    | UNIQUE           | No klaim vendor                        |
+| vendorId       | integer | FK -> vendor.id  | Kode vendor                            |
+| submittedAt    | integer | NOT NULL         | Waktu kirim ke vendor (Unix timestamp) |
+| reportSnapshot | text    | NOT NULL         | json/file                              |
+| status         | text    | NOT NULL         | json/file                              |
+| createdBy      | integer | FK -> profile.id | Dibuat oleh                            |
+| createdAt      | integer | NOT NULL         | Waktu dibuat                           |
+| updatedAt      | integer | NOT NULL         | Waktu ada update                       |
+
+📌 CATATAN PENTING :
+
+- enum status ['DRAFT', 'CREATED', 'PROCESSING', 'COMPLETED']
+- Generate vendorClaimNo (VC-{YYYYMMDD}-{Sequence}).
+
+---
+
+#### 3.5.4 VendorClaimItem
+
+| Kolom            | Tipe    | Constraint                               | Keterangan                       |
+| ---------------- | ------- | ---------------------------------------- | -------------------------------- |
+| id               | integer | PK                                       | ID item klaim vendor             |
+| vendorClaimId    | integer | FK -> vendorClaim.id onDelete: 'cascade' | ID klaim vendor                  |
+| claimId          | integer | FK -> claim.id onDelete: 'restrict'      | ID klaim                         |
+| vendorDecision   | text    | NOT NULL                                 | Keputusan vendor                 |
+| compensation     | integer |                                          | Kompensasi                       |
+| vendorDecisionBy | integer | FK -> profile.id                         | Dibuat oleh                      |
+| vendorDecisionAt | integer |                                          | Waktu keputusan (Unix timestamp) |
+| createdAt        | integer | NOT NULL                                 | Waktu dibuat                     |
+| updatedAt        | integer |                                          | Waktu ada update                 |
+
+📌 CATATAN PENTING :
+
+- enum vendorDecision ['PENDING', 'ACCEPTED', 'REJECTED']
+
+---
+
+#### 3.5.5 ClaimHistory
+
+| Kolom      | Tipe    | Constraint                            | Keterangan       |
+| ---------- | ------- | ------------------------------------- | ---------------- |
+| id         | integer | PK                                    | ID klaim histori |
+| claimId    | integer | FK -> claim.id onDelete: 'restrict'   | id claim         |
+| action     | text    | NOT NULL                              |                  |
+| fromStatus | text    | NOT NULL                              | status awal      |
+| toStatus   | text    | NOT NULL                              | status akhir     |
+| userId     | integer | FK -> profile.id onDelete: 'restrict' | ID User          |
+| userRole   | text    | NOT NULL                              | snapshot         |
+| note       | text    |                                       | catatan          |
+| createdAt  | integer | NOT NULL                              | Waktu dibuat     |
+
+INDEX :
+
+- INDEX (claimId)
+- INDEX (userId)
+
+---
+
+#### 3.5.6 PhotoReview
+
+| Kolom        | Tipe    | Constraint                               | Keterangan                    |
+| ------------ | ------- | ---------------------------------------- | ----------------------------- |
+| id           | integer | PK                                       | ID foto review                |
+| claimPhotoId | integer | FK -> claimPhoto.id onDelete: 'restrict' | Kode Klaim                    |
+| reviewedBy   | integer | FK -> profile.id onDelete: 'restrict'    | Di review oleh                |
+| status       | text    | NOT NULL                                 | VERIFIED / REJECT             |
+| note         | text    |                                          | Catatan reject                |
+| reviewedAt   | integer | NOT NULL                                 | Waktu review (Unix timestamp) |
+
+INDEX :
+
+- INDEX (claimPhotoId)
+- INDEX (reviewedBy)
+
+---
+
+### 3.6 User Table
+
+#### 3.6.1 Profile (user business)
+
+| Kolom      | Tipe    | Constraint       | Keterangan     |
+| ---------- | ------- | ---------------- | -------------- |
+| id         | integer | PK               | ID user        |
+| userAuthId | text    | UNIQUE, NOT NULL | Auth id        |
+| name       | text    | NOT NULL         | Nama user      |
+| role       | text    | NOT NULL         | enum role      |
+| branch     | text    |                  | branch         |
+| isActive   | integer | NOT NULL (0/1)   | Boolean        |
+| createdAt  | integer | NOT NULL         | Waktu dibuat   |
+| updatedAt  | integer | NOT NULL         | Waktu diupdate |
+
+INDEX :
+- UNIQUE (userAuthId)
+- INDEX (role)
+
+📌 CATATAN PENTING : 
+- enum role ['ADMIN', 'CS', 'QRCC', 'MANAGEMENT']
+- User menggunakan soft delete (isActive flag)
+- Branch bisa di-update, claim menyimpan snapshot branch
+
+User tidak akan benar-benar dihapus dari database
+Gunakan flag isActive: boolean untuk non-aktifkan
+Semua relasi (Claim.submittedBy, ClaimHistory.userId, dll) TIDAK PERLU onDelete: 'restrict'
+User yang isActive = false tidak bisa login, tapi data historis tetap utuh
+
+---
+
+#### 3.6.2 Auth (Better Auth)
+
+Schema dibuatkan otomatis oleh Better-Auth dengan fitur:
+
+- Email & Password authentication
+- Username plugin (display name)
+- Admin plugin
+- session management :
+  - expire : 7 hari
+  - ratelimit : true
+  - max attempt : 5 kali
+  - lock duration : 15 menit
+
+---
+
+## 4. Flow
+
+### 4.1 Flow CS
+
+refer to [3_alur-sistem-cs.md](3_alur-sistem-cs.md)
+
+### 4.2 Flow QRCC
+
+refer to [4_alur-sistem-qrcc.md](4_alur-sistem-qrcc.md)
