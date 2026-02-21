@@ -12,7 +12,7 @@
 2. [User Role & Pages](#2-user-role-pages)
 3. [Database Design](#3-database-design)
 4. [Flow](#4-flow)
-
+5. [Development Guideline](#5-development-guideline)
 
 ---
 
@@ -22,7 +22,7 @@ refer to [1_project.md](1_project.md)
 
 ## 2. USER ROLE & PAGES
 
-refer to [2_user-and-role.md](2_user-and-role.md)
+refer to [2_user-and-role-pages.md](2_user-and-role-pages.md)
 
 ---
 
@@ -352,7 +352,8 @@ Photo Upload API
 | vendorClaimId    | integer | FK -> vendorClaim.id onDelete: 'cascade' | ID klaim vendor                  |
 | claimId          | integer | FK -> claim.id onDelete: 'restrict'      | ID klaim                         |
 | vendorDecision   | text    | NOT NULL                                 | Keputusan vendor                 |
-| compensation     | integer |                                          | Kompensasi                       |
+| compensation     | integer |                                          | Kompensasi (jika ACCEPTED)       |
+| rejectReason     | text    |                                          | Alasan reject (jika REJECTED)    |
 | vendorDecisionBy | integer | FK -> profile.id                         | Dibuat oleh                      |
 | vendorDecisionAt | integer |                                          | Waktu keputusan (Unix timestamp) |
 | createdAt        | integer | NOT NULL                                 | Waktu dibuat                     |
@@ -361,6 +362,7 @@ Photo Upload API
 📌 CATATAN PENTING :
 
 - enum vendorDecision ['PENDING', 'ACCEPTED', 'REJECTED']
+- `rejectReason` wajib diisi jika vendorDecision = REJECTED
 
 ---
 
@@ -458,3 +460,9 @@ refer to [3_alur-sistem-cs.md](3_alur-sistem-cs.md)
 ### 4.2 Flow QRCC
 
 refer to [4_alur-sistem-qrcc.md](4_alur-sistem-qrcc.md)
+
+---
+
+## 5. Development Guideline
+
+refer to [5_development-guideline.md](5_development-guideline.md)
