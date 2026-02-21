@@ -13,6 +13,8 @@
 3. [Database Design](#3-database-design)
 4. [Flow](#4-flow)
 5. [Development Guideline](#5-development-guideline)
+6. [Constants](#6-constants)
+7. [User-Auth Integration](#7-user-auth-integration)
 
 ---
 
@@ -86,23 +88,29 @@ Strategy: claimStatus = 'ARCHIVED'
 
 #### 3.4.1 Vendor
 
-| Kolom     | Tipe    | Constraint                            | Keterangan       |
-| --------- | ------- | ------------------------------------- | ---------------- |
-| id        | integer | PK                                    | ID vendor        |
-| name      | text    | NOT NULL, UNIQUE                      | Nama vendor      |
-| isActive  | integer | NOT NULL                              | Boolean          |
-| createdBy | integer | FK -> profile.id onDelete: 'restrict' | ID user          |
-| updatedBy | integer | FK -> profile.id onDelete: 'restrict' | ID user          |
-| createdAt | integer | NOT NULL                              | Waktu dibuat     |
-| updatedAt | integer | NOT NULL                              | Waktu ada update |
+| Kolom          | Tipe    | Constraint                            | Keterangan               |
+| -------------- | ------- | ------------------------------------- | ------------------------ |
+| id             | integer | PK                                    | ID vendor                |
+| code           | text    | NOT NULL, UNIQUE                      | Kode vendor (identifier) |
+| name           | text    | NOT NULL                              | Nama vendor (UI display) |
+| requiredPhotos | json    | NOT NULL, DEFAULT '[]'                | Array enum photoType     |
+| requiredFields | json    | NOT NULL, DEFAULT '[]'                | Array enum fieldName     |
+| isActive       | integer | NOT NULL                              | Boolean                  |
+| createdBy      | integer | FK -> profile.id onDelete: 'restrict' | ID user                  |
+| updatedBy      | integer | FK -> profile.id onDelete: 'restrict' | ID user                  |
+| createdAt      | integer | NOT NULL                              | Waktu dibuat             |
+| updatedAt      | integer | NOT NULL                              | Waktu ada update         |
 
 INDEX :
 - INDEX (isActive)
 - INDEX (createdAt)
-- UNIQUE (name)
+- UNIQUE (code)
 
-📌 CATATAN PENTING : data awal vendor : `MOKA`, `MTC`, `SDP`
-📌 CATATAN: Vendor menggunakan soft delete (isActive flag)
+📌 CATATAN PENTING : 
+- Vendor menggunakan soft delete (isActive flag)
+- `requiredPhotos`: menyimpan array dari `ClaimPhoto.photoType` (misal: `["CLAIM", "ODF"]`)
+- `requiredFields`: menyimpan array field opsional yang diwajibkan (misal: `["odfNumber", "version"]`)
+
 
 
 #### 3.4.2 ProductModel
@@ -128,19 +136,19 @@ INDEX :
 
 #### 3.4.3 NotificationMaster
 
-| Kolom            | Tipe    | Constraint                            | Keterangan                          |
-| ---------------- | ------- | ------------------------------------- | ----------------------------------- |
-| id               | integer | PK                                    | ID notificatin ref                  |
-| notificationCode | text    | UNIQUE                                | Kode notifikasi                     |
-| notificationDate | integer | NOT NULL                              | Tanggal notifikasi (Unix timestamp) |
-| modelName        | text    | NOT NULL                              | Nama model                          |
-| branch           | text    | NOT NULL                              | Cabang CS                           |
-| vendorId         | integer | FK -> vendor.id onDelete: 'restrict'  | Kode vendor                         |
-| status           | text    | NOT NULL                              | NEW / USED / EXPIRED                |
-| createdBy        | integer | FK -> profile.id onDelete: 'restrict' | dibuat oleh                         |
-| updatedBy        | integer | FK -> profile.id onDelete: 'restrict' | diupdate oleh                       |
-| createdAt        | integer | NOT NULL                              | Waktu dibuat                        |
-| updatedAt        | integer | NOT NULL                              | Waktu diupdate                      |
+| Kolom            | Tipe    | Constraint                               | Keterangan                          |
+| ---------------- | ------- | ---------------------------------------- | ----------------------------------- |
+| id               | integer | PK                                       | ID notificatin ref                  |
+| notificationCode | text    | UNIQUE                                   | Kode notifikasi                     |
+| notificationDate | integer | NOT NULL                                 | Tanggal notifikasi (Unix timestamp) |
+| modelId          | integer | FK -> productModel.id onDelete: restrict | ID/Kode model                       |
+| branch           | text    | NOT NULL                                 | Cabang CS                           |
+| vendorId         | integer | FK -> vendor.id onDelete: 'restrict'     | Kode vendor                         |
+| status           | text    | NOT NULL                                 | NEW / USED / EXPIRED                |
+| createdBy        | integer | FK -> profile.id onDelete: 'restrict'    | dibuat oleh                         |
+| updatedBy        | integer | FK -> profile.id onDelete: 'restrict'    | diupdate oleh                       |
+| createdAt        | integer | NOT NULL                                 | Waktu dibuat                        |
+| updatedAt        | integer | NOT NULL                                 | Waktu diupdate                      |
 
 INDEX :
 
@@ -152,71 +160,13 @@ INDEX :
 - INDEX (vendorId, status)
 - INDEX (vendorId, notificationDate)
 
-
-#### 3.4.4 VendorPhotoRule
-
-| Kolom      | Tipe    | Constraint                            | Keterangan         |
-| ---------- | ------- | ------------------------------------- | ------------------ |
-| id         | integer | PK                                    | ID VendorPhotoRule |
-| vendorId   | integer | FK -> vendor.id onDelete: 'restrict'  | Kode vendor        |
-| photoType  | text    | NOT NULL                              |                    |
-| isRequired | integer | NOT NULL                              | Boolean            |
-| createdBy  | integer | FK -> profile.id onDelete: 'restrict' | dibuat oleh        |
-| updatedBy  | integer | FK -> profile.id onDelete: 'restrict' | diupdate oleh      |
-| createdAt  | integer | NOT NULL                              | Waktu dibuat       |
-| updatedAt  | integer | NOT NULL                              | Waktu ada update   |
-
-INDEX :
-
-- UNIQUE (vendorId, photoType)
-- INDEX (vendorId)
-- INDEX (createdAt)
-- INDEX (isRequired)
-
-📌 Validasi ENUM -> backend/Zod CLAIM / CLAIM_ZOOM / ODF / PANEL_SN / WO_PANEL / WO_PANEL_SN
-
-📌 Panduan :
-| photoType   | MOKA | MTC | SDP |
-| ----------- | ---- | --- | --- |
-| CLAIM       | ✅    | ✅   | ✅   |
-| CLAIM_ZOOM  | ✅    | ✅   | ✅   |
-| ODF         | ✅    | ✅   | ✅   |
-| PANEL_SN    | ✅    | ✅   | ✅   |
-| WO_PANEL    | ✅    | ❌   | ❌   |
-| WO_PANEL_SN | ✅    | ❌   | ❌   |
-
-#### 3.4.5 VendorFieldRule
-
-| Kolom      | Tipe    | Constraint                            | Keterangan                 |
-| ---------- | ------- | ------------------------------------- | -------------------------- |
-| id         | integer | PK                                    | ID VendorFieldRule         |
-| vendorId   | integer | FK --> vendor.id onDelete: 'restrict' | Kode vendor                |
-| fieldName  | text    | NOT NULL                              | odfNumber / version / week |
-| isRequired | integer | NOT NULL                              | Boolean                    |
-| createdBy  | integer | FK -> profile.id onDelete: 'restrict' | dibuat oleh                |
-| updatedBy  | integer | FK -> profile.id onDelete: 'restrict' | diupdate oleh              |
-| createdAt  | integer | NOT NULL                              | Waktu dibuat               |
-| updatedAt  | integer | NOT NULL                              | Waktu ada update           |
-
-INDEX :
-
-- UNIQUE (vendorId, fieldName)
-- INDEX (vendorId)
-- INDEX (createdAt)
-  
-📌 Panduan :
-| No  | Field Name | MOKA | MTC | SDP |
-| --- | ---------- | ---- | --- | --- |
-| 1   | odfNumber  | ✅    | ❌   | ❌   |
-| 2   | version    | ✅    | ❌   | ❌   |
-| 3   | week       | ✅    | ❌   | ❌   |
-
-#### 3.4.6 DefectMaster
+#### 3.4.4 DefectMaster
 
 | Kolom     | Tipe    | Constraint                            | Keterangan       |
 | --------- | ------- | ------------------------------------- | ---------------- |
 | id        | integer | PK                                    | ID DefectMaster  |
-| name      | text    | NOT NULL, UNIQUE                      | nama defect      |
+| code      | text    | NOT NULL, UNIQUE                      | Kode defect      |
+| name      | text    | NOT NULL                              | Nama defect      |
 | isActive  | integer | NOT NULL                              | Boolean          |
 | createdBy | integer | FK -> profile.id onDelete: 'restrict' | dibuat oleh      |
 | updatedBy | integer | FK -> profile.id onDelete: 'restrict' | diupdate oleh    |
@@ -235,26 +185,26 @@ INDEX :
 
 #### 3.5.1 Claim
 
-| Kolom            | Tipe    | Constraint       | Keterangan                          |
-| ---------------- | ------- | ---------------- | ----------------------------------- |
-| id               | integer | PK               | ID Klaim                            |
-| claimNumber      | text    | NOT NULL, UNIQUE | Kode Klaim                          |
-| notificationCode | text    | NOT NULL         | Nomor Notifikasi                    |
-| notificationDate | Integer | NOT NULL         | Tanggal Notifikasi (Unix timestamp) |
-| modelName        | text    | NOT NULL         | Nama model                          |
-| vendorId         | integer | FK -> vendor.id  | Kode vendor                         |
-| inch             | text    | NOT NULL         | Ukuran inch                         |
-| branch           | text    | NOT NULL         | Nama cabang                         |
-| odfNumber        | text    |                  | Nomor Odf                           |
-| panelSerialNo    | text    | NOT NULL         | Nomor seri panel                    |
-| ocSerialNo       | text    | NOT NULL         | Nomor seri oc                       |
-| defect           | text    | NOT NULL         | Nama kerusakan                      |
-| version          | text    |                  | Nomor versi                         |
-| week             | text    |                  | Kode Week                           |
-| claimStatus      | text    | NOT NULL         | Status Klaim                        |
-| submittedBy      | integer | FK -> profile.id | Id CS                               |
-| createdAt        | integer | NOT NULL         | Waktu dibuat                        |
-| updatedAt        | integer | NOT NULL         | Waktu ada update                    |
+| Kolom          | Tipe    | Constraint                                       | Keterangan       |
+| -------------- | ------- | ------------------------------------------------ | ---------------- |
+| id             | integer | PK                                               | ID Klaim         |
+| claimNumber    | text    | NOT NULL, UNIQUE                                 | Kode Klaim       |
+| notificationId | integer | FK -> notificationMaster.id onDelete: 'restrict' | ID Notifikasi    |
+| modelId        | integer | FK -> productModel.id onDelete: restrict         | ID/Kode model    |
+| vendorId       | integer | FK -> vendor.id onDelete: 'restrict'             | Kode vendor      |
+| inch           | integer | NOT NULL                                         | Ukuran inch      |
+| branch         | text    | NOT NULL                                         | Nama cabang      |
+| odfNumber      | text    |                                                  | Nomor Odf        |
+| panelSerialNo  | text    | NOT NULL                                         | Nomor seri panel |
+| ocSerialNo     | text    | NOT NULL                                         | Nomor seri oc    |
+| defectCode     | text    | FK -> defectMaster.code onDelete: 'restrict'     | Kode kerusakan   |
+| version        | text    |                                                  | Nomor versi      |
+| week           | text    |                                                  | Kode Week        |
+| claimStatus    | text    | NOT NULL                                         | Status Klaim     |
+| submittedBy    | integer | FK -> profile.id                                 | Id CS            |
+| updatedBy      | integer | FK -> profile.id                                 | Diupdate oleh    |
+| createdAt      | integer | NOT NULL                                         | Waktu dibuat     |
+| updatedAt      | integer | NOT NULL                                         | Waktu ada update |
 
 INDEX :
 
@@ -267,7 +217,7 @@ INDEX :
 📌 CATATAN PENTING :
 
 - Generate claimNumber (CL-{YYYYMMDD}-{Sequence}).
-- branch sanpshot dari user_rma.branch || notificationRef.branch
+- branch snapshot dari profile.branch || notificationMaster.branch
 - CLAIM_STATUSES = ['DRAFT', 'SUBMITTED', 'IN_REVIEW', 'NEED_REVISION', 'APPROVED', 'ARCHIVED']
 - Claim menggunakan soft delete via claimStatus = ARCHIVED
 
@@ -283,7 +233,7 @@ INDEX :
 | filePath      | text    | NOT NULL                            | File path foto   |
 | thumbnailPath | text    |                                     | Thumbnail path   |
 | status        | text    | NOT NULL                            | Status foto      |
-| reviewNote    | text    |                                     | Catatan review   |
+| rejectReason  | text    |                                     | Catatan reject   |
 | createdAt     | integer | NOT NULL                            | Waktu dibuat     |
 | updatedAt     | integer | NOT NULL                            | Waktu ada update |
 
@@ -320,6 +270,7 @@ Photo Upload API
 - Tambahkan Thumbnail generation (library sharp node.js)
 - Thumbnail size 300x300px
 - enum photoType = ["CLAIM", "CLAIM_ZOOM", "ODF", "PANEL_SN", "WO_PANEL", "WO_PANEL_SN"]
+- enum status = ['PENDING', 'VERIFIED', 'REJECT'] (default: 'PENDING')
 
 ---
 
@@ -331,9 +282,10 @@ Photo Upload API
 | vendorClaimNo  | text    | UNIQUE           | No klaim vendor                        |
 | vendorId       | integer | FK -> vendor.id  | Kode vendor                            |
 | submittedAt    | integer | NOT NULL         | Waktu kirim ke vendor (Unix timestamp) |
-| reportSnapshot | text    | NOT NULL         | json/file                              |
-| status         | text    | NOT NULL         | json/file                              |
+| reportSnapshot | text    | NOT NULL         | Snapshot JSON data klaim               |
+| status         | text    | NOT NULL         | Status vendor claim                    |
 | createdBy      | integer | FK -> profile.id | Dibuat oleh                            |
+| updatedBy      | integer | FK -> profile.id | Diupdate oleh                          |
 | createdAt      | integer | NOT NULL         | Waktu dibuat                           |
 | updatedAt      | integer | NOT NULL         | Waktu ada update                       |
 
@@ -385,6 +337,9 @@ INDEX :
 - INDEX (claimId)
 - INDEX (userId)
 
+📌 CATATAN PENTING :
+- enum action merujuk pada CLAIM_HISTORY_ACTIONS di 6_constants.md
+
 ---
 
 #### 3.5.6 PhotoReview
@@ -395,13 +350,16 @@ INDEX :
 | claimPhotoId | integer | FK -> claimPhoto.id onDelete: 'restrict' | Kode Klaim                    |
 | reviewedBy   | integer | FK -> profile.id onDelete: 'restrict'    | Di review oleh                |
 | status       | text    | NOT NULL                                 | VERIFIED / REJECT             |
-| note         | text    |                                          | Catatan reject                |
+| rejectReason | text    |                                          | Catatan reject                |
 | reviewedAt   | integer | NOT NULL                                 | Waktu review (Unix timestamp) |
 
 INDEX :
 
 - INDEX (claimPhotoId)
 - INDEX (reviewedBy)
+
+📌 CATATAN PENTING :
+- enum status merujuk pada CLAIM_PHOTO_STATUSES di 6_constants.md
 
 ---
 
@@ -466,3 +424,15 @@ refer to [4_alur-sistem-qrcc.md](4_alur-sistem-qrcc.md)
 ## 5. Development Guideline
 
 refer to [5_development-guideline.md](5_development-guideline.md)
+
+---
+
+## 6. Constants
+
+refer to [6_constants.md](6_constants.md)
+
+---
+
+## 7. User-Auth Integration
+
+refer to [7_user-auth-integration.md](7_user-auth-integration.md)

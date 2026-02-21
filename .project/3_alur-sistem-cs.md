@@ -41,6 +41,7 @@
 **❌ Jika Notification TIDAK DITEMUKAN:**
 - Alert info: **"Notification tidak ditemukan, isi manual"**
 - `notificationCode` → dari input CS (read-only)
+- CS melanjutkan pengisian manual form. (Sistem *auto-generate* NotificationMaster record saat Claim disubmit/disave).
 - CS mengisi `modelName` dengan **autocomplete** (dari tabel `ProductModel`)
 - **Real-time validation:** Model name harus dipilih dari list (highlight jika tidak valid)
 - Jika model DIPILIH, auto-fill:
@@ -75,10 +76,11 @@ CS mengisi field:
 
 #### 1.4 Auto-save Triggered
 
-**Saat CS klik "Next" ke Step 2:**
-- ✅ Sistem auto-save draft (status: `DRAFT`)
+**Saat CS klik "Next" ke Step 2 (Server-side Action):**
+- Jika `notificationCode` manual (belum ada di Master), sistem auto-insert ke `NotificationMaster` dengan status `USED` (createdBy: ID CS yang input).
+- Sistem auto-save claim draft (status: `DRAFT`) menggunakan ID notifikasi tersebut.
 - ✅ Visual indicator: "Auto-saved ✓"
-- Record tersimpan di `claim` table dengan `claimStatus = DRAFT`
+- Record tersimpan di tabel `Claim`.
 
 ---
 
