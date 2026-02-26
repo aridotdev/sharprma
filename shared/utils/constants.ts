@@ -59,7 +59,7 @@ export const CLAIM_HISTORY_ACTIONS = [
   'APPROVE',
   'REJECT',
   'REQUEST_REVISION',
-  'CANCEL',
+  'ARCHIVE',
   'UPDATE',
   'UPLOAD_PHOTO',
   'REVIEW_PHOTO',
@@ -89,7 +89,7 @@ export const VENDOR_CLAIM_STATUSES = [
 ] as const
 export type VendorClaimStatus = (typeof VENDOR_CLAIM_STATUSES)[number]
 
-// 10. FIELD NAMES (for VendorFieldRule)
+// 10. FIELD NAMES (for Vendor requiredFields)
 export const FIELD_NAMES = [
   'odfNumber', 'version', 'week'
 ] as const
@@ -106,35 +106,35 @@ export type SequenceType = typeof SEQUENCE_TYPES[number]
 /**
  * Check if a value is a valid UserRole
  */
-export function isUserRole (value: string): value is UserRole {
+export function isUserRole(value: string): value is UserRole {
   return USER_ROLES.includes(value as UserRole)
 }
 
 /**
  * Check if a value is a valid ClaimStatus
  */
-export function isClaimStatus (value: string): value is ClaimStatus {
+export function isClaimStatus(value: string): value is ClaimStatus {
   return CLAIM_STATUSES.includes(value as ClaimStatus)
 }
 
 /**
  * Check if a value is a valid PhotoType
  */
-export function isPhotoType (value: string): value is PhotoType {
+export function isPhotoType(value: string): value is PhotoType {
   return PHOTO_TYPES.includes(value as PhotoType)
 }
 
 /**
  * Check if a value is a valid ClaimPhotoStatus
  */
-export function isClaimPhotoStatus (value: string): value is ClaimPhotoStatus {
+export function isClaimPhotoStatus(value: string): value is ClaimPhotoStatus {
   return CLAIM_PHOTO_STATUSES.includes(value as ClaimPhotoStatus)
 }
 
 /**
  * Check if a value is a valid NotificationStatus
  */
-export function isNotificationStatus (
+export function isNotificationStatus(
   value: string
 ): value is NotificationStatus {
   return NOTIFICATION_STATUSES.includes(value as NotificationStatus)
@@ -143,21 +143,21 @@ export function isNotificationStatus (
 /**
  * Check if a value is a valid VendorDecision
  */
-export function isVendorDecision (value: string): value is VendorDecision {
+export function isVendorDecision(value: string): value is VendorDecision {
   return VENDOR_DECISIONS.includes(value as VendorDecision)
 }
 
 /**
  * Check if a value is a valid VendorClaimStatus
  */
-export function isVendorClaimStatus (value: string): value is VendorClaimStatus {
+export function isVendorClaimStatus(value: string): value is VendorClaimStatus {
   return VENDOR_CLAIM_STATUSES.includes(value as VendorClaimStatus)
 }
 
 /**
  * Check if a value is a valid FieldName
  */
-export function isFieldName (value: string): value is FieldName {
+export function isFieldName(value: string): value is FieldName {
   return FIELD_NAMES.includes(value as FieldName)
 }
 

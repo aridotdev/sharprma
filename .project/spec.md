@@ -363,6 +363,25 @@ INDEX :
 
 ---
 
+#### 3.5.7 SequenceGenerator
+
+| Kolom        | Tipe    | Constraint | Keterangan                       |
+| ------------ | ------- | ---------- | -------------------------------- |
+| id           | integer | PK         | ID sequence                      |
+| type         | text    | NOT NULL   | CLAIM / VENDOR_CLAIM             |
+| currentDate  | text    | NOT NULL   | Format YYYYMMDD                  |
+| lastSequence | integer | NOT NULL   | Nomor urut terakhir (default: 0) |
+
+INDEX :
+- UNIQUE (type, currentDate)
+
+📌 CATATAN PENTING :
+- enum type merujuk pada SEQUENCE_TYPES di 6_constants.md
+- Digunakan untuk generate `CL-{YYYYMMDD}-{Sequence}` dan `VC-{YYYYMMDD}-{Sequence}`
+- Reset sequence otomatis per hari (berdasarkan currentDate)
+
+---
+
 ### 3.6 User Table
 
 #### 3.6.1 Profile (user business)

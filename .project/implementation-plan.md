@@ -1,62 +1,48 @@
 # RMA CLAIM SYSTEM — IMPLEMENTATION PLAN
 
 > **Created**: 2026-02-26
+> **Last Updated**: 2026-02-26
 > **Purpose**: Rencana implementasi end-to-end untuk multi-agent development
 > **Source**: Konsolidasi dari semua dokumen `.project/`
 
 ---
 
-## User Review Required
+## Resolved Issues (Previously Inconsistent)
 
-> [!IMPORTANT]
-> **Inconsistensi yang ditemukan pada dokumentasi project — butuh keputusan:**
+> [!NOTE]
+> Semua inconsistensi berikut sudah **diselesaikan** dan disinkronkan pada 2026-02-26:
 
-### 1. VendorPhotoRule & VendorFieldRule: Tabel terpisah vs JSON column?
+### ✅ 1. VendorPhotoRule & VendorFieldRule → JSON columns di Vendor
 
-- `spec.md` (Section 3.4.1 Vendor) mendefinisikan `requiredPhotos` dan `requiredFields` sebagai **JSON columns di tabel Vendor**.
-- Tapi `2_user-and-role-pages.md` dan `4_alur-sistem-qrcc.md` masih list **halaman CRUD terpisah** (`/dashboard/master/vendor-photo-rules` dan `/dashboard/master/vendor-field-rules`).
-- `database.ts` types masih import `vendorPhotoRule` dan `vendorFieldRule` sebagai tabel terpisah.
-- `5_development-guideline.md` Phase 2 mereferensikan _"JSON rules"_ `requiredPhotos` & `requiredFields` di entitas Vendor.
+- `vendor.ts`: Ditambahkan kolom `requiredPhotos` (json) dan `requiredFields` (json) + validasi Zod
+- `database.ts`: Dihapus references ke `VendorPhotoRule` dan `VendorFieldRule`
+- `schema/index.ts`: Dihapus exports `vendor-photo-rule` dan `vendor-field-rule`
+- `2_user-and-role-pages.md`: Dihapus halaman `/dashboard/master/vendor-photo-rules` dan `/dashboard/master/vendor-field-rules`
+- `4_alur-sistem-qrcc.md`: Dihapus baris master data Vendor Photo Rules & Vendor Field Rules
 
-**Rekomendasi**: Ikuti `spec.md` — gunakan JSON columns di vendor. Hapus halaman CRUD terpisah untuk photo/field rules, ganti dengan UI editor di halaman Vendor CRUD. Update `database.ts` types.
+### ✅ 2. Constants: CANCEL → ARCHIVE
 
-### 2. Constants mismatch: `CANCEL` vs `ARCHIVE`
+- `constants.ts`: `CLAIM_HISTORY_ACTIONS` sekarang punya `ARCHIVE` (bukan `CANCEL`), sesuai `6_constants.md`
+- `CANCEL` tetap hanya ada di `CLAIM_ACTIONS`
 
-- `6_constants.md` `CLAIM_HISTORY_ACTIONS` mencantumkan `ARCHIVE` tapi bukan `CANCEL`.
-- `6_constants.md` `CLAIM_ACTIONS` mencantumkan `CANCEL` tapi bukan `ARCHIVE`.
-- `shared/utils/constants.ts` (sudah di-implement) punya `CANCEL` di `CLAIM_HISTORY_ACTIONS` (bukan `ARCHIVE`).
+### ✅ 3. Vendor schema updated
 
-**Rekomendasi**: `CLAIM_HISTORY_ACTIONS` seharusnya punya `ARCHIVE` (sesuai soft-delete via status `ARCHIVED`). `CANCEL` only di `CLAIM_ACTIONS` kalau memang CS bisa cancel claim.
+- `vendor.ts`: Ditambahkan kolom `code` (text, NOT NULL, UNIQUE), `requiredPhotos`, `requiredFields`
+- Ditambahkan indexes: `vendor_code_idx`, `vendor_is_active_idx`, `vendor_created_at_idx`
 
-### 3. Existing vendor schema outdated
+### ✅ 4. Profile (bukan UserRma)
 
-- `server/database/schema/vendor.ts` saat ini **tidak punya** kolom `code`, `requiredPhotos`, dan `requiredFields` yang sudah di-definisikan di `spec.md`.
+- `database.ts`: Semua references `userRma` → `profile`, type exports `Profile` dan `NewProfile`
+- `schema/index.ts`: Comment reference `user-rma` → `profile`
+- `NotificationRef` → `NotificationMaster` (konsisten dengan spec.md naming)
 
-### 4. Tabel `Profile` vs `UserRma`
+### ✅ 5. npm dependencies — sudah terinstall
 
-- `spec.md` (Section 3.6.1) menyebut tabel **"Profile"** tapi `database.ts` types menggunakan nama **`userRma`**.
-- `7_user-auth-integration.md` juga menyebut **"Profile"**.
+- Verified di `package.json`: `better-auth`, `date-fns`, `@unovis/vue`, `@unovis/ts`, `xlsx`, `sharp` ✅
 
-**Rekomendasi**: Gunakan nama `profile` di schema Drizzle (sesuai spec), export type sebagai `Profile`.
+### ✅ 6. SequenceGenerator — ditambahkan ke spec.md
 
-### 5. Missing npm dependencies
-
-Paket berikut disebut di `1_project.md` tapi belum di-install:
-
-| Package                      | Kegunaan                    |
-| ---------------------------- | --------------------------- |
-| `better-auth`                | Authentication              |
-| `date-fns`                   | Date/time formatting        |
-| `@unovis/vue` + `@unovis/ts` | Charts di dashboard/reports |
-| `xlsx`                       | Excel import/export         |
-| `sharp`                      | Image thumbnail generation  |
-
-### 6. Tabel `SequenceGenerator` tidak ada di spec.md
-
-- `database.ts` types import `sequenceGenerator`, `constants.ts` punya `SEQUENCE_TYPES`.
-- Tapi `spec.md` tidak mendefinisikan tabel ini.
-
-**Rekomendasi**: Tambahkan tabel `SequenceGenerator` ke spec atau gunakan approach lain untuk sequence generation (misal: query `MAX(id)` + format).
+- `spec.md`: Ditambahkan Section 3.5.7 SequenceGenerator dengan definisi kolom, index, dan catatan
 
 ---
 
@@ -66,21 +52,22 @@ Paket berikut disebut di `1_project.md` tapi belum di-install:
 - Nuxt 4 project scaffold (`nuxt.config.ts`, `package.json`)
 - Drizzle config (`drizzle.config.ts`)
 - Database connection (`server/database/index.ts`)
-- Constants & types (`shared/utils/constants.ts`)
-- Database type definitions (`shared/types/database.ts`) — perlu update
-- Vendor schema (partial — perlu update)
+- Constants & types (`shared/utils/constants.ts`) ✅ synced
+- Database type definitions (`shared/types/database.ts`) ✅ synced
+- Vendor schema (`server/database/schema/vendor.ts`) ✅ updated
 - Vitest config dengan 3 project (unit, nuxt, e2e)
 - Basic app shell (`app/app.vue`, `app/pages/index.vue`)
+- All npm dependencies installed
 
 ### ❌ Belum Ada (Harus Dibuat)
-- 10+ database schemas (ProductModel, NotificationMaster, DefectMaster, Claim, ClaimPhoto, VendorClaim, VendorClaimItem, ClaimHistory, PhotoReview, Profile, Auth)
+- 10+ database schemas (ProductModel, NotificationMaster, DefectMaster, Claim, ClaimPhoto, VendorClaim, VendorClaimItem, ClaimHistory, PhotoReview, Profile, Auth, SequenceGenerator)
 - Database migrations
 - Better-Auth integration
 - API routes (semua endpoint)
 - Service layer (semua business logic)
 - Repository layer (semua CRUD operations)
 - Auth middleware & route protection
-- 20+ frontend pages
+- 18+ frontend pages
 - Layout components (sidebar, header)
 - Shared composables
 - File upload infrastructure
@@ -97,47 +84,37 @@ Paket berikut disebut di `1_project.md` tapi belum di-install:
 
 ---
 
-#### 1A. Install Dependencies
-
-```bash
-npm install better-auth date-fns @unovis/vue @unovis/ts xlsx sharp
-npm install -D @types/better-auth
-```
-
----
-
-#### 1B. Database Schemas
+#### 1A. Database Schemas
 
 Implementasi semua Drizzle schema sesuai `spec.md` Section 3.
-
-##### [MODIFY] [vendor.ts](file:///home/arsya/sharp/sharprma/server/database/schema/vendor.ts)
-- Tambah kolom `code` (text, NOT NULL, UNIQUE)
-- Tambah kolom `requiredPhotos` (text/json, NOT NULL, DEFAULT '[]')
-- Tambah kolom `requiredFields` (text/json, NOT NULL, DEFAULT '[]')
-- Update Zod schemas
 
 ##### [NEW] `server/database/schema/product-model.ts`
 - Schema `productModel` sesuai spec 3.4.2
 - FK ke `vendor.id`, FK `createdBy`/`updatedBy` ke `profile.id`
+- Indexes: UNIQUE(name, vendorId), INDEX(vendorId), INDEX(isActive), INDEX(createdAt), INDEX(vendorId, isActive)
 - Zod insert/update schemas
 
 ##### [NEW] `server/database/schema/notification-master.ts`
 - Schema `notificationMaster` sesuai spec 3.4.3
 - FK ke `productModel.id`, `vendor.id`, `profile.id`
+- Indexes: UNIQUE(notificationCode), INDEX(vendorId), INDEX(notificationDate), INDEX(status), INDEX(createdAt), INDEX(vendorId, status), INDEX(vendorId, notificationDate)
 - Zod schemas
 
 ##### [NEW] `server/database/schema/defect-master.ts`
 - Schema `defectMaster` sesuai spec 3.4.4
+- Indexes: UNIQUE(name), INDEX(isActive), INDEX(createdAt)
 - Zod schemas
 
 ##### [NEW] `server/database/schema/claim.ts`
 - Schema `claim` sesuai spec 3.5.1
 - FK ke `notificationMaster.id`, `productModel.id`, `vendor.id`, `defectMaster.code`, `profile.id`
+- Indexes: UNIQUE(claimNumber), INDEX(vendorId), INDEX(claimStatus), INDEX(submittedBy), INDEX(vendorId, claimStatus)
 - Zod schemas
 
 ##### [NEW] `server/database/schema/claim-photo.ts`
 - Schema `claimPhoto` sesuai spec 3.5.2
 - FK ke `claim.id`
+- Indexes: UNIQUE(claimId, photoType), INDEX(claimId)
 - Zod schemas
 
 ##### [NEW] `server/database/schema/vendor-claim.ts`
@@ -153,16 +130,19 @@ Implementasi semua Drizzle schema sesuai `spec.md` Section 3.
 ##### [NEW] `server/database/schema/claim-history.ts`
 - Schema `claimHistory` sesuai spec 3.5.5
 - FK ke `claim.id`, `profile.id`
+- Indexes: INDEX(claimId), INDEX(userId)
 - Zod schemas
 
 ##### [NEW] `server/database/schema/photo-review.ts`
 - Schema `photoReview` sesuai spec 3.5.6
 - FK ke `claimPhoto.id`, `profile.id`
+- Indexes: INDEX(claimPhotoId), INDEX(reviewedBy)
 - Zod schemas
 
 ##### [NEW] `server/database/schema/profile.ts`
 - Schema `profile` sesuai spec 3.6.1
 - FK `userAuthId` ke Better-Auth `user.id`
+- Indexes: UNIQUE(userAuthId), INDEX(role)
 - Zod schemas
 
 ##### [NEW] `server/database/schema/auth.ts`
@@ -170,20 +150,16 @@ Implementasi semua Drizzle schema sesuai `spec.md` Section 3.
 - Konfigurasi sesuai spec 3.6.2
 
 ##### [NEW] `server/database/schema/sequence-generator.ts`
-- Tabel untuk generate claim number & vendor claim number
+- Schema sesuai spec 3.5.7
 - Kolom: `id`, `type` (CLAIM/VENDOR_CLAIM), `currentDate` (text YYYYMMDD), `lastSequence` (integer)
+- Indexes: UNIQUE(type, currentDate)
 
 ##### [MODIFY] [index.ts](file:///home/arsya/sharp/sharprma/server/database/schema/index.ts)
-- Uncomment semua exports
-- Tambah export untuk schema baru
-
-##### [MODIFY] [database.ts](file:///home/arsya/sharp/sharprma/shared/types/database.ts)
-- Update imports sesuai nama schema baru (`profile` bukan `userRma`)
-- Hapus references ke `vendorPhotoRule` dan `vendorFieldRule`
+- Uncomment semua exports untuk schema baru
 
 ---
 
-#### 1C. Better-Auth Integration
+#### 1B. Better-Auth Integration
 
 ##### [NEW] `server/lib/auth.ts`
 - Setup Better-Auth server instance
@@ -203,7 +179,7 @@ Implementasi semua Drizzle schema sesuai `spec.md` Section 3.
 
 ---
 
-#### 1D. Auth Middleware & Route Protection
+#### 1C. Auth Middleware & Route Protection
 
 ##### [NEW] `server/middleware/auth.ts`
 - Server middleware untuk proteksi API routes
@@ -222,7 +198,7 @@ Implementasi semua Drizzle schema sesuai `spec.md` Section 3.
 
 ---
 
-#### 1E. Auth Pages & Profile
+#### 1D. Auth Pages & Profile
 
 ##### [NEW] `app/pages/login.vue`
 - Login form (email + password)
@@ -279,7 +255,7 @@ Implementasi semua Drizzle schema sesuai `spec.md` Section 3.
 - [NEW] `server/api/vendors/[id].patch.ts` — Toggle active status
 
 ##### Frontend
-- [NEW] `app/pages/dashboard/master/vendor.vue` — CRUD table + JSON rules editor UI
+- [NEW] `app/pages/dashboard/master/vendor.vue` — CRUD table + JSON rules editor UI (requiredPhotos & requiredFields)
 
 ---
 
@@ -612,17 +588,17 @@ Setelah Phase 1 selesai (foundation), phase berikutnya bisa dipecah ke multiple 
 
 ## File Summary
 
-| Category         | New Files | Modified Files          |
-| ---------------- | --------- | ----------------------- |
-| Database Schemas | 12        | 2 (vendor.ts, index.ts) |
-| Shared Types     | 0         | 1 (database.ts)         |
-| Auth             | 4         | 0                       |
-| Middleware       | 4         | 0                       |
-| API Routes       | ~40       | 0                       |
-| Services         | ~12       | 0                       |
-| Repositories     | ~10       | 0                       |
-| Pages            | ~20       | 0                       |
-| Components       | ~15       | 0                       |
-| Composables      | ~3        | 0                       |
-| Layouts          | 3         | 0                       |
-| **Total**        | **~123**  | **3**                   |
+| Category         | New Files | Modified Files                   |
+| ---------------- | --------- | -------------------------------- |
+| Database Schemas | 11        | 1 (index.ts — uncomment exports) |
+| Shared Types     | 0         | 0 (sudah di-sync)                |
+| Auth             | 4         | 0                                |
+| Middleware       | 4         | 0                                |
+| API Routes       | ~40       | 0                                |
+| Services         | ~12       | 0                                |
+| Repositories     | ~10       | 0                                |
+| Pages            | ~18       | 0                                |
+| Components       | ~15       | 0                                |
+| Composables      | ~3        | 0                                |
+| Layouts          | 3         | 0                                |
+| **Total**        | **~120**  | **1**                            |

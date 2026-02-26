@@ -82,14 +82,12 @@
 
 #### Master Data
 
-| URL                                    | Keterangan                   | Access      |
-| -------------------------------------- | ---------------------------- | ----------- |
-| `/dashboard/master/vendor`             | CRUD Vendor                  | QRCC, Admin |
-| `/dashboard/master/product-model`      | CRUD Product Model           | QRCC, Admin |
-| `/dashboard/master/notification`       | CRUD Notification Reference  | QRCC, Admin |
-| `/dashboard/master/defect`             | CRUD Defect Master           | QRCC, Admin |
-| `/dashboard/master/vendor-photo-rules` | Setup Photo Rules per Vendor | QRCC, Admin |
-| `/dashboard/master/vendor-field-rules` | Setup Field Rules per Vendor | QRCC, Admin |
+| URL                               | Keterangan                                               | Access      |
+| --------------------------------- | -------------------------------------------------------- | ----------- |
+| `/dashboard/master/vendor`        | CRUD Vendor (termasuk editor JSON requiredPhotos/Fields) | QRCC, Admin |
+| `/dashboard/master/product-model` | CRUD Product Model                                       | QRCC, Admin |
+| `/dashboard/master/notification`  | CRUD Notification Master                                 | QRCC, Admin |
+| `/dashboard/master/defect`        | CRUD Defect Master                                       | QRCC, Admin |
 
 #### Reports
 
@@ -133,9 +131,7 @@
     ├── Vendor              /dashboard/master/vendor
     ├── Product Model       /dashboard/master/product-model
     ├── Notification        /dashboard/master/notification
-    ├── Defect Master       /dashboard/master/defect
-    ├── Vendor Photo Rules  /dashboard/master/vendor-photo-rules
-    └── Vendor Field Rules  /dashboard/master/vendor-field-rules
+    └── Defect Master       /dashboard/master/defect
 📊  Reports           /dashboard/reports
 🕵️  Audit Trail       /dashboard/audit-trail
 👤  Profile           /profile
@@ -159,9 +155,7 @@
     ├── Vendor              /dashboard/master/vendor
     ├── Product Model       /dashboard/master/product-model
     ├── Notification        /dashboard/master/notification
-    ├── Defect Master       /dashboard/master/defect
-    ├── Vendor Photo Rules  /dashboard/master/vendor-photo-rules
-    └── Vendor Field Rules  /dashboard/master/vendor-field-rules
+    └── Defect Master       /dashboard/master/defect
 📊  Reports           /dashboard/reports
 🕵️  Audit Trail       /dashboard/audit-trail
 👥  Users             /dashboard/users

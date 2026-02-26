@@ -236,14 +236,12 @@ Semua item terisi       → status = COMPLETED
 
 **QRCC memiliki akses CRUD untuk semua data master:**
 
-| Master Data        | URL                                    | Fitur Khusus                        |
-| ------------------ | -------------------------------------- | ----------------------------------- |
-| Vendor             | `/dashboard/master/vendor`             | Toggle active/inactive              |
-| Product Model      | `/dashboard/master/product-model`      | Filter by vendor                    |
-| Notification       | `/dashboard/master/notification`       | Input manual + **Import Excel**     |
-| Defect Master      | `/dashboard/master/defect`             | Toggle active/inactive              |
-| Vendor Photo Rules | `/dashboard/master/vendor-photo-rules` | Setup per vendor, toggle isRequired |
-| Vendor Field Rules | `/dashboard/master/vendor-field-rules` | Setup per vendor, toggle isRequired |
+| Master Data   | URL                               | Fitur Khusus                              |
+| ------------- | --------------------------------- | ----------------------------------------- |
+| Vendor        | `/dashboard/master/vendor`        | Toggle active/inactive, editor JSON rules |
+| Product Model | `/dashboard/master/product-model` | Filter by vendor                          |
+| Notification  | `/dashboard/master/notification`  | Input manual + **Import Excel**           |
+| Defect Master | `/dashboard/master/defect`        | Toggle active/inactive                    |
 
 ### Import NotificationMaster (Excel)
 

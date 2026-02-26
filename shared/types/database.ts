@@ -9,9 +9,7 @@ import type {
   // Master tables
   vendor,
   productModel,
-  notificationRef,
-  vendorPhotoRule,
-  vendorFieldRule,
+  notificationMaster,
   defectMaster,
 
   // Transaction tables
@@ -24,7 +22,7 @@ import type {
   sequenceGenerator,
 
   // User tables
-  userRma,
+  profile,
 
   // Auth tables (better-auth)
   user,
@@ -52,17 +50,9 @@ export type NewVendor = InferInsertModel<typeof vendor>
 export type ProductModel = InferSelectModel<typeof productModel>
 export type NewProductModel = InferInsertModel<typeof productModel>
 
-// NotificationRef
-export type NotificationRef = InferSelectModel<typeof notificationRef>
-export type NewNotificationRef = InferInsertModel<typeof notificationRef>
-
-// VendorPhotoRule
-export type VendorPhotoRule = InferSelectModel<typeof vendorPhotoRule>
-export type NewVendorPhotoRule = InferInsertModel<typeof vendorPhotoRule>
-
-// VendorFieldRule
-export type VendorFieldRule = InferSelectModel<typeof vendorFieldRule>
-export type NewVendorFieldRule = InferInsertModel<typeof vendorFieldRule>
+// NotificationMaster
+export type NotificationMaster = InferSelectModel<typeof notificationMaster>
+export type NewNotificationMaster = InferInsertModel<typeof notificationMaster>
 
 // DefectMaster
 export type DefectMaster = InferSelectModel<typeof defectMaster>
@@ -104,9 +94,9 @@ export type NewSequenceGenerator = InferInsertModel<typeof sequenceGenerator>
 // USER TABLE TYPES
 // ========================================
 
-// UserRma
-export type UserRma = InferSelectModel<typeof userRma>
-export type NewUserRma = InferInsertModel<typeof userRma>
+// Profile (business user)
+export type Profile = InferSelectModel<typeof profile>
+export type NewProfile = InferInsertModel<typeof profile>
 
 // ========================================
 // AUTH TABLE TYPES
@@ -131,19 +121,19 @@ export type NewVerification = InferInsertModel<typeof verification>
 
 // User with their business profile
 export type UserWithProfile = User & {
-  profile?: UserRma
+  profile?: Profile
 }
 
 // Business profile with auth user
-export type UserRmaWithAuth = UserRma & {
+export type ProfileWithAuth = Profile & {
   authUser?: User
 }
 
 // User with all their related data
-export type UserWithAllRelations = UserRma & {
+export type UserWithAllRelations = Profile & {
   authUser?: User
   claims?: Claim[]
-  notificationRefs?: NotificationRef[]
+  notificationMasters?: NotificationMaster[]
   claimHistories?: ClaimHistory[]
   vendorClaims?: VendorClaim[]
   photoReviews?: PhotoReview[]
@@ -156,24 +146,22 @@ export type UserWithAllRelations = UserRma & {
 // All master table types
 export type MasterTable
   = | Vendor
-    | ProductModel
-    | NotificationRef
-    | VendorPhotoRule
-    | VendorFieldRule
-    | DefectMaster
+  | ProductModel
+  | NotificationMaster
+  | DefectMaster
 
 // All transaction table types
 export type TransactionTable
   = | Claim
-    | ClaimPhoto
-    | VendorClaim
-    | VendorClaimItem
-    | ClaimHistory
-    | PhotoReview
-    | SequenceGenerator
+  | ClaimPhoto
+  | VendorClaim
+  | VendorClaimItem
+  | ClaimHistory
+  | PhotoReview
+  | SequenceGenerator
 
 // All user-related table types
-export type UserTable = UserRma | User | Session | Account | Verification
+export type UserTable = Profile | User | Session | Account | Verification
 
 // All table types
 export type DatabaseTable = MasterTable | TransactionTable | UserTable
@@ -185,51 +173,47 @@ export type DatabaseTable = MasterTable | TransactionTable | UserTable
 // Tables with timestamps
 export type TimestampedTable
   = | Vendor
-    | ProductModel
-    | NotificationRef
-    | VendorPhotoRule
-    | VendorFieldRule
-    | DefectMaster
-    | Claim
-    | ClaimPhoto
-    | VendorClaim
-    | ClaimHistory
-    | PhotoReview
-    | SequenceGenerator
-    | UserRma
+  | ProductModel
+  | NotificationMaster
+  | DefectMaster
+  | Claim
+  | ClaimPhoto
+  | VendorClaim
+  | ClaimHistory
+  | PhotoReview
+  | SequenceGenerator
+  | Profile
 
 // Tables with status field
 export type StatusTable
-  = | NotificationRef
-    | Claim
-    | ClaimPhoto
-    | VendorClaim
-    | VendorClaimItem
-    | UserRma
+  = | NotificationMaster
+  | Claim
+  | ClaimPhoto
+  | VendorClaim
+  | VendorClaimItem
+  | Profile
 
 // Tables that can be soft-deleted
 export type SoftDeleteTable
   = | Vendor
-    | ProductModel
-    | DefectMaster
-    | UserRma
+  | ProductModel
+  | DefectMaster
+  | Profile
 
 // ========================================
 // RELATIONSHIP TYPES
 // ========================================
 
 // User with their claims (expanded)
-export type UserWithClaims = UserRma & {
+export type UserWithClaims = Profile & {
   claims?: Claim[]
-  authUser?: User // ← ADD: auth user relation
+  authUser?: User
 }
 
 // Vendor with related data
 export type VendorWithRelations = Vendor & {
   productModels?: ProductModel[]
-  notificationRefs?: NotificationRef[]
-  vendorPhotoRules?: VendorPhotoRule[]
-  vendorFieldRules?: VendorFieldRule[]
+  notificationMasters?: NotificationMaster[]
 }
 
 // Claim with all relations
@@ -239,7 +223,7 @@ export type ClaimWithRelations = Claim & {
   claimPhotos?: ClaimPhoto[]
   vendorClaimItems?: VendorClaimItem[]
   claimHistory?: ClaimHistory[]
-  submittedByUser?: UserRma
+  submittedByUser?: Profile
 }
 
 // Claim with photos and reviews
@@ -256,21 +240,21 @@ export type ClaimWithPhotos = Claim & {
 /**
  * Check if a table has timestamps
  */
-export function isTimestampedTable (table: DatabaseTable): table is TimestampedTable {
+export function isTimestampedTable(table: DatabaseTable): table is TimestampedTable {
   return 'createdAt' in table && 'updatedAt' in table
 }
 
 /**
  * Check if a table has status field
  */
-export function isStatusTable (table: DatabaseTable): table is StatusTable {
+export function isStatusTable(table: DatabaseTable): table is StatusTable {
   return 'status' in table
 }
 
 /**
  * Check if a table supports soft delete
  */
-export function isSoftDeleteTable (table: DatabaseTable): table is SoftDeleteTable {
+export function isSoftDeleteTable(table: DatabaseTable): table is SoftDeleteTable {
   return 'isActive' in table
 }
 
@@ -320,7 +304,7 @@ export type UserFilter = StatusFilter
 // ========================================
 
 // Standard API response structure
-export interface ApiResponse<T = any> {
+export interface ApiResponse<T = unknown> {
   success: boolean
   data?: T
   error?: string

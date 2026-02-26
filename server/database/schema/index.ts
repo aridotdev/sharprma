@@ -1,10 +1,8 @@
 // Table exports
 export * from './vendor'
 // export * from './defect-master'
-// export * from './notification-ref'
+// export * from './notification-master'
 // export * from './product-model'
-// export * from './vendor-field-rule'
-// export * from './vendor-photo-rule'
 // export * from './claim'
 // export * from './claim-photo'
 // export * from './vendor-claim'
@@ -12,9 +10,8 @@ export * from './vendor'
 // export * from './claim-history'
 // export * from './photo-review'
 // export * from './sequence-generator'
-// export * from './user-rma'
+// export * from './profile'
 // export * from './auth'
-// export * from './sequence-generator'
 
 // Re-exports are handled by export * from './file' pattern below
 // Only shared constants are explicitly re-exported at the end
