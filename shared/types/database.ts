@@ -1,3 +1,4 @@
+/* eslint-disable @stylistic/indent-binary-ops */
 // shared/types/database.ts
 // ========================================
 // DATABASE TYPE DEFINITIONS
