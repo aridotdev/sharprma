@@ -1,7 +1,7 @@
 /**
  * Database Connection - Drizzle ORM + SQLite
  *
- * Source: .project/FINAL_SPECIFICATION.md Section 2.1, 4.1
+ * Source: .project/spec.md
  */
 
 import { drizzle } from 'drizzle-orm/libsql'
