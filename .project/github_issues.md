@@ -27,15 +27,15 @@ Tidak ada (issue awal)
 - [x] ✨ Feat (Fitur baru)
 
 ## 📝 Technical Task
-- [ ] Buat `server/database/schema/product-model.ts` — FK ke `vendor.id`, `profile.id`, indexes
-- [ ] Buat `server/database/schema/notification-master.ts` — FK ke `productModel`, `vendor`, `profile`, indexes
-- [ ] Buat `server/database/schema/defect-master.ts` — indexes UNIQUE(name), INDEX(isActive)
-- [ ] Tambahkan Zod insert/update schemas di setiap file
-- [ ] Export semua schema di `server/database/schema/index.ts`
+- [x] Buat `server/database/schema/product-model.ts` — FK ke `vendor.id`, `profile.id`, indexes
+- [x] Buat `server/database/schema/notification-master.ts` — FK ke `productModel`, `vendor`, `profile`, indexes
+- [x] Buat `server/database/schema/defect-master.ts` — indexes UNIQUE(name), INDEX(isActive)
+- [x] Tambahkan Zod insert/update schemas di setiap file
+- [x] Export semua schema di `server/database/schema/index.ts`
 
 ## 🧪 Checklist Pengujian
-- [ ] 🧩 `npm run db:generate` berhasil tanpa error
-- [ ] 🛡️ Validasi data (Zod) sudah mencakup semua case
+- [x] 🧩 `npm run db:generate` berhasil tanpa error
+- [x] 🛡️ Validasi data (Zod) sudah mencakup semua case
 
 ---
 
@@ -53,15 +53,15 @@ Implementasi Drizzle schema untuk tabel transaksi klaim sesuai `spec.md` Section
 - [x] ✨ Feat (Fitur baru)
 
 ## 📝 Technical Task
-- [ ] Buat `server/database/schema/claim.ts` — FK ke notificationMaster, productModel, vendor, profile; Indexes UNIQUE(claimNumber)
-- [ ] Buat `server/database/schema/claim-photo.ts` — FK ke claim.id; Index UNIQUE(claimId, photoType)
-- [ ] Buat `server/database/schema/claim-history.ts` — FK ke claim.id, profile.id; Indexes (claimId, userId)
-- [ ] Tambahkan Zod schemas di setiap file
-- [ ] Export semua schema di `index.ts`
+- [x] Buat `server/database/schema/claim.ts` — FK ke notificationMaster, productModel, vendor, profile; Indexes UNIQUE(claimNumber)
+- [x] Buat `server/database/schema/claim-photo.ts` — FK ke claim.id; Index UNIQUE(claimId, photoType)
+- [x] Buat `server/database/schema/claim-history.ts` — FK ke claim.id, profile.id; Indexes (claimId, userId)
+- [x] Tambahkan Zod schemas di setiap file
+- [x] Export semua schema di `index.ts`
 
 ## 🧪 Checklist Pengujian
-- [ ] 🧩 `npm run db:generate` berhasil tanpa error
-- [ ] 🛡️ Zod enum validation sesuai `spec.md` CLAIM_STATUSES dan PHOTO_TYPES
+- [x] 🧩 `npm run db:generate` berhasil tanpa error
+- [x] 🛡️ Zod enum validation sesuai `spec.md` CLAIM_STATUSES dan PHOTO_TYPES
 
 ---
 
