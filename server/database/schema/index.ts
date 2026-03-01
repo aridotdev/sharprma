@@ -1,5 +1,6 @@
 // Table exports
 export * from './vendor'
+export * from './auth'
 // export * from './defect-master'
 // export * from './notification-master'
 // export * from './product-model'
@@ -11,7 +12,6 @@ export * from './vendor'
 // export * from './photo-review'
 // export * from './sequence-generator'
 // export * from './profile'
-// export * from './auth'
 
 // Re-exports are handled by export * from './file' pattern below
 // Only shared constants are explicitly re-exported at the end

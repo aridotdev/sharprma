@@ -63,4 +63,4 @@ updatedAt: integer({ mode: 'timestamp_ms' })
 
 ## 6. Other
 
-- **Schema Drizzle** : 1 table untuk 1 file
+- **Schema Drizzle** : 1 table/schema untuk 1 file

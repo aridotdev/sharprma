@@ -1,4 +1,3 @@
-/* eslint-disable @stylistic/indent-binary-ops */
 // shared/types/database.ts
 // ========================================
 // DATABASE TYPE DEFINITIONS
@@ -147,19 +146,19 @@ export type UserWithAllRelations = Profile & {
 // All master table types
 export type MasterTable
   = | Vendor
-  | ProductModel
-  | NotificationMaster
-  | DefectMaster
+    | ProductModel
+    | NotificationMaster
+    | DefectMaster
 
 // All transaction table types
 export type TransactionTable
   = | Claim
-  | ClaimPhoto
-  | VendorClaim
-  | VendorClaimItem
-  | ClaimHistory
-  | PhotoReview
-  | SequenceGenerator
+    | ClaimPhoto
+    | VendorClaim
+    | VendorClaimItem
+    | ClaimHistory
+    | PhotoReview
+    | SequenceGenerator
 
 // All user-related table types
 export type UserTable = Profile | User | Session | Account | Verification
@@ -174,32 +173,32 @@ export type DatabaseTable = MasterTable | TransactionTable | UserTable
 // Tables with timestamps
 export type TimestampedTable
   = | Vendor
-  | ProductModel
-  | NotificationMaster
-  | DefectMaster
-  | Claim
-  | ClaimPhoto
-  | VendorClaim
-  | ClaimHistory
-  | PhotoReview
-  | SequenceGenerator
-  | Profile
+    | ProductModel
+    | NotificationMaster
+    | DefectMaster
+    | Claim
+    | ClaimPhoto
+    | VendorClaim
+    | ClaimHistory
+    | PhotoReview
+    | SequenceGenerator
+    | Profile
 
 // Tables with status field
 export type StatusTable
   = | NotificationMaster
-  | Claim
-  | ClaimPhoto
-  | VendorClaim
-  | VendorClaimItem
-  | Profile
+    | Claim
+    | ClaimPhoto
+    | VendorClaim
+    | VendorClaimItem
+    | Profile
 
 // Tables that can be soft-deleted
 export type SoftDeleteTable
   = | Vendor
-  | ProductModel
-  | DefectMaster
-  | Profile
+    | ProductModel
+    | DefectMaster
+    | Profile
 
 // ========================================
 // RELATIONSHIP TYPES
