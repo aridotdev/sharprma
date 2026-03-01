@@ -131,9 +131,9 @@ Setup Better-Auth server instance dengan konfigurasi email/password, username pl
 - [x] ✨ Feat (Fitur baru)
 
 ## 📝 Technical Task
-- [ ] Buat `server/lib/auth.ts` — instance Better-Auth, konfigurasi email/password, session expire 7 hari, rate limit, max 5 attempt, lock 15 menit
-- [ ] Buat `server/api/auth/[...all].ts` — catch-all route
-- [ ] Buat `app/utils/auth-client.ts` — Better-Auth client-side instance
+- [x] Buat `server/lib/auth.ts` — instance Better-Auth, konfigurasi email/password, session expire 7 hari, rate limit, max 5 attempt, lock 15 menit
+- [x] Buat `server/api/auth/[...all].ts` — catch-all route
+- [x] Buat `app/lib/auth-client.ts` — Better-Auth client-side instance
 - [ ] Buat `server/utils/auth-helpers.ts` — `requireAuth()`, `requireRole()`, `getCurrentUser()`
 
 ## 🧪 Checklist Pengujian

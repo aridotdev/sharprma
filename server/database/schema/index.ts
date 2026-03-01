@@ -1,9 +1,9 @@
 // Table exports
 export * from './vendor'
 export * from './auth'
-// export * from './defect-master'
-// export * from './notification-master'
-// export * from './product-model'
+export * from './defect-master'
+export * from './notification-master'
+export * from './product-model'
 // export * from './claim'
 // export * from './claim-photo'
 // export * from './vendor-claim'
