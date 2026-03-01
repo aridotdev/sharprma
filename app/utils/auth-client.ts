@@ -42,4 +42,4 @@ export function useAuth() {
  * These are auto-generated based on your server configuration
  */
 export type AuthUser = typeof authClient.$Infer.Session.user
-export type Session = typeof authClient.$Infer.Session
+export type AuthSession = typeof authClient.$Infer.Session
