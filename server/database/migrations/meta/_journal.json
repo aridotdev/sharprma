@@ -15,6 +15,13 @@
       "when": 1772338555282,
       "tag": "0001_dry_warpath",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "6",
+      "when": 1772338811658,
+      "tag": "0002_new_whistler",
+      "breakpoints": true
     }
   ]
 }
