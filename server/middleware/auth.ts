@@ -1,6 +1,3 @@
-// server/middleware/auth.ts
-import { auth } from '~/server/lib/auth'
-
 /**
  * Global server middleware — runs on every API request.
  *

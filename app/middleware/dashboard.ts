@@ -1,6 +1,3 @@
-// app/middleware/dashboard.ts
-import { authClient } from '~/lib/auth-client'
-
 /**
  * Route middleware for /dashboard and /dashboard/** routes.
  *

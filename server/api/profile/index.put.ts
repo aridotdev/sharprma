@@ -1,9 +1,9 @@
 // server/api/profile/index.put.ts
-import { requireAuth } from '~/server/utils/auth-helpers'
-import db from '~/server/database/index'
-import { profile } from '~/server/database/schema'
+import db from '~~/server/database/index'
+import { profile } from '~~/server/database/schema'
 import { eq } from 'drizzle-orm'
 import { z } from 'zod'
+import { requireAuth } from '~~/server/utils/auth-helpers'
 
 const updateProfileBodySchema = z.object({
   name: z.string().min(1, 'Name is required').trim()

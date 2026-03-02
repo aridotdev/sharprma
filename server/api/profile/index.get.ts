@@ -1,7 +1,6 @@
 // server/api/profile/index.get.ts
-import { requireAuth } from '~/server/utils/auth-helpers'
-import db from '~/server/database/index'
-import { profile } from '~/server/database/schema'
+import db from '~~/server/database/index'
+import { profile } from '~~/server/database/schema'
 import { eq } from 'drizzle-orm'
 
 /**
