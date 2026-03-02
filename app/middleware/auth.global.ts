@@ -1,6 +1,5 @@
 // app/middleware/auth.global.ts
-import { authClient } from '~/lib/auth-client'
-import db from '~~/server/database/index'
+import { authClient } from '~/utils/auth-client'
 
 /**
  * Global client-side middleware — runs on every route navigation.
