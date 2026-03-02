@@ -1,8 +1,8 @@
 // server/utils/auth-helpers.ts
 import type { H3Event } from 'h3'
-import { auth } from '~/server/lib/auth'
-import db from '~/server/database/index'
-import { profile } from '~/server/database/schema'
+import { auth } from './auth'
+import db from '../database/index'
+import { profile } from '../database/schema'
 import { eq } from 'drizzle-orm'
 import type { UserRole } from '~~/shared/utils/constants'
 
