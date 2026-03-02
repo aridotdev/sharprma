@@ -11,7 +11,7 @@ export * from './vendor-claim-item'
 export * from './claim-history'
 export * from './photo-review'
 export * from './sequence-generator'
-// export * from './profile'
+export * from './profile'
 
 // Re-exports are handled by export * from './file' pattern below
 // Only shared constants are explicitly re-exported at the end
