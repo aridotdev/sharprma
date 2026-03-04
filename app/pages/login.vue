@@ -66,9 +66,9 @@ async function onSubmit(payload: FormSubmitEvent<Schema>) {
       return
     }
 
-    // Fetch profile to determine redirect path
-    const { data: profileData } = await useFetch('/api/profile')
-    const role = (profileData.value as { role?: string } | null)?.role
+    // Role tersedia langsung dari Better-Auth session
+    const { data: sessionData } = await authClient.getSession()
+    const role = sessionData?.user?.role
 
     if (role === 'CS') {
       await navigateTo('/cs')

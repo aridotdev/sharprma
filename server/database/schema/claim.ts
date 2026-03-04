@@ -24,8 +24,8 @@ export const claim = sqliteTable('claim', {
   version: text(),
   week: text(),
   claimStatus: text().notNull().$type<typeof CLAIM_STATUSES[number]>(),
-  submittedBy: integer().notNull(),
-  updatedBy: integer().notNull(),
+  submittedBy: text().notNull(), // references user.id (UUID from Better-Auth)
+  updatedBy: text().notNull(), // references user.id (UUID from Better-Auth)
   createdAt: integer({ mode: 'timestamp_ms' })
     .notNull()
     .default(sql`(unixepoch() * 1000)`),
@@ -52,8 +52,8 @@ export const insertClaimSchema = createInsertSchema(claim, {
   ocSerialNo: z.string().min(1, 'OC SN is required').trim(),
   defectCode: z.string().min(1, 'Defect code is required').trim(),
   claimStatus: z.enum(CLAIM_STATUSES),
-  submittedBy: z.number().int().positive(),
-  updatedBy: z.number().int().positive()
+  submittedBy: z.string().min(1, 'Submitted by is required'),
+  updatedBy: z.string().min(1, 'Updated by is required')
 }).omit({
   id: true,
   createdAt: true,

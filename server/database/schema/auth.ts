@@ -1,6 +1,7 @@
 import { relations, sql } from 'drizzle-orm'
 import { sqliteTable, text, integer, index } from 'drizzle-orm/sqlite-core'
-import { profile } from './profile'
+import { z } from 'zod'
+import { USER_ROLES } from '../../../shared/utils/constants'
 
 export const user = sqliteTable('user', {
   id: text('id').primaryKey(),
@@ -22,7 +23,10 @@ export const user = sqliteTable('user', {
   role: text('role'),
   banned: integer('banned', { mode: 'boolean' }).default(false),
   banReason: text('ban_reason'),
-  banExpires: integer('ban_expires', { mode: 'timestamp_ms' })
+  banExpires: integer('ban_expires', { mode: 'timestamp_ms' }),
+  // Business fields (dipindahkan dari tabel profile)
+  branch: text('branch'),
+  isActive: integer('is_active', { mode: 'boolean' }).notNull().default(true)
 })
 
 export const session = sqliteTable(
@@ -95,13 +99,9 @@ export const verification = sqliteTable(
   table => [index('verification_identifier_idx').on(table.identifier)]
 )
 
-export const userRelations = relations(user, ({ many, one }) => ({
+export const userRelations = relations(user, ({ many }) => ({
   sessions: many(session),
-  accounts: many(account),
-  profile: one(profile, {
-    fields: [user.id],
-    references: [profile.userAuthId]
-  })
+  accounts: many(account)
 }))
 
 export const sessionRelations = relations(session, ({ one }) => ({
@@ -117,3 +117,20 @@ export const accountRelations = relations(account, ({ one }) => ({
     references: [user.id]
   })
 }))
+
+// ============================================================
+// ZOD SCHEMAS untuk update user dari sisi Admin
+// ============================================================
+
+export const updateUserStatusSchema = z.object({
+  isActive: z.boolean({ message: 'Must be boolean' })
+})
+
+export const updateUserBusinessSchema = z.object({
+  branch: z.string().optional(),
+  role: z.enum(USER_ROLES).optional(),
+  isActive: z.boolean().optional()
+})
+
+export type UpdateUserStatus = z.infer<typeof updateUserStatusSchema>
+export type UpdateUserBusiness = z.infer<typeof updateUserBusinessSchema>

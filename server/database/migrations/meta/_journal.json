@@ -5,29 +5,8 @@
     {
       "idx": 0,
       "version": "6",
-      "when": 1772338224461,
-      "tag": "0000_silky_hydra",
-      "breakpoints": true
-    },
-    {
-      "idx": 1,
-      "version": "6",
-      "when": 1772338555282,
-      "tag": "0001_dry_warpath",
-      "breakpoints": true
-    },
-    {
-      "idx": 2,
-      "version": "6",
-      "when": 1772338811658,
-      "tag": "0002_new_whistler",
-      "breakpoints": true
-    },
-    {
-      "idx": 3,
-      "version": "6",
-      "when": 1772339233453,
-      "tag": "0003_confused_salo",
+      "when": 1772630124085,
+      "tag": "0000_complete_dragon_man",
       "breakpoints": true
     }
   ]
