@@ -1,7 +1,7 @@
 {
   "version": "6",
   "dialect": "sqlite",
-  "id": "18fb3342-2505-4057-93e0-22492c16c53e",
+  "id": "4126156c-5f32-4723-8359-c5bf46bebec0",
   "prevId": "00000000-0000-0000-0000-000000000000",
   "tables": {
     "vendor": {
@@ -442,6 +442,21 @@
           "primaryKey": false,
           "notNull": false,
           "autoincrement": false
+        },
+        "branch": {
+          "name": "branch",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "is_active": {
+          "name": "is_active",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false,
+          "default": true
         }
       },
       "indexes": {
@@ -855,14 +870,14 @@
         },
         "createdBy": {
           "name": "createdBy",
-          "type": "integer",
+          "type": "text",
           "primaryKey": false,
           "notNull": true,
           "autoincrement": false
         },
         "updatedBy": {
           "name": "updatedBy",
-          "type": "integer",
+          "type": "text",
           "primaryKey": false,
           "notNull": true,
           "autoincrement": false
@@ -938,6 +953,836 @@
           "onUpdate": "no action"
         }
       },
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "checkConstraints": {}
+    },
+    "claim": {
+      "name": "claim",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "integer",
+          "primaryKey": true,
+          "notNull": true,
+          "autoincrement": true
+        },
+        "claimNumber": {
+          "name": "claimNumber",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "notificationId": {
+          "name": "notificationId",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "modelId": {
+          "name": "modelId",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "vendorId": {
+          "name": "vendorId",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "inch": {
+          "name": "inch",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "branch": {
+          "name": "branch",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "odfNumber": {
+          "name": "odfNumber",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "panelSerialNo": {
+          "name": "panelSerialNo",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "ocSerialNo": {
+          "name": "ocSerialNo",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "defectCode": {
+          "name": "defectCode",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "version": {
+          "name": "version",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "week": {
+          "name": "week",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "claimStatus": {
+          "name": "claimStatus",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "submittedBy": {
+          "name": "submittedBy",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "updatedBy": {
+          "name": "updatedBy",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "createdAt": {
+          "name": "createdAt",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false,
+          "default": "(unixepoch() * 1000)"
+        },
+        "updatedAt": {
+          "name": "updatedAt",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false,
+          "default": "(unixepoch() * 1000)"
+        }
+      },
+      "indexes": {
+        "claim_claimNumber_unique": {
+          "name": "claim_claimNumber_unique",
+          "columns": [
+            "claimNumber"
+          ],
+          "isUnique": true
+        },
+        "claim_number_idx": {
+          "name": "claim_number_idx",
+          "columns": [
+            "claimNumber"
+          ],
+          "isUnique": true
+        },
+        "claim_vendor_idx": {
+          "name": "claim_vendor_idx",
+          "columns": [
+            "vendorId"
+          ],
+          "isUnique": false
+        },
+        "claim_status_idx": {
+          "name": "claim_status_idx",
+          "columns": [
+            "claimStatus"
+          ],
+          "isUnique": false
+        },
+        "claim_submitted_by_idx": {
+          "name": "claim_submitted_by_idx",
+          "columns": [
+            "submittedBy"
+          ],
+          "isUnique": false
+        },
+        "claim_vendor_status_idx": {
+          "name": "claim_vendor_status_idx",
+          "columns": [
+            "vendorId",
+            "claimStatus"
+          ],
+          "isUnique": false
+        }
+      },
+      "foreignKeys": {
+        "claim_notificationId_notification_master_id_fk": {
+          "name": "claim_notificationId_notification_master_id_fk",
+          "tableFrom": "claim",
+          "tableTo": "notification_master",
+          "columnsFrom": [
+            "notificationId"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "restrict",
+          "onUpdate": "no action"
+        },
+        "claim_modelId_product_model_id_fk": {
+          "name": "claim_modelId_product_model_id_fk",
+          "tableFrom": "claim",
+          "tableTo": "product_model",
+          "columnsFrom": [
+            "modelId"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "restrict",
+          "onUpdate": "no action"
+        },
+        "claim_vendorId_vendor_id_fk": {
+          "name": "claim_vendorId_vendor_id_fk",
+          "tableFrom": "claim",
+          "tableTo": "vendor",
+          "columnsFrom": [
+            "vendorId"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "restrict",
+          "onUpdate": "no action"
+        },
+        "claim_defectCode_defect_master_code_fk": {
+          "name": "claim_defectCode_defect_master_code_fk",
+          "tableFrom": "claim",
+          "tableTo": "defect_master",
+          "columnsFrom": [
+            "defectCode"
+          ],
+          "columnsTo": [
+            "code"
+          ],
+          "onDelete": "restrict",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "checkConstraints": {}
+    },
+    "claim_photo": {
+      "name": "claim_photo",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "integer",
+          "primaryKey": true,
+          "notNull": true,
+          "autoincrement": true
+        },
+        "claimId": {
+          "name": "claimId",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "photoType": {
+          "name": "photoType",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "filePath": {
+          "name": "filePath",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "thumbnailPath": {
+          "name": "thumbnailPath",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "status": {
+          "name": "status",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false,
+          "default": "'PENDING'"
+        },
+        "rejectReason": {
+          "name": "rejectReason",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "createdAt": {
+          "name": "createdAt",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false,
+          "default": "(unixepoch() * 1000)"
+        },
+        "updatedAt": {
+          "name": "updatedAt",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false,
+          "default": "(unixepoch() * 1000)"
+        }
+      },
+      "indexes": {
+        "claim_photo_claim_type_idx": {
+          "name": "claim_photo_claim_type_idx",
+          "columns": [
+            "claimId",
+            "photoType"
+          ],
+          "isUnique": true
+        },
+        "claim_photo_claim_idx": {
+          "name": "claim_photo_claim_idx",
+          "columns": [
+            "claimId"
+          ],
+          "isUnique": false
+        }
+      },
+      "foreignKeys": {
+        "claim_photo_claimId_claim_id_fk": {
+          "name": "claim_photo_claimId_claim_id_fk",
+          "tableFrom": "claim_photo",
+          "tableTo": "claim",
+          "columnsFrom": [
+            "claimId"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "restrict",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "checkConstraints": {}
+    },
+    "vendor_claim": {
+      "name": "vendor_claim",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "integer",
+          "primaryKey": true,
+          "notNull": true,
+          "autoincrement": true
+        },
+        "vendorClaimNo": {
+          "name": "vendorClaimNo",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "vendorId": {
+          "name": "vendorId",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "submittedAt": {
+          "name": "submittedAt",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "reportSnapshot": {
+          "name": "reportSnapshot",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "status": {
+          "name": "status",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "createdBy": {
+          "name": "createdBy",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "updatedBy": {
+          "name": "updatedBy",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "createdAt": {
+          "name": "createdAt",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false,
+          "default": "(unixepoch() * 1000)"
+        },
+        "updatedAt": {
+          "name": "updatedAt",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false,
+          "default": "(unixepoch() * 1000)"
+        }
+      },
+      "indexes": {
+        "vendor_claim_vendorClaimNo_unique": {
+          "name": "vendor_claim_vendorClaimNo_unique",
+          "columns": [
+            "vendorClaimNo"
+          ],
+          "isUnique": true
+        },
+        "vendor_claim_no_idx": {
+          "name": "vendor_claim_no_idx",
+          "columns": [
+            "vendorClaimNo"
+          ],
+          "isUnique": true
+        },
+        "vendor_claim_vendor_idx": {
+          "name": "vendor_claim_vendor_idx",
+          "columns": [
+            "vendorId"
+          ],
+          "isUnique": false
+        },
+        "vendor_claim_status_idx": {
+          "name": "vendor_claim_status_idx",
+          "columns": [
+            "status"
+          ],
+          "isUnique": false
+        },
+        "vendor_claim_created_at_idx": {
+          "name": "vendor_claim_created_at_idx",
+          "columns": [
+            "createdAt"
+          ],
+          "isUnique": false
+        }
+      },
+      "foreignKeys": {
+        "vendor_claim_vendorId_vendor_id_fk": {
+          "name": "vendor_claim_vendorId_vendor_id_fk",
+          "tableFrom": "vendor_claim",
+          "tableTo": "vendor",
+          "columnsFrom": [
+            "vendorId"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "restrict",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "checkConstraints": {}
+    },
+    "vendor_claim_item": {
+      "name": "vendor_claim_item",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "integer",
+          "primaryKey": true,
+          "notNull": true,
+          "autoincrement": true
+        },
+        "vendorClaimId": {
+          "name": "vendorClaimId",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "claimId": {
+          "name": "claimId",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "vendorDecision": {
+          "name": "vendorDecision",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "compensation": {
+          "name": "compensation",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "rejectReason": {
+          "name": "rejectReason",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "vendorDecisionBy": {
+          "name": "vendorDecisionBy",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "vendorDecisionAt": {
+          "name": "vendorDecisionAt",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "createdAt": {
+          "name": "createdAt",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false,
+          "default": "(unixepoch() * 1000)"
+        },
+        "updatedAt": {
+          "name": "updatedAt",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false,
+          "default": "(unixepoch() * 1000)"
+        }
+      },
+      "indexes": {
+        "vendor_claim_item_vendor_claim_idx": {
+          "name": "vendor_claim_item_vendor_claim_idx",
+          "columns": [
+            "vendorClaimId"
+          ],
+          "isUnique": false
+        },
+        "vendor_claim_item_claim_idx": {
+          "name": "vendor_claim_item_claim_idx",
+          "columns": [
+            "claimId"
+          ],
+          "isUnique": false
+        }
+      },
+      "foreignKeys": {
+        "vendor_claim_item_vendorClaimId_vendor_claim_id_fk": {
+          "name": "vendor_claim_item_vendorClaimId_vendor_claim_id_fk",
+          "tableFrom": "vendor_claim_item",
+          "tableTo": "vendor_claim",
+          "columnsFrom": [
+            "vendorClaimId"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "cascade",
+          "onUpdate": "no action"
+        },
+        "vendor_claim_item_claimId_claim_id_fk": {
+          "name": "vendor_claim_item_claimId_claim_id_fk",
+          "tableFrom": "vendor_claim_item",
+          "tableTo": "claim",
+          "columnsFrom": [
+            "claimId"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "restrict",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "checkConstraints": {}
+    },
+    "claim_history": {
+      "name": "claim_history",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "integer",
+          "primaryKey": true,
+          "notNull": true,
+          "autoincrement": true
+        },
+        "claimId": {
+          "name": "claimId",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "action": {
+          "name": "action",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "fromStatus": {
+          "name": "fromStatus",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "toStatus": {
+          "name": "toStatus",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "userId": {
+          "name": "userId",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "userRole": {
+          "name": "userRole",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "note": {
+          "name": "note",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "createdAt": {
+          "name": "createdAt",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false,
+          "default": "(unixepoch() * 1000)"
+        }
+      },
+      "indexes": {
+        "claim_history_claim_idx": {
+          "name": "claim_history_claim_idx",
+          "columns": [
+            "claimId"
+          ],
+          "isUnique": false
+        },
+        "claim_history_user_idx": {
+          "name": "claim_history_user_idx",
+          "columns": [
+            "userId"
+          ],
+          "isUnique": false
+        }
+      },
+      "foreignKeys": {
+        "claim_history_claimId_claim_id_fk": {
+          "name": "claim_history_claimId_claim_id_fk",
+          "tableFrom": "claim_history",
+          "tableTo": "claim",
+          "columnsFrom": [
+            "claimId"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "restrict",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "checkConstraints": {}
+    },
+    "photo_review": {
+      "name": "photo_review",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "integer",
+          "primaryKey": true,
+          "notNull": true,
+          "autoincrement": true
+        },
+        "claimPhotoId": {
+          "name": "claimPhotoId",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "reviewedBy": {
+          "name": "reviewedBy",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "status": {
+          "name": "status",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "rejectReason": {
+          "name": "rejectReason",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "reviewedAt": {
+          "name": "reviewedAt",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false,
+          "default": "(unixepoch() * 1000)"
+        }
+      },
+      "indexes": {
+        "photo_review_claim_photo_idx": {
+          "name": "photo_review_claim_photo_idx",
+          "columns": [
+            "claimPhotoId"
+          ],
+          "isUnique": false
+        },
+        "photo_review_reviewer_idx": {
+          "name": "photo_review_reviewer_idx",
+          "columns": [
+            "reviewedBy"
+          ],
+          "isUnique": false
+        }
+      },
+      "foreignKeys": {
+        "photo_review_claimPhotoId_claim_photo_id_fk": {
+          "name": "photo_review_claimPhotoId_claim_photo_id_fk",
+          "tableFrom": "photo_review",
+          "tableTo": "claim_photo",
+          "columnsFrom": [
+            "claimPhotoId"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "restrict",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "checkConstraints": {}
+    },
+    "sequence_generator": {
+      "name": "sequence_generator",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "integer",
+          "primaryKey": true,
+          "notNull": true,
+          "autoincrement": true
+        },
+        "type": {
+          "name": "type",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "currentDate": {
+          "name": "currentDate",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "lastSequence": {
+          "name": "lastSequence",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false,
+          "default": 0
+        }
+      },
+      "indexes": {
+        "sequence_generator_type_date_idx": {
+          "name": "sequence_generator_type_date_idx",
+          "columns": [
+            "type",
+            "currentDate"
+          ],
+          "isUnique": true
+        }
+      },
+      "foreignKeys": {},
       "compositePrimaryKeys": {},
       "uniqueConstraints": {},
       "checkConstraints": {}

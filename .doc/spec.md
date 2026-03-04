@@ -268,7 +268,7 @@ npm run db:studio        # Database studio
 - **Boolean Format**: `integer` with Drizzle `mode: 'boolean'` (0/1 → true/false)
 - **Enum Format**: `text` + Zod validation (no DB enum)
 - **Soft Delete Strategy**: Use flags/status instead of actual deletion
-- **Foreign Keys**: All integer type
+- **Foreign Keys**: Integer type untuk entity ID bisnis; `text` (UUID) untuk referensi ke `user.id` (Better-Auth)
 - **Audit Trail**: Append-only history log
 - **Schema Drizzle**: 1 table/schema per 1 file
 
@@ -326,8 +326,8 @@ Strategy: claimStatus = 'ARCHIVED'
 | requiredPhotos | json    | NOT NULL, DEFAULT '[]'                | Array enum photoType     |
 | requiredFields | json    | NOT NULL, DEFAULT '[]'                | Array enum fieldName     |
 | isActive       | integer | NOT NULL                              | Boolean                  |
-| createdBy      | integer | FK -> profile.id onDelete: 'restrict' | ID user                  |
-| updatedBy      | integer | FK -> profile.id onDelete: 'restrict' | ID user                  |
+| createdBy      | text    | FK → user.id (UUID)                  | ID user (Better-Auth)    |
+| updatedBy      | text    | FK → user.id (UUID)                  | ID user (Better-Auth)    |
 | createdAt      | integer | NOT NULL                              | Waktu dibuat             |
 | updatedAt      | integer | NOT NULL                              | Waktu ada update         |
 
@@ -350,8 +350,8 @@ INDEX:
 | inch      | integer | NOT NULL                              | Ukuran inch   |
 | vendorId  | integer | FK -> vendor.id onDelete: 'restrict'  | Kode vendor   |
 | isActive  | integer | NOT NULL                              | Boolean       |
-| createdBy | integer | FK -> profile.id onDelete: 'restrict' | dibuat Oleh   |
-| updatedBy | integer | FK -> profile.id onDelete: 'restrict' | diupdate Oleh |
+| createdBy | text    | FK → user.id (UUID)                  | dibuat Oleh   |
+| updatedBy | text    | FK → user.id (UUID)                  | diupdate Oleh |
 | createdAt | integer | NOT NULL                              | Waktu dibuat  |
 | updatedAt | integer | NOT NULL                              | Waktu update  |
 
@@ -373,8 +373,8 @@ INDEX:
 | branch           | text    | NOT NULL                                 | Cabang CS                           |
 | vendorId         | integer | FK -> vendor.id onDelete: 'restrict'     | Kode vendor                         |
 | status           | text    | NOT NULL                                 | NEW / USED / EXPIRED                |
-| createdBy        | integer | FK -> profile.id onDelete: 'restrict'    | dibuat oleh                         |
-| updatedBy        | integer | FK -> profile.id onDelete: 'restrict'    | diupdate oleh                       |
+| createdBy        | text    | FK → user.id (UUID)                       | dibuat oleh                         |
+| updatedBy        | text    | FK → user.id (UUID)                       | diupdate oleh                       |
 | createdAt        | integer | NOT NULL                                 | Waktu dibuat                        |
 | updatedAt        | integer | NOT NULL                                 | Waktu diupdate                      |
 
@@ -395,8 +395,8 @@ INDEX:
 | code      | text    | NOT NULL, UNIQUE                      | Kode defect      |
 | name      | text    | NOT NULL                              | Nama defect      |
 | isActive  | integer | NOT NULL                              | Boolean          |
-| createdBy | integer | FK -> profile.id onDelete: 'restrict' | dibuat oleh      |
-| updatedBy | integer | FK -> profile.id onDelete: 'restrict' | diupdate oleh    |
+| createdBy | text    | FK → user.id (UUID)                  | dibuat oleh      |
+| updatedBy | text    | FK → user.id (UUID)                  | diupdate oleh    |
 | createdAt | integer | NOT NULL                              | Waktu dibuat     |
 | updatedAt | integer | NOT NULL                              | Waktu ada update |
 
@@ -427,8 +427,8 @@ INDEX:
 | version        | text    |                                                  | Nomor versi      |
 | week           | text    |                                                  | Kode Week        |
 | claimStatus    | text    | NOT NULL                                         | Status Klaim     |
-| submittedBy    | integer | FK -> profile.id                                 | Id CS            |
-| updatedBy      | integer | FK -> profile.id                                 | Diupdate oleh    |
+| submittedBy    | text    | FK → user.id (UUID)                              | Id CS            |
+| updatedBy      | text    | FK → user.id (UUID)                              | Diupdate oleh    |
 | createdAt      | integer | NOT NULL                                         | Waktu dibuat     |
 | updatedAt      | integer | NOT NULL                                         | Waktu ada update |
 
@@ -441,7 +441,7 @@ INDEX:
 
 📌 CATATAN:
 - Generate claimNumber: `CL-{YYYYMMDD}-{Sequence}`
-- `branch` adalah snapshot dari `profile.branch` || `notificationMaster.branch`
+- `branch` adalah snapshot dari `user.branch` || `notificationMaster.branch`
 - `CLAIM_STATUSES = ['DRAFT', 'SUBMITTED', 'IN_REVIEW', 'NEED_REVISION', 'APPROVED', 'ARCHIVED']`
 - Claim menggunakan soft delete via `claimStatus = ARCHIVED`
 
@@ -491,8 +491,8 @@ Photo Upload API:
 | submittedAt    | integer | NOT NULL         | Waktu kirim ke vendor (Unix timestamp) |
 | reportSnapshot | text    | NOT NULL         | Snapshot JSON data klaim               |
 | status         | text    | NOT NULL         | Status vendor claim                    |
-| createdBy      | integer | FK -> profile.id | Dibuat oleh                            |
-| updatedBy      | integer | FK -> profile.id | Diupdate oleh                          |
+| createdBy      | text    | FK → user.id (UUID)     | Dibuat oleh                            |
+| updatedBy      | text    | FK → user.id (UUID)     | Diupdate oleh                          |
 | createdAt      | integer | NOT NULL         | Waktu dibuat                           |
 | updatedAt      | integer | NOT NULL         | Waktu ada update                       |
 
@@ -512,7 +512,7 @@ Photo Upload API:
 | vendorDecision   | text    | NOT NULL                                 | Keputusan vendor                 |
 | compensation     | integer |                                          | Kompensasi (jika ACCEPTED)       |
 | rejectReason     | text    |                                          | Alasan reject (jika REJECTED)    |
-| vendorDecisionBy | integer | FK -> profile.id                         | Dibuat oleh                      |
+| vendorDecisionBy | text    | FK → user.id (UUID)                        | Dibuat oleh                      |
 | vendorDecisionAt | integer |                                          | Waktu keputusan (Unix timestamp) |
 | createdAt        | integer | NOT NULL                                 | Waktu dibuat                     |
 | updatedAt        | integer |                                          | Waktu ada update                 |
@@ -532,7 +532,7 @@ Photo Upload API:
 | action     | text    | NOT NULL                              | Jenis aksi       |
 | fromStatus | text    | NOT NULL                              | status awal      |
 | toStatus   | text    | NOT NULL                              | status akhir     |
-| userId     | integer | FK -> profile.id onDelete: 'restrict' | ID User          |
+| userId     | text    | FK → user.id (UUID)                   | ID User          |
 | userRole   | text    | NOT NULL                              | snapshot role    |
 | note       | text    |                                       | catatan          |
 | createdAt  | integer | NOT NULL                              | Waktu dibuat     |
@@ -552,7 +552,7 @@ INDEX:
 | ------------ | ------- | ---------------------------------------- | ----------------------------- |
 | id           | integer | PK                                       | ID foto review                |
 | claimPhotoId | integer | FK -> claimPhoto.id onDelete: 'restrict' | Kode Klaim                    |
-| reviewedBy   | integer | FK -> profile.id onDelete: 'restrict'    | Di review oleh                |
+| reviewedBy   | text    | FK → user.id (UUID)                      | Di review oleh                |
 | status       | text    | NOT NULL                                 | VERIFIED / REJECT             |
 | rejectReason | text    |                                          | Catatan reject                |
 | reviewedAt   | integer | NOT NULL                                 | Waktu review (Unix timestamp) |
@@ -587,30 +587,40 @@ INDEX:
 
 ### 3.6 User Tables
 
-#### 3.6.1 Profile (Business Data)
+#### 3.6.1 User (Better-Auth + Business Fields)
 
-| Kolom      | Tipe    | Constraint       | Keterangan     |
-| ---------- | ------- | ---------------- | -------------- |
-| id         | integer | PK               | ID user        |
-| userAuthId | text    | UNIQUE, NOT NULL | Auth id (UUID) |
-| name       | text    | NOT NULL         | Nama user      |
-| role       | text    | NOT NULL         | enum role      |
-| branch     | text    |                  | branch         |
-| isActive   | integer | NOT NULL (0/1)   | Boolean        |
-| createdAt  | integer | NOT NULL         | Waktu dibuat   |
-| updatedAt  | integer | NOT NULL         | Waktu diupdate |
+> Tabel `profile` telah dihapus. Semua data bisnis user digabungkan ke tabel `user` Better-Auth
+> menggunakan `additionalFields`. FK user di semua tabel kini bertipe `text` (UUID).
 
-INDEX:
-- UNIQUE (userAuthId)
-- INDEX (role)
+**Kolom Core Better-Auth:**
+
+| Kolom          | Tipe    | Constraint     | Keterangan                        |
+| -------------- | ------- | -------------- | --------------------------------- |
+| id             | text    | PK (UUID)      | ID user (UUID, generated by BA)   |
+| name           | text    | NOT NULL       | Nama lengkap user                 |
+| email          | text    | NOT NULL, UNIQUE | Email user (login credential)   |
+| emailVerified  | integer | boolean        | Status verifikasi email           |
+| username       | text    | UNIQUE         | Username (dari plugin `username`) |
+| displayUsername| text    |                | Display username                  |
+| role           | text    |                | Role bisnis: CS/QRCC/MANAGEMENT/ADMIN |
+| banned         | integer | boolean        | Status banned (Admin plugin)      |
+| banReason      | text    |                | Alasan ban                        |
+| banExpires     | integer | timestamp_ms   | Kapan ban berakhir                |
+| createdAt      | integer | NOT NULL       | Waktu dibuat                      |
+| updatedAt      | integer | NOT NULL       | Waktu diupdate                    |
+
+**Additional Business Fields (via `additionalFields`):**
+
+| Kolom    | Tipe    | Constraint     | Keterangan                        |
+| -------- | ------- | -------------- | --------------------------------- |
+| branch   | text    |                | Cabang user bekerja               |
+| isActive | integer | NOT NULL (0/1) | Soft delete flag (default: true)  |
 
 📌 CATATAN:
-- `enum role = ['ADMIN', 'CS', 'QRCC', 'MANAGEMENT']`
-- User menggunakan soft delete (isActive flag)
-- Branch bisa di-update, claim menyimpan snapshot branch
-- User tidak benar-benar dihapus dari database
-- User yang `isActive = false` tidak bisa login, tapi data historis tetap utuh
-- Semua relasi (Claim.submittedBy, ClaimHistory.userId, dll) TIDAK PERLU `onDelete: 'restrict'`
+- `enum role = ['ADMIN', 'CS', 'QRCC', 'MANAGEMENT']` — dikelola oleh Better-Auth Admin plugin
+- User menggunakan soft delete (`isActive` flag) — user non-aktif tidak bisa login
+- User tidak benar-benar dihapus dari database, data historis tetap utuh
+- Semua FK user di tabel lain bertipe `text` (UUID) mengacu ke `user.id`
 
 #### 3.6.2 Auth (Better-Auth)
 

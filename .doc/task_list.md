@@ -6,30 +6,30 @@
 
 ## Phase 1 — Foundation: Database & Auth
 
-- [ ] **#1** Buat schema DB: `ProductModel`, `NotificationMaster`, `DefectMaster`
+- [x] **#1** Buat schema DB: `ProductModel`, `NotificationMaster`, `DefectMaster`
   - File: `schema/product-model.ts`, `schema/notification-master.ts`, `schema/defect-master.ts`
   - Tambah Zod insert/update schemas, export di `schema/index.ts`
 
-- [ ] **#2** Buat schema DB: `Claim`, `ClaimPhoto`, `ClaimHistory`
+- [x] **#2** Buat schema DB: `Claim`, `ClaimPhoto`, `ClaimHistory`
   - File: `schema/claim.ts`, `schema/claim-photo.ts`, `schema/claim-history.ts`
   - Tambah Zod schemas, export di `schema/index.ts`
 
-- [ ] **#3** Buat schema DB: `VendorClaim`, `VendorClaimItem`, `PhotoReview`, `SequenceGenerator`
+- [x] **#3** Buat schema DB: `VendorClaim`, `VendorClaimItem`, `PhotoReview`, `SequenceGenerator`
   - File: `schema/vendor-claim.ts`, `schema/vendor-claim-item.ts`, `schema/photo-review.ts`, `schema/sequence-generator.ts`
 
-- [ ] **#4** Buat schema DB: `Profile` & tabel Better-Auth (`user`, `session`, `account`, `verification`)
-  - FK `userAuthId TEXT` → `auth.user.id`, relasi two-way, jalankan `db:migrate`
+- [x] **#4** Buat schema DB: `Profile` & tabel Better-Auth (`user`, `session`, `account`, `verification`)
+  - ~~FK `userAuthId TEXT` → `auth.user.id`, relasi two-way~~ *(Refactored: profile dihapus, data bisnis pindah ke `user` via `additionalFields`)*, jalankan `db:migrate`
 
-- [ ] **#5** Setup Better-Auth server
-  - File: `server/lib/auth.ts`, `server/api/auth/[...all].ts`, `app/lib/auth-client.ts`, `server/utils/auth-helpers.ts`
+- [x] **#5** Setup Better-Auth server
+  - File: `server/utils/auth.ts`, `app/utils/auth-client.ts`
   - Konfigurasi: session 7 hari, ratelimit, max 5 attempt, lock 15 menit
 
 - [ ] **#6** Buat auth middleware & route protection
   - File: `server/middleware/auth.ts`, `app/middleware/auth.global.ts`, `app/middleware/cs.ts`, `app/middleware/dashboard.ts`
   - Guard: CS → `/cs`, QRCC/Admin/Management → `/dashboard`, unauthorized → redirect
 
-- [ ] **#7** Buat halaman Login & Profile
-  - `app/pages/login.vue` — form email + password, redirect sesuai role, error message
+- [/] **#7** Buat halaman Login & Profile
+  - `app/pages/login.vue` ✅ — form email + password, redirect sesuai role via `authClient.getSession()`
   - `app/pages/profile.vue` — tampil nama/role/branch (read-only), edit nama & ganti password
 
 ---
