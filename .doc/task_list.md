@@ -24,9 +24,9 @@
   - File: `server/utils/auth.ts`, `app/utils/auth-client.ts`
   - Konfigurasi: session 7 hari, ratelimit, max 5 attempt, lock 15 menit
 
-- [ ] **#6** Buat auth middleware & route protection
-  - File: `server/middleware/auth.ts`, `app/middleware/auth.global.ts`, `app/middleware/cs.ts`, `app/middleware/dashboard.ts`
-  - Guard: CS → `/cs`, QRCC/Admin/Management → `/dashboard`, unauthorized → redirect
+- [x] **#6** Buat auth middleware & route protection
+  - File: `server/api/auth/[...all].ts`, `server/utils/auth-helpers.ts` (fix), `app/middleware/auth.global.ts`, `app/middleware/cs.ts`, `app/middleware/dashboard.ts`
+  - Guard: CS → `/cs`, QRCC/Admin/Management → `/dashboard`, unauthorized → redirect `/login`
 
 - [/] **#7** Buat halaman Login & Profile
   - `app/pages/login.vue` ✅ — form email + password, redirect sesuai role via `authClient.getSession()`
