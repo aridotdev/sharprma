@@ -6,8 +6,8 @@ import { z } from 'zod'
 import { claim } from './claim'
 import { CLAIM_HISTORY_ACTIONS } from '../../../shared/utils/constants'
 
-// Note: userId references profile.id (integer)
-// UserRole is just a snapshot
+// userId references user.id (UUID from Better-Auth)
+// userRole is a snapshot of the role at the time of the action
 
 export const claimHistory = sqliteTable('claim_history', {
   id: integer().primaryKey({ autoIncrement: true }),
@@ -15,7 +15,7 @@ export const claimHistory = sqliteTable('claim_history', {
   action: text().notNull().$type<typeof CLAIM_HISTORY_ACTIONS[number]>(),
   fromStatus: text().notNull(),
   toStatus: text().notNull(),
-  userId: integer().notNull(), // FK mapped logically, no restrict needed based on spec note
+  userId: text().notNull(), // references user.id (UUID from Better-Auth)
   userRole: text().notNull(),
   note: text(),
   createdAt: integer({ mode: 'timestamp_ms' })
@@ -31,7 +31,7 @@ export const insertClaimHistorySchema = createInsertSchema(claimHistory, {
   action: z.enum(CLAIM_HISTORY_ACTIONS),
   fromStatus: z.string().min(1),
   toStatus: z.string().min(1),
-  userId: z.number().int().positive(),
+  userId: z.string().min(1, 'User ID is required'),
   userRole: z.string().min(1)
 }).omit({
   id: true,
