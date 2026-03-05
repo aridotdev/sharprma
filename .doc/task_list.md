@@ -28,9 +28,9 @@
   - File: `server/api/auth/[...all].ts`, `server/utils/auth-helpers.ts` (fix), `app/middleware/auth.global.ts`, `app/middleware/cs.ts`, `app/middleware/dashboard.ts`
   - Guard: CS → `/cs`, QRCC/Admin/Management → `/dashboard`, unauthorized → redirect `/login`
 
-- [/] **#7** Buat halaman Login & Profile
+- [x] **#7** Buat halaman Login & Profile
   - `app/pages/login.vue` ✅ — form email + password, redirect sesuai role via `authClient.getSession()`
-  - `app/pages/profile.vue` — tampil nama/role/branch (read-only), edit nama & ganti password
+  - `app/pages/profile.vue` ✅ — tampil nama/role/branch (read-only), edit nama & ganti password
 
 ---
 

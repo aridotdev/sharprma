@@ -8,25 +8,25 @@ async function seed() {
     {
       email: 'admin@sharp.com',
       name: 'Super Admin',
-      role: 'ADMIN',
+      role: 'ADMIN' as const,
       branch: 'HQ'
     },
     {
       email: 'management@sharp.com',
       name: 'Management User',
-      role: 'MANAGEMENT',
+      role: 'MANAGEMENT' as const,
       branch: 'HQ'
     },
     {
       email: 'qrcc@sharp.com',
       name: 'QRCC User',
-      role: 'QRCC',
+      role: 'QRCC' as const,
       branch: 'HQ'
     },
     {
       email: 'cs@sharp.com',
       name: 'CS Cabang Jakarta',
-      role: 'CS',
+      role: 'CS' as const,
       branch: 'Jakarta'
     }
   ]
@@ -56,7 +56,8 @@ async function seed() {
         createdCount++
         console.log(`✅ Successfully created user: ${userData.email} (Role: ${userData.role})`)
       }
-    } catch (error: any) {
+    } catch (err) {
+      const error = err as { message?: string, status?: number }
       if (error?.message?.includes('already exists') || error?.status === 400) {
         console.log(`⚠️ User ${userData.email} may already exist or error: ${error.message}`)
       } else {

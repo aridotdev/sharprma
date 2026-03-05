@@ -26,7 +26,13 @@ export default defineNuxtRouteMiddleware(async (to) => {
     return
   }
 
-  // 2. Authenticated — redirect away from / and /login to correct home
+  // 2. Authenticated — allow /profile for all roles
+  const isProfilePage = to.path === '/profile'
+  if (isProfilePage) {
+    return
+  }
+
+  // 3. Authenticated — redirect away from / and /login to correct home
   if (isLoginPage || isRootPage) {
     const role = session.user?.role
     if (role === 'CS') {
