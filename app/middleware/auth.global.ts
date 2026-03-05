@@ -1,28 +1,33 @@
 // app/middleware/auth.global.ts
-// Global auth middleware — jalan di setiap navigasi
-// Redirect unauthenticated users ke /login
-// Redirect authenticated users dari /login ke halaman sesuai role
 import { authClient } from '~/utils/auth-client'
 
-// Rute publik yang tidak memerlukan autentikasi
-const PUBLIC_ROUTES = ['/login']
-
+/**
+ * Global middleware — runs on every route navigation.
+ *
+ * Rules:
+ * - Unauthenticated + not on /login → redirect to /login
+ * - Authenticated + on / or /login → redirect to home by role
+ *   - CS → /cs
+ *   - QRCC / MANAGEMENT / ADMIN → /dashboard
+ */
 export default defineNuxtRouteMiddleware(async (to) => {
-  // Skip middleware di server-side (auth check dilakukan client-side)
-  if (import.meta.server) return
-
-  const isPublicRoute = PUBLIC_ROUTES.some(route => to.path === route)
-
-  // Ambil session menggunakan getSession (lebih stabil dari useSession di SSR)
+  // Use getSession for stable auth check in middleware
   const { data: session } = await authClient.getSession()
 
-  // Jika tidak ada session dan bukan rute publik → redirect ke login
-  if (!session && !isPublicRoute) {
-    return navigateTo('/login')
+  const isLoggedIn = !!session?.user
+  const isLoginPage = to.path === '/login'
+  const isRootPage = to.path === '/'
+
+  // 1. Unauthenticated — redirect to login (except already on login)
+  if (!isLoggedIn) {
+    if (!isLoginPage) {
+      return navigateTo('/login')
+    }
+    return
   }
 
-  // Jika sudah login dan mengakses rute publik (login) → redirect sesuai role
-  if (session && isPublicRoute) {
+  // 2. Authenticated — redirect away from / and /login to correct home
+  if (isLoginPage || isRootPage) {
     const role = session.user?.role
     if (role === 'CS') {
       return navigateTo('/cs')

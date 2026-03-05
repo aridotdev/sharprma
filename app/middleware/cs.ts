@@ -1,20 +1,26 @@
 // app/middleware/cs.ts
-// Named middleware — proteksi rute /cs/* hanya untuk role CS
 import { authClient } from '~/utils/auth-client'
 
-export default defineNuxtRouteMiddleware(async () => {
-  if (import.meta.server) return
-
+/**
+ * Route middleware for /cs and /cs/** routes.
+ * Restricts access to CS role only.
+ * Non-CS authenticated users are redirected to their home.
+ */
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+export default defineNuxtRouteMiddleware(async (to) => {
   const { data: session } = await authClient.getSession()
 
-  if (!session) {
+  if (!session?.user) {
     return navigateTo('/login')
   }
 
   const role = session.user?.role
 
-  // Hanya CS yang boleh akses rute /cs/*
   if (role !== 'CS') {
-    return navigateTo('/dashboard')
+    // Redirect to their proper home based on role
+    if (role === 'QRCC' || role === 'MANAGEMENT' || role === 'ADMIN') {
+      return navigateTo('/dashboard')
+    }
+    return navigateTo('/login')
   }
 })
