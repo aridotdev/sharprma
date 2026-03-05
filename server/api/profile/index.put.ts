@@ -1,37 +1,33 @@
 // server/api/profile/index.put.ts
-import db from '~~/server/database/index'
-import { profile } from '~~/server/database/schema'
-import { eq } from 'drizzle-orm'
 import { z } from 'zod'
-import { requireAuth } from '~~/server/utils/auth-helpers'
+import { auth } from '~~/server/utils/auth'
 
-const updateProfileBodySchema = z.object({
-  name: z.string().min(1, 'Name is required').trim()
+const updateNameSchema = z.object({
+  name: z.string().min(1, 'Nama wajib diisi').max(100, 'Nama maksimal 100 karakter').trim()
 })
 
 /**
  * PUT /api/profile
- * Updates the current authenticated user's name.
- * Role and branch can only be changed by Admin.
+ * Updates the current authenticated user's name via Better-Auth API.
+ * Role dan branch hanya bisa diubah oleh Admin.
  */
 export default defineEventHandler(async (event) => {
   const session = await requireAuth(event)
+  const body = await readValidatedBody(event, updateNameSchema.parse)
 
-  const body = await readValidatedBody(event, updateProfileBodySchema.parse)
+  // Update user name via Better-Auth server API
+  await auth.api.updateUser({
+    headers: event.headers,
+    body: {
+      name: body.name
+    }
+  })
 
-  const updatedProfile = await db
-    .update(profile)
-    .set({ name: body.name })
-    .where(eq(profile.userAuthId, session.user.id))
-    .returning()
-    .get()
-
-  if (!updatedProfile) {
-    throw createError({
-      statusCode: 404,
-      statusMessage: 'Profile not found'
-    })
+  return {
+    id: session.user.id,
+    name: body.name,
+    email: session.user.email,
+    role: session.user.role,
+    branch: session.user.branch
   }
-
-  return updatedProfile
 })

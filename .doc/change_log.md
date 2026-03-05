@@ -116,3 +116,21 @@ Membuat skrip seeding otomatis `server/scripts/seed.ts` untuk memfasilitasi pemb
 
 - Skrip dieksekusi menggunakan `npm run db:seed`.
 - Berhasil digenerate 4 user langsung ke dalam database yang terhubung dengan kredensial Better-Auth.
+
+---
+
+## [2026-03-05] — Fix TypeScript Error pada Seed Script
+
+### 🔄 Perubahan Utama
+
+Memperbaiki error `unexpected any` pada blok `catch` di eksekusi seeding dummy accounts.
+
+### 🔧 File Dimodifikasi
+
+| File | Perubahan |
+|------|-----------|
+| `server/scripts/seed.ts` | Menghapus explicit `any` pada parameter `error` di `catch` dan menambahkan type narrowing agar passing lint check `@typescript-eslint/no-explicit-any`. |
+
+### ✅ Verifikasi
+
+- `npm run lint` / typecheck berjalan tanpa error `@typescript-eslint/no-explicit-any`.
