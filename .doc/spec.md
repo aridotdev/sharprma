@@ -1261,3 +1261,41 @@ INDEX(branch)        -- filter by branch
 - **Soft Delete**: User tidak benar-benar dihapus → preserve audit trail
 
 ---
+
+## 8. AUTH MIDDLEWARE & ROUTE PROTECTION
+
+### 8.1 API Route Handler
+
+Endpoint auth (seperti login, logout, get-session) di-handle oleh Better Auth.
+- **Route**: `server/api/auth/[...all].ts`
+- **Fungsi**: Mem-pass request H3 ke Better-Auth handler menggunakan `toWebRequest()`.
+
+### 8.2 Client Route Protection (Nuxt Middleware)
+
+Route protection ditangani murni pada sisi klien/Nuxt menggunakan `defineNuxtRouteMiddleware`. Untuk menghindari inkonsistensi hydration di SSR Nuxt, pengecekan `session` di-skip pada instance server (`import.meta.server`) dan pengecekan dilakukan langsung dengan `authClient.getSession()`.
+
+**Daftar Middleware:**
+
+1. **`auth.global.ts` (Global)**
+   - Berjalan di setiap pergantian rute.
+   - Jika user **belum login** dan mengakses rute selain `/login`, maka di-redirect ke `/login`.
+   - Jika user **sudah login** dan mengakses `/login`, maka di-redirect berdasarkan role:
+     - Role **CS** → `/cs`
+     - Role **QRCC/MANAGEMENT/ADMIN** → `/dashboard`
+
+2. **`cs.ts` (Named Middleware)**
+   - Diterapkan pada halaman di bawah `/cs/*`.
+   - **Aturan**: Hanya user dengan role `CS` yang diizinkan. Jika role lain mencoba mengakses, akan di-redirect ke `/dashboard`.
+
+3. **`dashboard.ts` (Named Middleware)**
+   - Diterapkan pada halaman di bawah `/dashboard/*`.
+   - **Aturan**: Hanya user dengan role `QRCC`, `MANAGEMENT`, atau `ADMIN` yang diizinkan. Jika role `CS` mencoba mengakses, akan di-redirect ke `/cs`.
+
+### 8.3 Server-Side Auth Helpers
+
+Pada file internal server (`server/utils/auth-helpers.ts`), data pengguna dan role dibaca langsung dari `session.user` (Better-Auth):
+- `getCurrentUser(event)`: Mengembalikan object session dari request header.
+- `requireAuth(event)`: Melemparkan error 401 Unauthorized jika belum login.
+- `requireRole(event, roles)`: Mengecek role yang dijinkan vs role user. Membaca properti `role` dan `isActive` langsung dari struktur user Better-Auth, melempar error 403 Forbidden jika tidak cocok/aktif.
+
+---

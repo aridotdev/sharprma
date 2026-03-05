@@ -2,7 +2,7 @@
 import { authClient } from '~/utils/auth-client'
 
 /**
- * Global client-side middleware — runs on every route navigation.
+ * Global middleware — runs on every route navigation.
  *
  * Rules:
  * - Unauthenticated + not on /login → redirect to /login
@@ -11,13 +11,14 @@ import { authClient } from '~/utils/auth-client'
  *   - QRCC / MANAGEMENT / ADMIN → /dashboard
  */
 export default defineNuxtRouteMiddleware(async (to) => {
-  const { data: session } = await authClient.useSession(useFetch)
+  // Use getSession for stable auth check in middleware
+  const { data: session } = await authClient.getSession()
 
-  const isLoggedIn = !!session.value?.user
+  const isLoggedIn = !!session?.user
   const isLoginPage = to.path === '/login'
   const isRootPage = to.path === '/'
 
-  // Unauthenticated — redirect to login (except already on login)
+  // 1. Unauthenticated — redirect to login (except already on login)
   if (!isLoggedIn) {
     if (!isLoginPage) {
       return navigateTo('/login')
@@ -25,13 +26,9 @@ export default defineNuxtRouteMiddleware(async (to) => {
     return
   }
 
-  // Authenticated — redirect away from / and /login to correct home
+  // 2. Authenticated — redirect away from / and /login to correct home
   if (isLoginPage || isRootPage) {
-    // Get role from profile via API
-    const { data: profileData } = await useFetch('/api/profile')
-
-    const role = (profileData.value as { role?: string } | null)?.role
-
+    const role = session.user?.role
     if (role === 'CS') {
       return navigateTo('/cs')
     }

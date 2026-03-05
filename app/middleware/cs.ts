@@ -8,15 +8,13 @@ import { authClient } from '~/utils/auth-client'
  */
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 export default defineNuxtRouteMiddleware(async (to) => {
-  // Only runs on /cs/* routes (applied via definePageMeta in pages)
-  const { data: session } = await authClient.useSession(useFetch)
+  const { data: session } = await authClient.getSession()
 
-  if (!session.value?.user) {
+  if (!session?.user) {
     return navigateTo('/login')
   }
 
-  const { data: profileData } = await useFetch('/api/profile')
-  const role = (profileData.value as { role?: string } | null)?.role
+  const role = session.user?.role
 
   if (role !== 'CS') {
     // Redirect to their proper home based on role

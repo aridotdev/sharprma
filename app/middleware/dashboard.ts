@@ -1,25 +1,26 @@
+// app/middleware/dashboard.ts
+import { authClient } from '~/utils/auth-client'
+
 /**
  * Route middleware for /dashboard and /dashboard/** routes.
  *
  * Access matrix:
  * - /dashboard/**             → QRCC, MANAGEMENT, ADMIN
  * - /dashboard/claims/**      → QRCC, ADMIN only
- * - /dashboard/vendor-claims/**  → QRCC, ADMIN only
+ * - /dashboard/vendor-claims/** → QRCC, ADMIN only
  * - /dashboard/master/**      → QRCC, ADMIN only
  * - /dashboard/users          → ADMIN only
  *
  * Unauthorized → redirect to their correct home or /login
  */
 export default defineNuxtRouteMiddleware(async (to) => {
-  const { data: session } = await authClient.useSession(useFetch)
+  const { data: session } = await authClient.getSession()
 
-  if (!session.value?.user) {
+  if (!session?.user) {
     return navigateTo('/login')
   }
 
-  const { data: profileData } = await useFetch('/api/profile')
-  const role = (profileData.value as { role?: string } | null)?.role
-
+  const role = session.user?.role
   const isDashboardAllowed = ['QRCC', 'MANAGEMENT', 'ADMIN'].includes(role ?? '')
 
   if (!isDashboardAllowed) {
