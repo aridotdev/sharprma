@@ -14,7 +14,12 @@ import { authClient } from '~/utils/auth-client'
  * Unauthorized → redirect to their correct home or /login
  */
 export default defineNuxtRouteMiddleware(async (to) => {
-  const { data: session } = await authClient.getSession()
+  const headers = useRequestHeaders(['cookie']) as HeadersInit
+  const { data: session } = await authClient.getSession({
+    fetchOptions: {
+      headers
+    }
+  })
 
   if (!session?.user) {
     return navigateTo('/login')

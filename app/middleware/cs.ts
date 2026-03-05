@@ -8,7 +8,12 @@ import { authClient } from '~/utils/auth-client'
  */
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 export default defineNuxtRouteMiddleware(async (to) => {
-  const { data: session } = await authClient.getSession()
+  const headers = useRequestHeaders(['cookie']) as HeadersInit
+  const { data: session } = await authClient.getSession({
+    fetchOptions: {
+      headers
+    }
+  })
 
   if (!session?.user) {
     return navigateTo('/login')
